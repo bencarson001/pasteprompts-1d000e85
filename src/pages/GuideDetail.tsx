@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowLeft, ArrowRight, Clock, CheckCircle2, Quote } from "lucide-react";
+import { ArrowLeft, ArrowRight, Clock, CheckCircle2, Quote, AlertCircle, Sparkles, TrendingUp, Info } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
@@ -25,11 +25,11 @@ const GUIDE_SLUG_ALIASES: Record<string, string> = {
 function Block({ block }: { block: GuideBlock }) {
   switch (block.type) {
     case "h2":
-      return <h2 className="mt-10 font-display text-2xl font-bold">{block.text}</h2>;
+      return <h2 className="mt-12 font-display text-2xl sm:text-3xl font-bold tracking-tight text-foreground">{block.text}</h2>;
     case "h3":
-      return <h3 className="mt-6 font-display text-lg font-semibold">{block.text}</h3>;
+      return <h3 className="mt-8 font-display text-lg sm:text-xl font-semibold text-foreground/95">{block.text}</h3>;
     case "p":
-      return <p className="mt-4 leading-relaxed text-muted-foreground">{block.text}</p>;
+      return <p className="mt-4 leading-relaxed text-muted-foreground text-base sm:text-lg">{block.text}</p>;
     case "quote":
       return (
         <blockquote className="my-6 flex gap-3 rounded-2xl border-l-2 border-primary/40 bg-card/40 p-5">
@@ -37,11 +37,70 @@ function Block({ block }: { block: GuideBlock }) {
           <p className="font-display text-lg font-medium italic text-foreground/90">{block.text}</p>
         </blockquote>
       );
+    case "callout":
+      return (
+        <div className={`my-6 rounded-2xl border p-5 ${
+          block.variant === "warning" 
+            ? "border-amber-500/25 bg-amber-500/5 text-amber-200" 
+            : block.variant === "tip" 
+            ? "border-emerald-500/25 bg-emerald-500/5 text-emerald-200"
+            : "border-primary/25 bg-primary/5 text-foreground"
+        }`}>
+          <div className="flex items-center gap-2 font-display font-semibold text-base mb-2">
+            {block.variant === "warning" ? (
+              <AlertCircle className="h-4 w-4 text-amber-400" />
+            ) : block.variant === "tip" ? (
+              <Sparkles className="h-4 w-4 text-emerald-400" />
+            ) : (
+              <Info className="h-4 w-4 text-primary-glow" />
+            )}
+            <span className="text-foreground">{block.title}</span>
+          </div>
+          <p className="text-sm sm:text-base leading-relaxed text-muted-foreground">{block.text}</p>
+        </div>
+      );
+    case "stats_grid":
+      return (
+        <div className="my-8 grid gap-4 sm:grid-cols-3">
+          {block.stats.map((s, idx) => (
+            <div key={idx} className="rounded-2xl border border-white/10 bg-card/60 p-5 shadow-sm">
+              <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{s.label}</div>
+              <div className="mt-2 font-display text-3xl font-extrabold text-foreground">{s.value}</div>
+              <div className="mt-1 text-xs text-muted-foreground">{s.desc}</div>
+            </div>
+          ))}
+        </div>
+      );
+    case "table":
+      return (
+        <div className="my-8 overflow-x-auto rounded-2xl border border-white/10 bg-card/40">
+          <table className="w-full text-left text-sm">
+            <thead className="border-b border-white/10 bg-card/80 text-xs uppercase tracking-wider text-foreground">
+              <tr>
+                {block.headers.map((h, i) => (
+                  <th key={i} className="px-4 py-3.5 font-semibold">{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-white/5">
+              {block.rows.map((row, rIdx) => (
+                <tr key={rIdx} className="hover:bg-white/[0.02] transition-colors">
+                  {row.map((cell, cIdx) => (
+                    <td key={cIdx} className="px-4 py-3 text-muted-foreground leading-normal">
+                      {cell}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      );
     case "list":
       return (
-        <ul className="mt-4 space-y-2">
+        <ul className="mt-4 space-y-2.5">
           {block.items.map((it, i) => (
-            <li key={i} className="flex gap-2 text-muted-foreground">
+            <li key={i} className="flex gap-3 text-muted-foreground text-base">
               <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary-glow" />
               <span className="leading-relaxed">{it}</span>
             </li>
@@ -50,9 +109,9 @@ function Block({ block }: { block: GuideBlock }) {
       );
     case "steps":
       return (
-        <ol className="mt-4 space-y-3">
+        <ol className="mt-5 space-y-3.5">
           {block.items.map((it, i) => (
-            <li key={i} className="flex gap-3 text-muted-foreground">
+            <li key={i} className="flex gap-3 text-muted-foreground text-base">
               <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-gradient-primary text-xs font-bold text-primary-foreground">
                 {i + 1}
               </span>
