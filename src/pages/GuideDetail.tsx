@@ -169,8 +169,20 @@ export default function GuideDetail() {
             description: guide.description,
             datePublished: guide.updated,
             dateModified: guide.updated,
-            author: { "@type": "Organization", name: "Paste Prompts" },
-            publisher: { "@type": "Organization", name: "Paste Prompts" },
+            author: {
+              "@type": "Organization",
+              name: "Paste Prompts Editorial Team",
+              url: `${SITE_URL}/editorial-standards`,
+            },
+            publisher: {
+              "@type": "Organization",
+              name: "Paste Prompts",
+              url: SITE_URL,
+              logo: {
+                "@type": "ImageObject",
+                url: `${SITE_URL}/favicon.svg`,
+              },
+            },
             mainEntityOfPage: url,
           },
           {
@@ -208,6 +220,10 @@ export default function GuideDetail() {
             <Badge className="bg-gradient-primary">{guide.category}</Badge>
             <span className="flex items-center gap-1"><Clock className="h-3.5 w-3.5" /> {guide.readMinutes} min read</span>
             <span>Updated {new Date(guide.updated).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}</span>
+            <span className="inline-flex items-center gap-1.5 font-medium text-foreground/85">
+              <span className="h-1.5 w-1.5 rounded-full bg-primary-glow" />
+              By Paste Prompts Editorial Team
+            </span>
           </div>
           <h1 className="font-display text-3xl font-bold leading-tight sm:text-4xl">{guide.title}</h1>
           <p className="mt-4 text-lg leading-relaxed text-muted-foreground">{guide.intro}</p>
@@ -237,6 +253,27 @@ export default function GuideDetail() {
                 </li>
               ))}
             </ul>
+          </div>
+
+          {/* Author Box & Editorial Credentials */}
+          <div className="mt-8 rounded-2xl glass p-6 border border-white/10">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+              <div className="h-12 w-12 rounded-2xl bg-gradient-primary grid place-items-center font-display font-bold text-lg text-primary-foreground shrink-0 shadow-md">
+                PP
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex flex-wrap items-center gap-2">
+                  <h3 className="font-display text-base font-bold text-foreground">Paste Prompts Editorial Team</h3>
+                  <Badge variant="outline" className="text-[11px] border-primary/30 text-primary-glow">Verified Prompt Engineers</Badge>
+                </div>
+                <p className="mt-1 text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                  Written, benchmarked, and reviewed by senior AI prompt specialists across ChatGPT (GPT-4o), Claude 3.7 Sonnet, and Google Gemini. Adheres to our strict{" "}
+                  <Link to="/editorial-standards" className="text-primary-glow underline hover:text-primary">
+                    Editorial Standards & Fact-Checking Guidelines
+                  </Link>.
+                </p>
+              </div>
+            </div>
           </div>
 
           {/* Inline CTA */}
