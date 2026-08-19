@@ -1,0 +1,35 @@
+# Paste Prompts
+
+> A marketplace where people discover, buy and instantly use high-performing AI prompts for ChatGPT, Claude, Gemini, Midjourney and more — copy and paste in seconds.
+
+Paste Prompts is a curated marketplace of vetted, parameterised AI prompts. Buyers find prompts that actually work and use them instantly; creators upload prompts and earn from every sale. Individual prompts are priced at £0.25.
+
+## Pages
+
+- [Home](/): Overview of the marketplace and trending prompts.
+- [Browse prompts](/browse): Search and filter prompts by price, AI platform and category.
+- [Free prompts](/browse?price=free): Ready-to-use prompts you can copy for free.
+- [Membership plans](/pro): Free, Pro and Platinum creator membership tiers and pricing.
+
+## Prompts by AI tool
+
+- [ChatGPT prompts](/prompts/chatgpt-prompts): Tested ChatGPT prompts for writing, marketing and productivity.
+- [Claude prompts](/prompts/claude-prompts): Prompts tuned to Claude for long-form writing and analysis.
+- [Gemini prompts](/prompts/gemini-prompts): Google Gemini prompts for research and productivity.
+- [Midjourney prompts](/prompts/midjourney-prompts): Image prompts with parameters baked in.
+- [Free AI prompts](/prompts/free-ai-prompts): Hundreds of free prompts, no sign-up to browse.
+
+
+## Categories
+
+- [Make Money Online](/category/make-money-online): Prompts for online income and side hustles.
+- [Business & Marketing](/category/business-marketing): Prompts for marketing, sales and operations.
+- [Copywriting](/category/copywriting): Prompts for high-converting copy.
+- [AI Tools](/category/ai-tools): Prompts to get more from AI tools.
+
+## Optional
+
+- [Terms of Service](/legal/terms): Marketplace terms.
+- [Privacy Policy](/legal/privacy): How we handle data.
+- [Refund Policy](/legal/refunds): Refund terms for digital prompts.
+- [Creator Agreement](/legal/creators): Terms for selling prompts.

@@ -1,0 +1,251 @@
+/* Fonts are loaded non-blocking from index.html — no @import here (it would
+   block the stylesheet and delay first paint). */
+
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================
+   Paste Prompts — "Midnight Indigo" design system
+   All colors are HSL. Tokens only — no hard-coded colors in JSX.
+   Light palette in :root, dark palette in .dark (default theme).
+   ============================================================ */
+
+@layer base {
+  :root {
+    /* Light surfaces */
+    --background: 240 40% 98%;
+    --foreground: 240 40% 12%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 240 40% 12%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 40% 12%;
+
+    --elevated: 240 40% 94%;
+
+    --primary: 243 75% 59%;
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 255 80% 62%;
+
+    --secondary: 240 30% 94%;
+    --secondary-foreground: 240 40% 18%;
+
+    --muted: 240 25% 93%;
+    --muted-foreground: 240 12% 42%;
+
+    --accent: 255 85% 62%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 152 62% 40%;
+    --success-foreground: 0 0% 100%;
+
+    --warning: 38 92% 48%;
+    --warning-foreground: 0 0% 100%;
+
+    --border: 240 20% 88%;
+    --input: 240 20% 88%;
+    --ring: 243 75% 59%;
+
+    --radius: 0.85rem;
+
+    --gradient-primary: linear-gradient(135deg, hsl(270 95% 62%), hsl(285 95% 58%));
+    --gradient-hero: radial-gradient(ellipse 80% 60% at 50% -10%, hsl(270 95% 75% / 0.45), transparent 70%);
+    --gradient-card: linear-gradient(160deg, hsl(0 0% 100% / 0.95), hsl(260 40% 97% / 0.9));
+    --gradient-glow: linear-gradient(135deg, hsl(270 95% 62% / 0.12), hsl(285 95% 58% / 0.05));
+
+    --shadow-sm: 0 2px 8px -2px hsl(260 30% 60% / 0.25);
+    --shadow-md: 0 10px 30px -10px hsl(270 40% 50% / 0.2);
+    --shadow-glow: 0 0 40px -8px hsl(270 95% 62% / 0.3);
+    --shadow-elevated: 0 24px 60px -20px hsl(240 40% 40% / 0.25);
+
+    --sidebar-background: 240 40% 97%;
+    --sidebar-foreground: 240 20% 30%;
+    --sidebar-primary: 243 75% 59%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 30% 92%;
+    --sidebar-accent-foreground: 240 40% 18%;
+    --sidebar-border: 240 20% 86%;
+    --sidebar-ring: 243 75% 59%;
+  }
+
+  .dark {
+    --background: 260 55% 4%;
+    --foreground: 230 30% 94%;
+
+    --card: 260 45% 7.5%;
+    --card-foreground: 230 30% 94%;
+
+    --popover: 260 47% 6.5%;
+    --popover-foreground: 230 30% 94%;
+
+    --elevated: 260 52% 16%;
+
+    --primary: 270 95% 62%;
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 270 100% 74%;
+
+    --secondary: 260 40% 12%;
+    --secondary-foreground: 230 30% 94%;
+
+    --muted: 260 30% 14%;
+    --muted-foreground: 260 18% 66%;
+
+    --accent: 272 98% 66%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 72% 56%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 152 62% 47%;
+    --success-foreground: 0 0% 100%;
+
+    --warning: 38 92% 58%;
+    --warning-foreground: 260 60% 6%;
+
+    --border: 260 30% 14%;
+    --input: 260 35% 10%;
+    --ring: 270 95% 62%;
+
+    --gradient-hero: radial-gradient(ellipse 80% 60% at 50% -10%, hsl(270 95% 26% / 0.45), transparent 70%);
+    --gradient-card: linear-gradient(160deg, hsl(260 45% 9% / 0.95), hsl(260 50% 6% / 0.95));
+    --gradient-glow: linear-gradient(135deg, hsl(270 95% 62% / 0.16), hsl(285 95% 58% / 0.06));
+
+    --shadow-sm: 0 2px 8px -2px hsl(260 60% 1% / 0.5);
+    --shadow-md: 0 10px 30px -10px hsl(270 75% 16% / 0.45);
+    --shadow-glow: 0 0 35px -8px hsl(270 95% 62% / 0.4);
+    --shadow-elevated: 0 24px 60px -20px hsl(260 80% 1% / 0.7);
+
+    --sidebar-background: 260 50% 6%;
+    --sidebar-foreground: 230 25% 82%;
+    --sidebar-primary: 270 95% 62%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 260 40% 11%;
+    --sidebar-accent-foreground: 230 30% 94%;
+    --sidebar-border: 260 30% 13%;
+    --sidebar-ring: 270 95% 62%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+
+  /* Fixed hero background on its own layer — same visual effect as
+     background-attachment: fixed but without the scroll jank caused
+     by repainting the entire viewport on every frame. */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background-image: var(--gradient-hero);
+    background-repeat: no-repeat;
+    pointer-events: none;
+  }
+
+  h1, h2, h3, h4, .font-display {
+    font-family: 'Space Grotesk', 'Inter', sans-serif;
+    letter-spacing: -0.02em;
+  }
+
+  ::selection {
+    background: hsl(var(--primary) / 0.35);
+  }
+
+  ::-webkit-scrollbar { width: 16px; height: 16px; }
+  ::-webkit-scrollbar-track { background: hsl(var(--background)); }
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--primary) / 0.85);
+    border-radius: 8px;
+    border: 2px solid hsl(var(--background));
+  }
+  ::-webkit-scrollbar-thumb:hover { background: hsl(var(--primary)); }
+
+  ::-webkit-scrollbar-button:vertical:decrement,
+  ::-webkit-scrollbar-button:vertical:increment {
+    display: block;
+    width: 16px;
+    height: 16px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 12px;
+    background-color: hsl(var(--background));
+  }
+  ::-webkit-scrollbar-button:vertical:decrement {
+    background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgZmlsbD0iIzZiNzBjNyI+PHBhdGggZD0iTTggMkwyIDE0aDEyeiIvPjwvc3ZnPg==");
+  }
+  ::-webkit-scrollbar-button:vertical:increment {
+    background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgZmlsbD0iIzZiNzBjNyI+PHBhdGggZD0iTTggMTRMMiAyaDEyeiIvPjwvc3ZnPg==");
+  }
+
+  /* Respect users who prefer reduced motion (accessibility) */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  /* Visible keyboard focus for accessibility (WCAG) */
+  :focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  .glass {
+    @apply border border-border/60 bg-card/60 backdrop-blur-xl;
+    box-shadow: var(--shadow-md);
+  }
+
+  .glass-strong {
+    @apply border border-border/70 backdrop-blur-2xl;
+    background: var(--gradient-card);
+    box-shadow: var(--shadow-elevated);
+  }
+
+  .text-gradient {
+    @apply bg-clip-text text-transparent;
+    background-image: var(--gradient-primary);
+  }
+
+  .btn-glow {
+    box-shadow: var(--shadow-glow);
+  }
+
+  .card-hover {
+    @apply transition-all duration-300;
+  }
+  .card-hover:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-glow);
+    border-color: hsl(var(--primary) / 0.4);
+  }
+}
+
+@layer utilities {
+  .bg-gradient-primary { background-image: var(--gradient-primary); }
+  .bg-gradient-glow { background-image: var(--gradient-glow); }
+  .shadow-glow { box-shadow: var(--shadow-glow); }
+  .container-tight { @apply mx-auto w-full max-w-[1100px] px-6 md:px-8 xl:px-12; }
+  .container-wide { @apply mx-auto w-full max-w-[1240px] px-6 md:px-8 xl:px-12; }
+}

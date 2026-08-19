@@ -1,0 +1,6 @@
+{
+  "name": "Paste Prompts",
+  "description": "The AI prompt marketplace for ChatGPT, Claude, and Gemini prompts.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,13 @@
+# Canonical Backend Connection
+
+This project is locked to the following Supabase project to ensure data consistency:
+
+- VITE_SUPABASE_PROJECT_ID=iwmljuoplkqyhdygajpi
+- VITE_SUPABASE_URL=https://iwmljuoplkqyhdygajpi.supabase.co
+- VITE_SUPABASE_PUBLISHABLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml3bWxqdW9wbGtxeWhkeWdhanBpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzczODM2NzEsImV4cCI6MjA5Mjk1OTY3MX0.jWAwvkdfu2fsai2NIPRQlNAezqKHb3jgiGLQ5Fk7zo0
+
+**Instructions for AI Editors**: 
+- Always use the backend specified here.
+- Never create a new project.
+- Never edit `.env` files or `src/integrations/supabase/*` unless authorized.
+- Always check the real schema before writing queries.

@@ -1,0 +1,22 @@
+project_id = "iwmljuoplkqyhdygajpi"
+
+[functions.create-checkout]
+verify_jwt = false
+
+[functions.payments-webhook]
+verify_jwt = false
+
+[functions.site-maintenance]
+verify_jwt = false
+
+[functions.try-prompt]
+verify_jwt = false
+
+[functions.create-portal-session]
+verify_jwt = false
+
+[functions.process-email-queue]
+verify_jwt = true
+
+[functions.mcp]
+verify_jwt = false
