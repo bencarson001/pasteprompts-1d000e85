@@ -83,10 +83,38 @@ function ScheduleCard() {
   const qc = useQueryClient();
   const { data } = useQuery({ queryKey: ["admin-fb-schedule"], queryFn: fetchSchedule });
   const [form, setForm] = useState<ScheduleRow | null>(null);
+  const [timeStr, setTimeStr] = useState<string>(() => {
+    const saved = typeof window !== "undefined" ? localStorage.getItem("fb_autopilot_post_time") : null;
+    return saved || "18:00";
+  });
   const [saving, setSaving] = useState(false);
 
-  useEffect(() => { if (data) setForm(data); }, [data]);
+  useEffect(() => {
+    if (data) {
+      setForm(data);
+      const saved = typeof window !== "undefined" ? localStorage.getItem("fb_autopilot_post_time") : null;
+      if (saved && saved.startsWith(`${String(data.post_hour).padStart(2, "0")}:`)) {
+        setTimeStr(saved);
+      } else {
+        const fallbackMin = (saved && saved.split(":")[1]) || "00";
+        setTimeStr(`${String(data.post_hour).padStart(2, "0")}:${fallbackMin}`);
+      }
+    }
+  }, [data]);
+
   if (!form) return null;
+
+  const handleTimeChange = (newVal: string) => {
+    setTimeStr(newVal);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("fb_autopilot_post_time", newVal);
+    }
+    const [h] = newVal.split(":");
+    const hourNum = parseInt(h, 10);
+    if (!isNaN(hourNum)) {
+      setForm((prev) => (prev ? { ...prev, post_hour: Math.min(23, Math.max(0, hourNum)) } : null));
+    }
+  };
 
   const toggleDay = (d: number) =>
     setForm({
@@ -97,20 +125,28 @@ function ScheduleCard() {
     });
 
   const save = async () => {
+    if (!form) return;
     setSaving(true);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("fb_autopilot_post_time", timeStr);
+    }
+    const [h] = timeStr.split(":");
+    const hourNum = parseInt(h, 10);
+    const validHour = !isNaN(hourNum) ? Math.min(23, Math.max(0, hourNum)) : form.post_hour;
+
     const { error } = await (supabase as unknown as { from: (t: string) => { upsert: (r: unknown, o: { onConflict: string }) => Promise<{ error: { message: string } | null }> } })
       .from("fb_autopilot_schedule")
       .upsert({
         id: 1,
         enabled: form.enabled,
         days_of_week: form.days_of_week.length ? form.days_of_week : [0, 1, 2, 3, 4, 5, 6],
-        post_hour: Math.min(23, Math.max(0, form.post_hour || 0)),
+        post_hour: validHour,
         start_date: form.start_date,
         weeks: Math.min(260, Math.max(1, form.weeks || 1)),
       }, { onConflict: "id" });
     setSaving(false);
     if (error) { toast({ title: "Save failed", description: error.message, variant: "destructive" }); return; }
-    toast({ title: "Schedule saved", description: "Autopilot will follow these settings." });
+    toast({ title: "Schedule saved", description: `Autopilot scheduled for ${timeStr} (Europe/London).` });
     qc.invalidateQueries({ queryKey: ["admin-fb-schedule"] });
   };
 
@@ -155,11 +191,12 @@ function ScheduleCard() {
 
       <div className="grid gap-3 sm:grid-cols-3">
         <label className="text-xs text-muted-foreground">
-          Post hour (Europe/London)
+          Post time (Europe/London)
           <Input
-            type="number" min={0} max={23} value={form.post_hour}
-            onChange={(e) => setForm({ ...form, post_hour: Number(e.target.value) })}
-            className="mt-1 h-9"
+            type="time"
+            value={timeStr}
+            onChange={(e) => handleTimeChange(e.target.value)}
+            className="mt-1 h-9 bg-card/60"
           />
         </label>
         <label className="text-xs text-muted-foreground">
@@ -183,7 +220,7 @@ function ScheduleCard() {
       <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
         <p className="text-xs text-muted-foreground">
           Runs until <strong className="text-foreground">{endDate.toLocaleDateString()}</strong> ·{" "}
-          {form.days_of_week.length || 7} day{(form.days_of_week.length || 7) === 1 ? "" : "s"}/week at {String(form.post_hour).padStart(2, "0")}:00
+          {form.days_of_week.length || 7} day{(form.days_of_week.length || 7) === 1 ? "" : "s"}/week at <strong className="text-foreground">{timeStr}</strong> (Europe/London)
         </p>
         <Button onClick={save} disabled={saving} size="sm">
           {saving ? <Loader2 className="mr-1 h-4 w-4 animate-spin" /> : <Check className="mr-1 h-4 w-4" />}Save schedule
