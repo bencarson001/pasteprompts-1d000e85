@@ -20,7 +20,13 @@ const supabase = SUPABASE_URL && SUPABASE_KEY
 
 async function startServer() {
   const app = express();
-  const PORT = 3000;
+  const args = process.argv.slice(2);
+  let portArg = 0;
+  const portIndex = args.indexOf('--port');
+  if (portIndex !== -1 && args[portIndex + 1]) {
+    portArg = parseInt(args[portIndex + 1], 10);
+  }
+  const PORT = portArg || Number(process.env.PORT) || Number(process.env.VITE_PORT) || 3000;
 
   // Trust proxy for reverse proxy environments (Cloud Run, Cloudflare, NGINX)
   app.set("trust proxy", true);
