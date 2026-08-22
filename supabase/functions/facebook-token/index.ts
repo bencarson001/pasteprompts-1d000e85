@@ -216,7 +216,7 @@ Deno.serve(async (req) => {
       } catch (err) {
         if (isExtended) {
           // If already extended and getPageTokenFromUserToken fails, check if the token is already a Page token
-          const meRes = await fetch(`${GRAPH}/me?fields=id,name&access_token=${encodeURIComponent(userToken!)}`);
+          const meRes = await fetch(`https://graph.facebook.com/${GRAPH_VERSION}/me?fields=id,name&access_token=${encodeURIComponent(userToken!)}`);
           const meBody = await meRes.json().catch(() => ({}));
           if (meRes.ok && meBody?.id) {
             pageIdResult = meBody.id;
