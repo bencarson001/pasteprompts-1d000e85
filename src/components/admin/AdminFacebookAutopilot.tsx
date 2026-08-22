@@ -14,6 +14,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { SectionHeader, TableShell, Empty } from "./shared";
 import { timeAgo } from "@/lib/format";
+import { fetchFbGroups } from "@/lib/admin";
 import { FacebookGroups } from "./FacebookGroups";
 import { FacebookConnection } from "./FacebookConnection";
 
