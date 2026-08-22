@@ -154,31 +154,11 @@ Deno.serve(async (req) => {
   const attachMedia = cycleRow ? !!cycleRow.attach_media : true;
   const useImage = attachMedia && !!pick.image_url;
 
-  // Determine whether to share to groups (defaults to true unless explicitly toggled off in schedule or request)
-  let shareToGroups = true;
-  if (typeof body?.share_to_groups === "boolean") {
-    shareToGroups = body.share_to_groups;
-  } else {
-    try {
-      const { data: schedRow } = await supabase
-        .from("fb_autopilot_schedule")
-        .select("share_to_groups")
-        .eq("id", 1)
-        .maybeSingle();
-      if (schedRow && typeof (schedRow as { share_to_groups?: boolean }).share_to_groups === "boolean") {
-        shareToGroups = !!(schedRow as { share_to_groups?: boolean }).share_to_groups;
-      }
-    } catch {
-      // If column doesn't exist yet, default to true
-    }
-  }
-
-  // Publish to the Page, then optionally share to 9 random active groups if enabled.
+  // Publish to the Page, then share to 9 random active groups.
   const published = await publishToFacebook(
     supabase as never,
     pick.content,
     useImage ? pick.image_url : null,
-    { shareToGroups, groupCount: shareToGroups ? 9 : 0 },
   );
   const fbPostId = published.fbPostId;
   const groupsPosted = published.groups.filter((g) => g.ok).length;
@@ -195,17 +175,7 @@ Deno.serve(async (req) => {
     })
     .eq("id", pick.id);
 
-  return json({
-    ok: !errorText || errorText.startsWith("dry-run"),
-    id: pick.id,
-    cycle_id: activeCycle,
-    fb_post_id: fbPostId,
-    with_image: useImage,
-    share_to_groups: shareToGroups,
-    groups_posted: groupsPosted,
-    groups: published.groups,
-    error: errorText,
-  });
+  return json({ ok: !errorText || errorText.startsWith("dry-run"), id: pick.id, cycle_id: activeCycle, fb_post_id: fbPostId, with_image: useImage, groups_posted: groupsPosted, groups: published.groups, error: errorText });
 });
 
 function json(obj: unknown, status = 200) {

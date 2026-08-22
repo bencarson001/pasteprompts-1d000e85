@@ -37,7 +37,7 @@ const NAV = [
   { id: "reviews", label: "Reviews", icon: Star, render: () => <AdminReviews /> },
   { id: "categories", label: "Categories", icon: Tag, render: () => <AdminCategories /> },
   { id: "announcements", label: "Announcements", icon: Megaphone, render: () => <AdminAnnouncements /> },
-  { id: "auto-posting", label: "Auto Posting", icon: Facebook, render: () => <AdminSocial /> },
+  { id: "social-scheduler", label: "Social Scheduler", icon: Share2, render: () => <AdminSocial /> },
   { id: "reports", label: "Reports", icon: Flag, render: () => <AdminReports /> },
   { id: "errors", label: "Error logs", icon: AlertTriangle, render: () => <AdminErrorLogs /> },
   { id: "flags", label: "Feature flags", icon: ToggleLeft, render: () => <AdminFeatureFlags /> },
@@ -62,7 +62,6 @@ function AdminTabContent({ active, onNavigate }: { active: string; onNavigate: (
     case "reviews": return <AdminReviews />;
     case "categories": return <AdminCategories />;
     case "announcements": return <AdminAnnouncements />;
-    case "auto-posting":
     case "social-scheduler": return <AdminSocial />;
     case "reports": return <AdminReports />;
     case "errors": return <AdminErrorLogs />;

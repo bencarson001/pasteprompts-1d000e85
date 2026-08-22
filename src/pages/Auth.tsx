@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { Sparkles, Loader2, Check, Shield } from "lucide-react";
+import { Sparkles, Loader2, Check } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
@@ -10,13 +10,12 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { CreatorOnboardingDialog } from "@/components/auth/CreatorOnboardingDialog";
 import { updateMyProfile } from "@/lib/queries";
-import { ADMIN_EMAIL } from "@/lib/reservedNames";
 
 export default function Auth() {
   const [params] = useSearchParams();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { user, signIn, signUp, signInWithGoogle, signInAsAdmin } = useAuth();
+  const { user, signIn, signUp, signInWithGoogle } = useAuth();
   const [mode, setMode] = useState<"signin" | "signup">(params.get("mode") === "signup" ? "signup" : "signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -27,39 +26,9 @@ export default function Auth() {
 
   const redirect = params.get("redirect") ?? "/";
 
-  const handleAdminSignIn = async () => {
-    setLoading(true);
-    try {
-      await signInAsAdmin();
-      toast({
-        title: "Signed in as Platform Admin",
-        description: `Authenticated as ${ADMIN_EMAIL}. Full control enabled.`,
-      });
-      const target = redirect && redirect !== "/" ? redirect : "/admin";
-      navigate(target);
-    } catch (err) {
-      toast({ title: "Admin sign-in failed", description: (err as Error).message, variant: "destructive" });
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-
-    // If logging in with the admin email, fallback to admin authentication if standard password fails
-    if (email.trim().toLowerCase() === ADMIN_EMAIL) {
-      const res = await signIn(email, password);
-      if (res.error) {
-        await handleAdminSignIn();
-        return;
-      }
-      setLoading(false);
-      navigate(redirect && redirect !== "/" ? redirect : "/admin");
-      return;
-    }
-
     if (mode === "signup") {
       const res = await signUp(email, password, displayName || email.split("@")[0]);
       setLoading(false);
@@ -150,27 +119,6 @@ export default function Auth() {
 
 
           <Button onClick={handleGoogle} variant="outline" className="mb-4 w-full border-white/15">Continue with Google</Button>
-
-          {/* Platform Owner Quick Access for Preview / Editing Environments */}
-          <div className="mb-4 rounded-2xl border border-amber-500/30 bg-amber-500/10 p-3.5 text-left">
-            <div className="flex items-center gap-2 text-xs font-bold text-amber-300">
-              <Shield className="h-4 w-4 text-amber-400 shrink-0" />
-              <span>Platform Admin Quick Login</span>
-            </div>
-            <p className="mt-1 text-[11px] text-amber-200/80 leading-relaxed">
-              Sign in as <strong className="text-amber-300 font-mono">{ADMIN_EMAIL}</strong> to access the full Admin Hub control center.
-            </p>
-            <Button
-              type="button"
-              onClick={handleAdminSignIn}
-              disabled={loading}
-              variant="outline"
-              className="mt-2.5 w-full border-amber-500/40 bg-amber-500/20 text-xs font-bold text-amber-200 hover:bg-amber-500/30 transition-colors"
-            >
-              {loading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : `Sign in as Admin (${ADMIN_EMAIL.split("@")[0]})`}
-            </Button>
-          </div>
-
           <div className="mb-4 flex items-center gap-3 text-xs text-muted-foreground"><span className="h-px flex-1 bg-border" />OR<span className="h-px flex-1 bg-border" /></div>
 
           <form onSubmit={submit} className="space-y-4">

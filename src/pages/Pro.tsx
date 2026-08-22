@@ -14,7 +14,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { fetchMyTierInfo } from "@/lib/queries";
 import { TIERS, formatPrice, type TierKey } from "@/lib/format";
-import { logPaymentError } from "@/lib/logger";
 
 const ORDER: TierKey[] = ["free", "pro", "platinum"];
 
@@ -55,9 +54,7 @@ export default function Pro() {
       if (error || !data?.url) throw new Error(error?.message || "Could not open billing portal");
       window.open(data.url, "_blank");
     } catch (e) {
-      const err = e as Error;
-      await logPaymentError("Stripe Billing Portal Error", err, { userId: user?.id });
-      toast({ title: "Could not open billing", description: err.message, variant: "destructive" });
+      toast({ title: "Could not open billing", description: (e as Error).message, variant: "destructive" });
     } finally {
       setPortalLoading(false);
     }
