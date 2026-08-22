@@ -1,0 +1,1 @@
+DELETE FROM public.feedback WHERE email = 'e2e@example.com';

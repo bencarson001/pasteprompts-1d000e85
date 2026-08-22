@@ -1,0 +1,614 @@
+{
+  "version": 1,
+  "sdk_version": "0.20.1",
+  "path": "/functions/v1/mcp",
+  "auth": {
+    "type": "oauth",
+    "issuer": "https://iwmljuoplkqyhdygajpi.supabase.co/auth/v1",
+    "accepted_audiences": [
+      "authenticated"
+    ]
+  },
+  "mcp": {
+    "server": {
+      "name": "pasteprompts-mcp",
+      "version": "0.2.0",
+      "title": "PastePrompts MCP"
+    },
+    "tools": [
+      {
+        "name": "search_prompts",
+        "title": "Search prompts",
+        "description": "Search the PastePrompts marketplace for approved AI prompts. Filter by keyword, AI model, price band, and sort order.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "query": {
+              "type": "string",
+              "description": "Keyword to match in the title or description."
+            },
+            "model": {
+              "type": "string",
+              "description": "Filter by AI model, e.g. 'gpt-4', 'midjourney', 'claude'."
+            },
+            "price": {
+              "type": "string",
+              "enum": [
+                "free",
+                "paid",
+                "under5",
+                "5to15",
+                "over15"
+              ],
+              "description": "Price band filter."
+            },
+            "sort": {
+              "type": "string",
+              "enum": [
+                "trending",
+                "newest",
+                "rated",
+                "popular"
+              ],
+              "description": "Sort order (default: trending)."
+            },
+            "category": {
+              "type": "string",
+              "description": "Category slug to filter by."
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50,
+              "description": "Max results (default 12)."
+            }
+          },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_prompt",
+        "title": "Get prompt details",
+        "description": "Get full public details for a single PastePrompts marketplace prompt by its slug. The paid prompt body is not returned — link users to the prompt page to purchase or copy it.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "slug": {
+              "type": "string",
+              "minLength": 1,
+              "description": "The prompt slug, e.g. 'cinematic-portrait-midjourney'."
+            }
+          },
+          "required": [
+            "slug"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_categories",
+        "title": "List categories",
+        "description": "List all prompt categories available on the PastePrompts marketplace.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_featured_prompts",
+        "title": "Get featured prompts",
+        "description": "Get the currently featured / trending prompts on the PastePrompts marketplace.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 24,
+              "description": "Max results (default 8)."
+            }
+          },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_articles",
+        "title": "List Learn-hub articles",
+        "description": "List articles published to the Paste Prompts Learn hub, newest first. Use before publishing to avoid duplicate topics or slugs.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50,
+              "description": "Max articles to return (default 20)."
+            },
+            "status": {
+              "type": "string",
+              "enum": [
+                "published",
+                "draft",
+                "any"
+              ],
+              "description": "Filter by status (default published)."
+            }
+          },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "publish_article",
+        "title": "Publish SEO article",
+        "description": "Publish a long-form SEO article to the Paste Prompts Learn hub at /guides/<slug>. Requires an admin account. Articles must be original, substantial (8+ blocks) and genuinely useful.",
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": false,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string",
+              "minLength": 10,
+              "maxLength": 120,
+              "description": "Article H1 / SEO title."
+            },
+            "description": {
+              "type": "string",
+              "minLength": 50,
+              "maxLength": 300,
+              "description": "Meta description (50-160 chars ideal)."
+            },
+            "intro": {
+              "type": "string",
+              "minLength": 120,
+              "description": "Opening paragraph shown under the title."
+            },
+            "blocks": {
+              "type": "array",
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "const": "p"
+                      },
+                      "text": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "text"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "const": "h2"
+                      },
+                      "text": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "text"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "const": "h3"
+                      },
+                      "text": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "text"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "const": "list"
+                      },
+                      "items": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "minItems": 1
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "items"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "const": "steps"
+                      },
+                      "items": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "minItems": 1
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "items"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "const": "quote"
+                      },
+                      "text": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "text"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "const": "code"
+                      },
+                      "label": {
+                        "type": "string"
+                      },
+                      "text": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "text"
+                    ],
+                    "additionalProperties": false
+                  }
+                ]
+              },
+              "minItems": 6,
+              "description": "Body content blocks in reading order."
+            },
+            "takeaways": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 5
+              },
+              "minItems": 3,
+              "maxItems": 8,
+              "description": "Key takeaway bullet points."
+            },
+            "slug": {
+              "type": "string",
+              "description": "URL slug; derived from the title when omitted."
+            },
+            "category": {
+              "type": "string",
+              "maxLength": 40,
+              "description": "Topic label, e.g. 'Fundamentals'."
+            },
+            "emoji": {
+              "type": "string",
+              "maxLength": 4
+            },
+            "read_minutes": {
+              "type": "integer",
+              "minimum": 2,
+              "maximum": 30
+            },
+            "status": {
+              "type": "string",
+              "enum": [
+                "published",
+                "draft"
+              ]
+            }
+          },
+          "required": [
+            "title",
+            "description",
+            "intro",
+            "blocks",
+            "takeaways"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "update_article",
+        "title": "Update or unpublish article",
+        "description": "Edit an existing Learn-hub article by slug, or change its status to draft/published. Requires an admin account. Only the supplied fields change.",
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "slug": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Slug of the article to update."
+            },
+            "title": {
+              "type": "string",
+              "minLength": 10,
+              "maxLength": 120
+            },
+            "description": {
+              "type": "string",
+              "minLength": 50,
+              "maxLength": 300
+            },
+            "intro": {
+              "type": "string",
+              "minLength": 60
+            },
+            "blocks": {
+              "type": "array",
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "const": "p"
+                      },
+                      "text": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "text"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "const": "h2"
+                      },
+                      "text": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "text"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "const": "h3"
+                      },
+                      "text": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "text"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "const": "list"
+                      },
+                      "items": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "minItems": 1
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "items"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "const": "steps"
+                      },
+                      "items": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "minItems": 1
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "items"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "const": "quote"
+                      },
+                      "text": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "text"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "const": "code"
+                      },
+                      "label": {
+                        "type": "string"
+                      },
+                      "text": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "text"
+                    ],
+                    "additionalProperties": false
+                  }
+                ]
+              },
+              "minItems": 6
+            },
+            "takeaways": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 5
+              },
+              "minItems": 3,
+              "maxItems": 8
+            },
+            "category": {
+              "type": "string",
+              "maxLength": 40
+            },
+            "emoji": {
+              "type": "string",
+              "maxLength": 4
+            },
+            "read_minutes": {
+              "type": "integer",
+              "minimum": 2,
+              "maximum": 30
+            },
+            "status": {
+              "type": "string",
+              "enum": [
+                "published",
+                "draft"
+              ]
+            }
+          },
+          "required": [
+            "slug"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}

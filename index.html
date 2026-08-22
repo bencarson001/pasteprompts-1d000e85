@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Paste Prompts — AI Prompt Marketplace</title>
+    <meta
+      name="description"
+      content="Discover, buy, and sell verified AI prompts for ChatGPT, Claude, Gemini, and Midjourney. Boost productivity with top-rated free and premium templates."
+    />
+    <meta
+      name="keywords"
+      content="AI prompts, ChatGPT prompts, Claude prompts, Gemini prompts, Midjourney prompts, prompt marketplace, prompt engineering, free AI prompts, best AI prompts, buy prompts, sell prompts, DALL·E prompts, Sora prompts, prompt library, prompt templates"
+    />
+    <meta name="author" content="Paste Prompts" />
+    <!-- Fallback canonical for non-JS crawlers. Removed on mount by src/components/SEO.tsx,
+         which then emits the correct per-route canonical via react-helmet-async. -->
+    <link rel="canonical" href="https://pasteprompts.co.uk/" data-static-canonical="true" />
+    <meta name="theme-color" content="#0a0a1a" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
+    <!-- Content Security Policy: enforces strict HTTPS while permitting required AdSense, Analytics, and asset CDNs -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self' https: data: blob: 'unsafe-inline' 'unsafe-eval'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://pagead2.googlesyndication.com https://www.googletagmanager.com https://www.google-analytics.com https://adservice.google.com https://tpc.googlesyndication.com; img-src 'self' https: data: blob:; style-src 'self' https: 'unsafe-inline'; font-src 'self' https: data:; connect-src 'self' https: wss:; frame-src 'self' https:;"
+    />
+    <!-- Critical inline theme so the first paint is never an unstyled white page. -->
+    <style>
+      html, body { margin: 0; background: #0a0a1a; color: #e8e8f0; font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+      a { color: #8b7cf8; text-decoration: underline; }
+      a:hover { color: #a79bfb; }
+    </style>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin />
+    <link rel="dns-prefetch" href="https://www.google-analytics.com" />
+    <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Non-blocking font load: fetched as print stylesheet, flipped to all on load. -->
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap"
+      onload="this.onload=null;this.rel='stylesheet'"
+    />
+    <noscript
+      ><link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap"
+    /></noscript>
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Paste Prompts" />
+    <meta property="og:url" content="https://pasteprompts.co.uk/" />
+    <meta name="twitter:site" content="@pasteprompts" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Paste Prompts",
+        "url": "https://pasteprompts.co.uk/",
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": { "@type": "EntryPoint", "urlTemplate": "https://pasteprompts.co.uk/browse?q={search_term_string}" },
+          "query-input": "required name=search_term_string"
+        }
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Paste Prompts",
+        "url": "https://pasteprompts.co.uk/",
+        "logo": "https://storage.googleapis.com/gpt-engineer-file-uploads/gVA6LFVAv1NR5HdixPMdl8cXxqp2/social-images/social-1781312540994-4621.webp",
+        "description": "A premium marketplace where people discover, buy and instantly use high-performing AI prompts.",
+        "email": "hello@pasteprompts.co.uk",
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "contactType": "customer support",
+          "email": "hello@pasteprompts.co.uk",
+          "url": "https://pasteprompts.co.uk/contact",
+          "availableLanguage": ["English"]
+        },
+        "sameAs": [
+          "https://x.com/pasteprompts",
+          "https://www.facebook.com/pasteprompts",
+          "https://www.instagram.com/pasteprompts",
+          "https://www.tiktok.com/@pasteprompts"
+        ],
+        "copyrightYear": 2026
+      }
+    </script>
+    <meta name="copyright" content="Copyright © 2026 Paste Prompts. All rights reserved." />
+
+    <!-- Google AdSense is loaded route-side (src/components/AdsManager.tsx) so ads
+         only appear on content-rich pages, never on thin/utility routes. -->
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-D0T32ZB520"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-D0T32ZB520');
+    </script>
+    
+    <!-- Google AdSense - Global Verification -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3809061959162534" crossorigin="anonymous"></script>
+    <meta property="og:title" content="Free AI prompts that actually work | Paste Prompts" />
+    <meta name="twitter:title" content="Free AI prompts that actually work | Paste Prompts" />
+    <meta
+      property="og:description"
+      content="Discover, save and instantly use high-performing AI prompts for ChatGPT, Claude & Gemini. Hundreds of free prompts — copy and paste in seconds."
+    />
+    <meta
+      name="twitter:description"
+      content="Discover, save and instantly use high-performing AI prompts for ChatGPT, Claude & Gemini. Hundreds of free prompts — copy and paste in seconds."
+    />
+
+    <meta
+      property="og:image"
+      content="https://storage.googleapis.com/gpt-engineer-file-uploads/gVA6LFVAv1NR5HdixPMdl8cXxqp2/social-images/social-1781312540994-4621.webp"
+    />
+    <meta name="seobility" content="be69fbec4bde0bbe94abbbbecb57c3ec" />
+    <meta
+      name="twitter:image"
+      content="https://storage.googleapis.com/gpt-engineer-file-uploads/gVA6LFVAv1NR5HdixPMdl8cXxqp2/social-images/social-1781312540994-4621.webp"
+    />
+  </head>
+
+  <body>
+    <!--
+      The markup inside #root is a static, crawlable fallback for clients that do
+      not execute JavaScript (AdSense crawler, some auditors, older bots). React
+      replaces it on mount; the inline script below hides it immediately in real
+      browsers so no homepage-style content flashes before the app paints.
+    -->
+    <div id="root">
+      <div id="static-fallback" style="max-width:1200px;margin:0 auto;padding:32px 20px;line-height:1.6">
+        <!-- Semantic Header & Navigation -->
+        <header style="border-bottom:1px solid #27273a;padding-bottom:20px;margin-bottom:32px;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:16px">
+          <div>
+            <a href="/" style="font-size:24px;font-weight:800;color:#fff;text-decoration:none;letter-spacing:-0.5px">
+              Paste<span style="color:#8b7cf8">Prompts</span>
+            </a>
+            <p style="font-size:14px;color:#a0a0b8;margin:4px 0 0">The Premier Free &amp; Premium AI Prompt Marketplace</p>
+          </div>
+          <nav aria-label="Main Navigation" style="display:flex;flex-wrap:wrap;gap:16px;font-size:14px;font-weight:600">
+            <a href="/browse" style="color:#e8e8f0;text-decoration:none">Explore</a>
+            <a href="/#categories" style="color:#e8e8f0;text-decoration:none">Categories</a>
+            <a href="/browse/free" style="color:#e8e8f0;text-decoration:none">Free Prompts</a>
+            <a href="/creators" style="color:#e8e8f0;text-decoration:none">Creators</a>
+            <a href="/guides" style="color:#e8e8f0;text-decoration:none">Guides</a>
+            <a href="/#how-it-works" style="color:#e8e8f0;text-decoration:none">How It Works</a>
+            <a href="/sell" style="color:#8b7cf8;text-decoration:none">Sell Prompts</a>
+          </nav>
+        </header>
+
+        <!-- Main Content Area -->
+        <main id="main-content">
+          <!-- Hero Section with Single Semantic H1 -->
+          <section aria-labelledby="main-heading" style="margin-bottom:48px">
+            <h1 id="main-heading" style="font-size:36px;line-height:1.2;font-weight:800;color:#ffffff;margin:0 0 16px;letter-spacing:-0.5px">
+              Paste Prompts — Free &amp; Premium AI Prompt Marketplace
+            </h1>
+            <p style="font-size:18px;color:#c9c9dd;max-width:850px;margin:0 0 20px">
+              Discover, test, and instantly copy high-performing, expert-engineered AI prompts for ChatGPT, Claude 3.7 Sonnet, Google Gemini, Midjourney v6, Flux Pro, and DALL·E 3. Whether you are scaling digital marketing campaigns, writing production software, crafting hyper-realistic visual concept art, or generating high-converting sales copy, Paste Prompts provides verified, copy-paste templates that deliver reliable, studio-grade results in seconds.
+            </p>
+            <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:24px">
+              <a href="/browse" style="display:inline-block;background:#6d5cf5;color:#fff;font-weight:700;padding:12px 24px;border-radius:10px;text-decoration:none">Explore 5,000+ Prompts</a>
+              <a href="/browse?price=free" style="display:inline-block;border:1px solid #3d3d5c;color:#e8e8f0;font-weight:600;padding:12px 24px;border-radius:10px;text-decoration:none">Browse Free Prompts</a>
+            </div>
+          </section>
+
+          <!-- Prompt Categories Section -->
+          <section aria-labelledby="categories-heading" style="margin-bottom:48px">
+            <h2 id="categories-heading" style="font-size:24px;font-weight:700;color:#fff;margin:0 0 16px;border-bottom:1px solid #27273a;padding-bottom:8px">
+              Explore Popular AI Prompt Categories
+            </h2>
+            <p style="color:#a0a0b8;margin-bottom:20px">
+              Our curated prompt catalog spans specialized domains, each structured with system role prompts, parameter variables, few-shot examples, and exact negative prompts to guarantee peak output quality across all leading Large Language Models (LLMs) and diffusion neural networks.
+            </p>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));gap:20px">
+              <article style="background:#131326;border:1px solid #27273a;border-radius:12px;padding:20px">
+                <h3 style="font-size:18px;font-weight:700;margin:0 0 8px"><a href="/category/copywriting">Copywriting &amp; Content Creation Prompts</a></h3>
+                <p style="font-size:14px;color:#c9c9dd;margin:0">Create persuasive long-form blog posts, high-converting direct response email campaigns, viral social media hooks, video sales letters (VSLs), and SEO-optimized web copy tailored for Google search rankings.</p>
+              </article>
+              <article style="background:#131326;border:1px solid #27273a;border-radius:12px;padding:20px">
+                <h3 style="font-size:18px;font-weight:700;margin:0 0 8px"><a href="/category/make-money-online">Make Money Online &amp; E-Commerce</a></h3>
+                <p style="font-size:14px;color:#c9c9dd;margin:0">Actionable workflows for digital product creation, Shopify product listings, Amazon SEO descriptions, niche research frameworks, cold client outreach, and automated affiliate review generation.</p>
+              </article>
+              <article style="background:#131326;border:1px solid #27273a;border-radius:12px;padding:20px">
+                <h3 style="font-size:18px;font-weight:700;margin:0 0 8px"><a href="/category/coding-troubleshooting">Coding &amp; Software Engineering</a></h3>
+                <p style="font-size:14px;color:#c9c9dd;margin:0">Robust developer prompts for full-stack React and Node.js architectures, SQL query optimization, automated test generation, algorithmic refactoring, and code debugging across Python, TypeScript, and Go.</p>
+              </article>
+              <article style="background:#131326;border:1px solid #27273a;border-radius:12px;padding:20px">
+                <h3 style="font-size:18px;font-weight:700;margin:0 0 8px"><a href="/category/image-generation">Midjourney &amp; Visual Art Design</a></h3>
+                <p style="font-size:14px;color:#c9c9dd;margin:0">Master photographic lighting parameters, 8K realistic portrait formulas, 3D luxury product mockups, cinematic widescreen stills, isometric game assets, and minimalist vector logo prompts.</p>
+              </article>
+              <article style="background:#131326;border:1px solid #27273a;border-radius:12px;padding:20px">
+                <h3 style="font-size:18px;font-weight:700;margin:0 0 8px"><a href="/category/ai-tools">AI Tools &amp; Automation Workflows</a></h3>
+                <p style="font-size:14px;color:#c9c9dd;margin:0">Custom GPT system instructions, Zapier/Make prompt chain connectors, automated CRM lead summarizers, and enterprise document extraction prompts designed for production pipelines.</p>
+              </article>
+              <article style="background:#131326;border:1px solid #27273a;border-radius:12px;padding:20px">
+                <h3 style="font-size:18px;font-weight:700;margin:0 0 8px"><a href="/category/business-marketing">Business Strategy &amp; Operations</a></h3>
+                <p style="font-size:14px;color:#c9c9dd;margin:0">Strategic business plan frameworks, venture capital pitch deck outlines, competitive market intelligence matrices, SWOT analysis generators, and executive hiring rubrics.</p>
+              </article>
+            </div>
+          </section>
+
+          <!-- Educational Guides & Engineering Frameworks -->
+          <section aria-labelledby="guides-heading" style="margin-bottom:48px">
+            <h2 id="guides-heading" style="font-size:24px;font-weight:700;color:#fff;margin:0 0 16px;border-bottom:1px solid #27273a;padding-bottom:8px">
+              In-Depth AI Prompt Engineering Guides
+            </h2>
+            <p style="color:#a0a0b8;margin-bottom:20px">
+              Master prompt engineering principles to elicit deterministic, nuanced responses from generative AI. Our expert technical tutorials cover everything from few-shot context injection to token window management:
+            </p>
+            <ul style="list-style:none;padding:0;display:grid;grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));gap:16px">
+              <li style="background:#131326;border:1px solid #27273a;border-radius:10px;padding:16px">
+                <h3 style="font-size:16px;font-weight:700;margin:0 0 6px"><a href="/guides/how-to-write-effective-ai-prompts">How to Write Effective AI Prompts: Step-by-Step Guide</a></h3>
+                <p style="font-size:13px;color:#a0a0b8;margin:0">Learn role definition, contextual constraints, dynamic variables, and chain-of-thought elicitation techniques to eliminate model hallucination.</p>
+              </li>
+              <li style="background:#131326;border:1px solid #27273a;border-radius:10px;padding:16px">
+                <h3 style="font-size:16px;font-weight:700;margin:0 0 6px"><a href="/guides/chatgpt-vs-claude-vs-gemini">ChatGPT vs Claude vs Gemini: Prompting Comparison</a></h3>
+                <p style="font-size:13px;color:#a0a0b8;margin:0">Detailed benchmark comparing reasoning models, context window capacities (200k+ tokens), and XML tag structure formatting for Anthropic Claude and Google Gemini.</p>
+              </li>
+              <li style="background:#131326;border:1px solid #27273a;border-radius:10px;padding:16px">
+                <h3 style="font-size:16px;font-weight:700;margin:0 0 6px"><a href="/guides/midjourney-v6-prompt-formula-guide">Midjourney v6.1 Master Prompting Formula</a></h3>
+                <p style="font-size:13px;color:#a0a0b8;margin:0">Unlock cinematic realism, precise camera lenses (35mm f/1.4, anamorphic), lighting styles, stylize flags (--s), and aspect ratios (--ar 16:9).</p>
+              </li>
+              <li style="background:#131326;border:1px solid #27273a;border-radius:10px;padding:16px">
+                <h3 style="font-size:16px;font-weight:700;margin:0 0 6px"><a href="/guides/make-money-selling-ai-prompts">How to Sell AI Prompts &amp; Build Creator Income</a></h3>
+                <p style="font-size:13px;color:#a0a0b8;margin:0">Complete blueprint for prompt creators to monetize tested prompts, optimize marketplace listings, set competitive pricing, and withdraw earnings securely via Stripe.</p>
+              </li>
+            </ul>
+          </section>
+
+          <!-- Buyer Protection, Verification & Quality Standards -->
+          <section aria-labelledby="quality-heading" style="margin-bottom:48px;background:#131326;border:1px solid #27273a;border-radius:12px;padding:24px">
+            <h2 id="quality-heading" style="font-size:22px;font-weight:700;color:#fff;margin:0 0 12px">
+              Strict Quality Verification &amp; Buyer Guarantee
+            </h2>
+            <p style="font-size:15px;color:#c9c9dd;line-height:1.7;margin:0 0 16px">
+              At Paste Prompts, every prompt submitted by creators undergoes thorough quality review before it goes live on the marketplace. We verify that each submission includes detailed testing logs, exact model version compatibility tags, comprehensive user instructions, and clear placeholder brackets (e.g. <code style="background:#1e1e38;padding:2px 6px;border-radius:4px">[YOUR PRODUCT]</code>, <code style="background:#1e1e38;padding:2px 6px;border-radius:4px">[TARGET AUDIENCE]</code>) so you can plug in your variables immediately.
+            </p>
+            <p style="font-size:15px;color:#c9c9dd;line-height:1.7;margin:0">
+              Purchases are protected by our 14-day digital satisfaction warranty and secure 256-bit SSL encrypted Stripe checkout. If a prompt fails to produce the advertised output format or is materially defective, our responsive support team is here to assist. For full details on our customer protections, review our <a href="/trust">Trust &amp; Security Overview</a> and <a href="/refunds">Refund Policy</a>.
+            </p>
+          </section>
+
+          <!-- Comprehensive FAQ Section with Rich Schema -->
+          <section aria-labelledby="faq-heading" style="margin-bottom:48px">
+            <h2 id="faq-heading" style="font-size:24px;font-weight:700;color:#fff;margin:0 0 20px;border-bottom:1px solid #27273a;padding-bottom:8px">
+              Frequently Asked Questions (FAQ)
+            </h2>
+            <div style="display:flex;flex-direction:column;gap:16px">
+              <article style="background:#131326;border:1px solid #27273a;border-radius:10px;padding:18px">
+                <h3 style="font-size:17px;font-weight:700;color:#fff;margin:0 0 8px">Is Paste Prompts free to use?</h3>
+                <p style="font-size:14px;color:#c9c9dd;margin:0">Yes! Creating an account is 100% free with no credit card required. We provide hundreds of completely free, high-utility prompts across all categories that you can copy, save to your personal library, and use immediately in ChatGPT, Claude, and Gemini.</p>
+              </article>
+              <article style="background:#131326;border:1px solid #27273a;border-radius:10px;padding:18px">
+                <h3 style="font-size:17px;font-weight:700;color:#fff;margin:0 0 8px">Can I use purchased prompts for commercial client projects?</h3>
+                <p style="font-size:14px;color:#c9c9dd;margin:0">Yes. When you purchase or download a prompt on Paste Prompts, you receive a perpetual, non-exclusive commercial license to use the prompt and any resulting AI outputs for your personal projects, client deliverables, marketing materials, and commercial businesses.</p>
+              </article>
+              <article style="background:#131326;border:1px solid #27273a;border-radius:10px;padding:18px">
+                <h3 style="font-size:17px;font-weight:700;color:#fff;margin:0 0 8px">How do I sell my own AI prompts on Paste Prompts?</h3>
+                <p style="font-size:14px;color:#c9c9dd;margin:0">Prompt engineers and AI creators can register for a free seller account via our <a href="/sell">Sell Prompts</a> portal. Upload your tested prompt with sample outputs, set your desired price, and keep up to 90% of every sale with automatic Stripe payouts.</p>
+              </article>
+              <article style="background:#131326;border:1px solid #27273a;border-radius:10px;padding:18px">
+                <h3 style="font-size:17px;font-weight:700;color:#fff;margin:0 0 8px">How are user privacy and personal data handled?</h3>
+                <p style="font-size:14px;color:#c9c9dd;margin:0">We adhere strictly to the UK GDPR and EU GDPR regulations. We never sell user data, financial credentials are processed securely via Stripe without being stored on our servers, and analytics data is anonymized. For comprehensive details, read our full <a href="/privacy">Privacy Policy</a>.</p>
+              </article>
+              <article style="background:#131326;border:1px solid #27273a;border-radius:10px;padding:18px">
+                <h3 style="font-size:17px;font-weight:700;color:#fff;margin:0 0 8px">What should I do if a purchased prompt doesn't work as expected?</h3>
+                <p style="font-size:14px;color:#c9c9dd;margin:0">If you experience any issues with a purchased prompt, contact our support team within 14 days via our <a href="/contact">Contact Page</a> or review our <a href="/refunds">Refund Policy</a>. We will provide prompt troubleshooting assistance or issue a refund if the prompt is materially defective.</p>
+              </article>
+            </div>
+          </section>
+        </main>
+
+        <!-- Static Cookie Consent Notice (AdSense & GDPR Compliant) -->
+        <aside role="dialog" aria-label="Cookie consent banner" id="static-cookie-banner" style="background:#17172e;border:1px solid #3d3d5c;border-radius:12px;padding:16px 20px;margin-bottom:36px;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:16px">
+          <p style="font-size:13px;color:#c9c9dd;margin:0;max-width:800px;line-height:1.5">
+            <strong>Cookie &amp; Privacy Notice:</strong> We use essential cookies to maintain secure sessions and anonymous Google Analytics to improve site performance. Third-party advertising partners such as Google AdSense may use cookies to serve relevant advertisements. Read our complete <a href="/privacy">Privacy Policy</a> and <a href="/cookies">Cookie Policy</a> to learn more or adjust preferences.
+          </p>
+          <div style="display:flex;gap:10px">
+            <a href="/privacy" style="background:#6d5cf5;color:#fff;font-size:12px;font-weight:700;padding:8px 16px;border-radius:8px;text-decoration:none">Privacy Details</a>
+          </div>
+        </aside>
+
+        <!-- Semantic Footer with Mandatory AdSense & Legal Links -->
+        <footer style="border-top:1px solid #27273a;padding-top:28px;margin-top:36px;font-size:13px;color:#a0a0b8">
+          <nav aria-label="Footer Navigation" style="display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:24px;margin-bottom:28px">
+            <div>
+              <h4 style="font-size:14px;font-weight:700;color:#fff;margin:0 0 12px">Marketplace</h4>
+              <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px">
+                <li><a href="/browse">Browse All Prompts</a></li>
+                <li><a href="/browse?sort=trending">Trending Prompts</a></li>
+                <li><a href="/browse?price=free">Free AI Prompts</a></li>
+                <li><a href="/sell">Sell Your Prompts</a></li>
+                <li><a href="/pro">Paste Prompts Pro</a></li>
+              </ul>
+            </div>
+            <div>
+              <h4 style="font-size:14px;font-weight:700;color:#fff;margin:0 0 12px">AI Models</h4>
+              <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px">
+                <li><a href="/prompts/chatgpt-prompts">ChatGPT Prompts</a></li>
+                <li><a href="/prompts/claude-prompts">Claude Prompts</a></li>
+                <li><a href="/prompts/gemini-prompts">Google Gemini Prompts</a></li>
+                <li><a href="/prompts/midjourney-prompts">Midjourney Prompts</a></li>
+                <li><a href="/prompts/dalle-prompts">DALL-E 3 Prompts</a></li>
+              </ul>
+            </div>
+            <div>
+              <h4 style="font-size:14px;font-weight:700;color:#fff;margin:0 0 12px">Resources &amp; Learn</h4>
+              <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px">
+                <li><a href="/guides">All Prompt Guides</a></li>
+                <li><a href="/glossary">AI Prompt Glossary</a></li>
+                <li><a href="/guides/how-to-write-effective-ai-prompts">Prompt Engineering Tutorial</a></li>
+                <li><a href="/site-map">HTML Site Map</a></li>
+                <li><a href="/sitemap.xml">XML Sitemap</a></li>
+              </ul>
+            </div>
+            <div>
+              <h4 style="font-size:14px;font-weight:700;color:#fff;margin:0 0 12px">Legal, Trust &amp; Contact</h4>
+              <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px">
+                <li><a href="/privacy">Privacy Policy (Mandatory)</a></li>
+                <li><a href="/legal/privacy">GDPR Privacy Notice</a></li>
+                <li><a href="/terms">Terms of Service</a></li>
+                <li><a href="/disclaimer">Disclaimer</a></li>
+                <li><a href="/refunds">Refund Policy</a></li>
+                <li><a href="/cookies">Cookie Policy</a></li>
+                <li><a href="/trust">Trust &amp; Security</a></li>
+                <li><a href="/about">About Us &amp; Editorial Team</a></li>
+                <li><a href="/contact">Contact Support &amp; Enquiries</a></li>
+              </ul>
+            </div>
+          </nav>
+          <div style="border-top:1px solid #1e1e33;padding-top:16px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;font-size:12px;color:#7c7c94">
+            <p style="margin:0">Copyright &copy; 2026 Paste Prompts (pasteprompts.co.uk) &middot; All rights reserved. Registered UK Digital Marketplace.</p>
+            <p style="margin:0">Contact: <a href="mailto:hello@pasteprompts.co.uk" style="color:#a0a0b8">hello@pasteprompts.co.uk</a> &middot; Oxford, United Kingdom</p>
+          </div>
+        </footer>
+      </div>
+    </div>
+    <script>
+      // JS-capable browsers never need the static fallback: hide it right away so
+      // the homepage-style markup can't flash before React paints the real route.
+      (function () {
+        var el = document.getElementById('static-fallback');
+        if (el) el.style.display = 'none';
+
+        // Watchdog: if React has not painted after 10s (stale cached chunk,
+        // failed bundle, flaky network) show a readable recovery card instead
+        // of leaving the visitor on an empty black page.
+        setTimeout(function () {
+          var root = document.getElementById('root');
+          if (!root) return;
+          if (root.querySelector('header, main, [data-app-ready]')) return;
+          root.innerHTML =
+            '<div style="min-height:80vh;display:flex;align-items:center;justify-content:center;padding:24px;' +
+            'font-family:Inter,system-ui,sans-serif;color:#e8e8f0;text-align:center">' +
+            '<div style="max-width:420px"><div role="heading" aria-level="2" style="font-size:20px;font-weight:700;margin:0 0 8px">Still loading…</div>' +
+            '<p style="font-size:14px;color:#c9c9dd;margin:0 0 16px">Something got stuck while loading Paste Prompts. ' +
+            'Refreshing usually fixes it.</p>' +
+            '<button id="pp-recover" style="background:#6d5cf5;color:#fff;border:0;border-radius:10px;' +
+            'padding:10px 18px;font-size:14px;cursor:pointer">Reload the site</button></div></div>';
+          var btn = document.getElementById('pp-recover');
+          if (btn) {
+            btn.onclick = function () {
+              try {
+                if (window.caches) caches.keys().then(function (k) { k.forEach(function (n) { caches.delete(n); }); });
+                if (navigator.serviceWorker) {
+                  navigator.serviceWorker.getRegistrations().then(function (rs) {
+                    rs.forEach(function (r) { r.unregister(); });
+                  });
+                }
+              } catch (e) { /* ignore */ }
+              setTimeout(function () { location.reload(); }, 200);
+            };
+          }
+        }, 10000);
+      })();
+    </script>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
