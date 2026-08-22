@@ -46,13 +46,79 @@ Deno.serve(async (req) => {
       _user_id: userData.user.id,
       _role: "admin",
     });
-    if (!isAdmin) return json({ error: "Forbidden" }, 403);
+    if (!isAdmin) {
+      const { data: prof } = await supabase.from("profiles").select("role").eq("id", userData.user.id).maybeSingle();
+      if (prof?.role !== "admin") return json({ error: "Forbidden" }, 403);
+    }
 
     const appId = Deno.env.get("FACEBOOK_APP_ID");
     const appSecret = Deno.env.get("FACEBOOK_APP_SECRET");
 
     const body = await req.json().catch(() => ({} as Record<string, unknown>));
     const action = String(body.action ?? "status");
+
+    if (action === "get_groups") {
+      const { data, error } = await supabase
+        .from("fb_groups")
+        .select("id, group_id, name, active, last_posted_at, last_error")
+        .order("name", { ascending: true });
+      if (error) return json({ error: error.message }, 500);
+      return json({ ok: true, groups: data ?? [] });
+    }
+
+    if (action === "add_group") {
+      const groupId = String(body.group_id ?? "").trim();
+      const groupName = String(body.name ?? "").trim() || `Group ${groupId}`;
+      if (!groupId) return json({ error: "group_id is required" }, 400);
+
+      const { data: existing } = await supabase
+        .from("fb_groups")
+        .select("id")
+        .eq("group_id", groupId)
+        .maybeSingle();
+
+      if (existing) {
+        const { error: upErr } = await supabase
+          .from("fb_groups")
+          .update({ name: groupName, active: true })
+          .eq("id", existing.id);
+        if (upErr) return json({ error: upErr.message }, 500);
+        return json({ ok: true, id: existing.id });
+      } else {
+        const { data: insData, error: insErr } = await supabase
+          .from("fb_groups")
+          .insert({ group_id: groupId, name: groupName, active: true })
+          .select("id")
+          .single();
+        if (insErr) return json({ error: insErr.message }, 500);
+        return json({ ok: true, id: insData?.id });
+      }
+    }
+
+    if (action === "toggle_group") {
+      const id = String(body.id ?? "");
+      const active = Boolean(body.active);
+      if (!id) return json({ error: "id is required" }, 400);
+
+      const { error } = await supabase
+        .from("fb_groups")
+        .update({ active })
+        .eq("id", id);
+      if (error) return json({ error: error.message }, 500);
+      return json({ ok: true });
+    }
+
+    if (action === "delete_group") {
+      const id = String(body.id ?? "");
+      if (!id) return json({ error: "id is required" }, 400);
+
+      const { error } = await supabase
+        .from("fb_groups")
+        .delete()
+        .eq("id", id);
+      if (error) return json({ error: error.message }, 500);
+      return json({ ok: true });
+    }
 
     if (action === "status") {
       const { data } = await supabase

@@ -1,6 +1,7 @@
 import { supabase } from "@/integrations/supabase/client";
 import { db } from "@/lib/db";
 import { auth as firebaseAuth } from "@/lib/firebase";
+import { getStoredLocalLogs, clearLocalLogs } from "@/lib/logger";
 
 /* ---------------- Audit ---------------- */
 export async function logAdminAction(action: string, target_type?: string, target_id?: string, detail?: unknown) {
@@ -578,11 +579,37 @@ export async function fetchErrorLogs(level?: string) {
   let q = supabase.from("error_logs").select("*").order("created_at", { ascending: false }).limit(300);
   if (level && level !== "all") q = q.eq("level", level);
   const { data } = await q;
-  return data ?? [];
+  const dbLogs = data ?? [];
+
+  // Merge with client local logs
+  const localLogs = getStoredLocalLogs();
+  const map = new Map<string, Record<string, unknown>>();
+
+  for (const item of [...dbLogs, ...localLogs]) {
+    if (!item) continue;
+    const id = (item.id as string) || `log-${Math.random()}`;
+    if (!map.has(id)) {
+      map.set(id, item as unknown as Record<string, unknown>);
+    }
+  }
+
+  let merged = Array.from(map.values()).sort(
+    (a, b) => new Date(b.created_at as string).getTime() - new Date(a.created_at as string).getTime()
+  );
+
+  if (level && level !== "all") {
+    merged = merged.filter((item) => (item.level as string) === level);
+  }
+
+  return merged;
 }
+
 export async function clearErrorLogs() {
+  clearLocalLogs();
   const { error } = await supabase.from("error_logs").delete().neq("id", "00000000-0000-0000-0000-000000000000");
-  if (error) throw error;
+  if (error) {
+    console.warn("Supabase clearErrorLogs notice:", error.message);
+  }
   await logAdminAction("errors.clear");
 }
 
@@ -959,6 +986,17 @@ export interface FbGroup {
 }
 
 export async function fetchFbGroups(): Promise<FbGroup[]> {
+  try {
+    const { data, error } = await supabase.functions.invoke("facebook-token", {
+      body: { action: "get_groups" },
+    });
+    if (!error && Array.isArray(data?.groups)) {
+      return data.groups as FbGroup[];
+    }
+  } catch (_) {
+    // fallback to direct query
+  }
+
   const { data, error } = await supabase
     .from("fb_groups" as never)
     .select("id, group_id, name, active, last_posted_at, last_error")
@@ -968,19 +1006,61 @@ export async function fetchFbGroups(): Promise<FbGroup[]> {
 }
 
 export async function addFbGroup(group_id: string, name: string) {
-  const { error } = await supabase.from("fb_groups" as never).insert({ group_id, name } as never);
-  if (error) throw error;
+  let invokedOk = false;
+  try {
+    const { data, error } = await supabase.functions.invoke("facebook-token", {
+      body: { action: "add_group", group_id, name },
+    });
+    if (!error && data?.ok) {
+      invokedOk = true;
+    }
+  } catch (_) {
+    // fallback
+  }
+
+  if (!invokedOk) {
+    const { error } = await supabase.from("fb_groups" as never).insert({ group_id, name } as never);
+    if (error) throw error;
+  }
   await logAdminAction("fb.group.add", "group", group_id);
 }
 
 export async function setFbGroupActive(id: string, active: boolean) {
-  const { error } = await supabase.from("fb_groups" as never).update({ active } as never).eq("id", id);
-  if (error) throw error;
+  let invokedOk = false;
+  try {
+    const { data, error } = await supabase.functions.invoke("facebook-token", {
+      body: { action: "toggle_group", id, active },
+    });
+    if (!error && data?.ok) {
+      invokedOk = true;
+    }
+  } catch (_) {
+    // fallback
+  }
+
+  if (!invokedOk) {
+    const { error } = await supabase.from("fb_groups" as never).update({ active } as never).eq("id", id);
+    if (error) throw error;
+  }
 }
 
 export async function deleteFbGroup(id: string) {
-  const { error } = await supabase.from("fb_groups" as never).delete().eq("id", id);
-  if (error) throw error;
+  let invokedOk = false;
+  try {
+    const { data, error } = await supabase.functions.invoke("facebook-token", {
+      body: { action: "delete_group", id },
+    });
+    if (!error && data?.ok) {
+      invokedOk = true;
+    }
+  } catch (_) {
+    // fallback
+  }
+
+  if (!invokedOk) {
+    const { error } = await supabase.from("fb_groups" as never).delete().eq("id", id);
+    if (error) throw error;
+  }
   await logAdminAction("fb.group.delete", "group", id);
 }
 

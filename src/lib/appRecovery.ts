@@ -45,15 +45,26 @@ async function purgeAndReload() {
   window.location.reload();
 }
 
+import { logError } from "@/lib/logger";
+
 export function installAppRecovery() {
   window.addEventListener("error", (event) => {
-    const msg = event.message || (event.error as Error | undefined)?.message || "";
-    if (looksLikeChunkFailure(String(msg))) void purgeAndReload();
+    const errObj = event.error as Error | undefined;
+    const msg = event.message || errObj?.message || "Uncaught window error";
+    if (looksLikeChunkFailure(String(msg))) {
+      void purgeAndReload();
+    } else {
+      void logError("error", `Uncaught Error: ${msg}`, { scope: "client", error: errObj || event.message });
+    }
   });
 
   window.addEventListener("unhandledrejection", (event) => {
-    const reason = event.reason as { message?: string } | string | undefined;
-    const msg = typeof reason === "string" ? reason : (reason?.message ?? "");
-    if (looksLikeChunkFailure(msg)) void purgeAndReload();
+    const reason = event.reason as { message?: string; stack?: string } | string | undefined;
+    const msg = typeof reason === "string" ? reason : (reason?.message ?? "Unhandled promise rejection");
+    if (looksLikeChunkFailure(msg)) {
+      void purgeAndReload();
+    } else {
+      void logError("error", `Unhandled Rejection: ${msg}`, { scope: "client", error: reason });
+    }
   });
 }

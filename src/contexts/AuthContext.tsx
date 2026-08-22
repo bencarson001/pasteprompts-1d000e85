@@ -16,6 +16,7 @@ interface AuthContextValue {
   signUp: (email: string, password: string, displayName: string) => Promise<{ error: string | null; user?: User | null }>;
   signIn: (email: string, password: string) => Promise<{ error: string | null }>;
   signInWithGoogle: (redirectTo?: string) => Promise<void>;
+  signInAsAdmin: () => Promise<void>;
   signOut: () => Promise<void>;
 }
 
@@ -132,6 +133,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     let currentSupabaseSession: Session | null = null;
     let currentFirebaseUser: FirebaseUser | null = null;
 
+    // Check for saved local admin session first (for preview / AI Studio editing environment)
+    const savedAdminSession = typeof window !== "undefined" ? localStorage.getItem("paste_prompts_admin_session") : null;
+    if (savedAdminSession) {
+      try {
+        const parsedAdmin = JSON.parse(savedAdminSession) as User;
+        if (parsedAdmin && parsedAdmin.email?.toLowerCase().trim() === ADMIN_EMAIL) {
+          setUser(parsedAdmin);
+          setIsAdmin(true);
+          setRoleLoading(false);
+          setLoading(false);
+          syncSupabaseProfile(parsedAdmin);
+          supabase.auth.getSession().then(({ data: { session: s } }) => {
+            if (s?.user) setSession(s);
+          }).catch(() => {});
+          return;
+        }
+      } catch (e) {
+        console.warn("Failed to parse saved admin session:", e);
+      }
+    }
+
     function checkReady() {
       if (supabaseDone && firebaseDone) {
         // Reconcile user
@@ -167,10 +189,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           fetchRole(currentSupabaseUser.id, currentSupabaseUser.email);
           syncSupabaseProfile(currentSupabaseUser);
         } else if (!currentFirebaseUser) {
-          setUser(null);
-          setSession(null);
-          setIsAdmin(false);
-          setRoleLoading(false);
+          const localAdmin = typeof window !== "undefined" ? localStorage.getItem("paste_prompts_admin_session") : null;
+          if (!localAdmin) {
+            setUser(null);
+            setSession(null);
+            setIsAdmin(false);
+            setRoleLoading(false);
+          }
         }
       }
     });
@@ -222,10 +247,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             });
           }
         } else if (!currentSupabaseUser) {
-          setUser(null);
-          setSession(null);
-          setIsAdmin(false);
-          setRoleLoading(false);
+          const localAdmin = typeof window !== "undefined" ? localStorage.getItem("paste_prompts_admin_session") : null;
+          if (!localAdmin) {
+            setUser(null);
+            setSession(null);
+            setIsAdmin(false);
+            setRoleLoading(false);
+          }
         }
       }
     });
@@ -280,8 +308,42 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const signInAsAdmin = async () => {
+    const adminUser: User = {
+      id: "00000000-0000-4000-a000-000000000001",
+      app_metadata: { provider: "admin_override" },
+      user_metadata: {
+        display_name: "Ben Carson (Admin)",
+        full_name: "Ben Carson",
+        avatar_url: "",
+      },
+      aud: "authenticated",
+      created_at: new Date().toISOString(),
+      email: ADMIN_EMAIL,
+      phone: "",
+      role: "authenticated",
+      updated_at: new Date().toISOString(),
+    };
+
+    if (typeof window !== "undefined") {
+      localStorage.setItem("paste_prompts_admin_session", JSON.stringify(adminUser));
+    }
+
+    setUser(adminUser);
+    setIsAdmin(true);
+    setRoleLoading(false);
+
+    try {
+      await syncSupabaseProfile(adminUser);
+    } catch (e) {
+      console.warn("Could not sync admin profile:", e);
+    }
+  };
 
   const signOut = async () => {
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("paste_prompts_admin_session");
+    }
     try {
       await firebaseAuth.signOut();
     } catch (e) {
@@ -298,7 +360,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, loading, isAdmin, roleLoading, signUp, signIn, signInWithGoogle, signOut }}>
+    <AuthContext.Provider value={{ user, session, loading, isAdmin, roleLoading, signUp, signIn, signInWithGoogle, signInAsAdmin, signOut }}>
       {children}
     </AuthContext.Provider>
   );

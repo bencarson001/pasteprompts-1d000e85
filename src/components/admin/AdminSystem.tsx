@@ -1,11 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Loader2, Trash2, AlertTriangle, Flag, ToggleLeft, ScrollText, Sparkles, Bot, Play, Send } from "lucide-react";
+import { Loader2, Trash2, AlertTriangle, Flag, ToggleLeft, ScrollText, Sparkles, Bot, Play, Send, CreditCard, Shield, Bug, Eye, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import {
   fetchErrorLogs, clearErrorLogs,
@@ -14,50 +15,249 @@ import {
   fetchAuditLog,
   runMaintenance, processScheduledPosts,
 } from "@/lib/admin";
+import { logPaymentError, logAdminError } from "@/lib/logger";
 import { timeAgo } from "@/lib/format";
 import { TableShell, SectionHeader } from "./shared";
 
 const levelStyles: Record<string, string> = {
-  fatal: "bg-destructive/20 text-destructive",
-  error: "bg-destructive/15 text-destructive",
-  warn: "bg-warning/15 text-warning",
-  info: "bg-primary/10 text-primary-glow",
-  debug: "bg-secondary/70 text-muted-foreground",
+  fatal: "bg-destructive/20 text-destructive border-destructive/40",
+  error: "bg-destructive/15 text-destructive border-destructive/30",
+  warn: "bg-warning/15 text-warning border-warning/30",
+  info: "bg-primary/10 text-primary-glow border-primary/20",
+  debug: "bg-secondary/70 text-muted-foreground border-white/10",
+};
+
+const scopeStyles: Record<string, string> = {
+  payment: "bg-emerald-500/15 text-emerald-300 border-emerald-500/30",
+  admin: "bg-amber-500/15 text-amber-300 border-amber-500/30",
+  social: "bg-blue-500/15 text-blue-300 border-blue-500/30",
+  ai: "bg-purple-500/15 text-purple-300 border-purple-500/30",
+  client: "bg-indigo-500/15 text-indigo-300 border-indigo-500/30",
+  system: "bg-slate-500/15 text-slate-300 border-slate-500/30",
 };
 
 export function AdminErrorLogs() {
   const { toast } = useToast();
   const qc = useQueryClient();
   const [level, setLevel] = useState("all");
+  const [selectedScope, setSelectedScope] = useState<string>("all");
+  const [inspectItem, setInspectItem] = useState<Record<string, unknown> | null>(null);
+
   const { data, isLoading } = useQuery({ queryKey: ["admin-errors", level], queryFn: () => fetchErrorLogs(level) });
+
+  // Listen for real-time app errors
+  useEffect(() => {
+    const handleLogged = () => {
+      qc.invalidateQueries({ queryKey: ["admin-errors"] });
+      qc.invalidateQueries({ queryKey: ["admin-notifications"] });
+    };
+    window.addEventListener("app:error_logged", handleLogged);
+    return () => window.removeEventListener("app:error_logged", handleLogged);
+  }, [qc]);
+
   const clear = async () => {
     if (!confirm("Clear all error logs?")) return;
-    try { await clearErrorLogs(); qc.invalidateQueries({ queryKey: ["admin-errors"] }); toast({ title: "Logs cleared" }); }
-    catch (e) { toast({ title: "Failed", description: (e as Error).message, variant: "destructive" }); }
+    try {
+      await clearErrorLogs();
+      qc.invalidateQueries({ queryKey: ["admin-errors"] });
+      qc.invalidateQueries({ queryKey: ["admin-notifications"] });
+      toast({ title: "Error logs cleared" });
+    } catch (e) {
+      toast({ title: "Failed", description: (e as Error).message, variant: "destructive" });
+    }
   };
+
+  const triggerTestPaymentError = async () => {
+    await logPaymentError("Test Payment Diagnostic: Stripe webhook signature mismatch or invalid checkout key", {
+      amount_pence: 999,
+      currency: "GBP",
+      env: "test_mode",
+    });
+    qc.invalidateQueries({ queryKey: ["admin-errors"] });
+    qc.invalidateQueries({ queryKey: ["admin-notifications"] });
+    toast({ title: "Logged payment error test", description: "Payment error registered and sent to admin notifications." });
+  };
+
+  const triggerTestAdminError = async () => {
+    await logAdminError("Test Admin Diagnostic: Unauthorized permission attempt or scheduled job failure", {
+      action: "facebook.autopilot.post",
+      reason: "Page access token expired",
+    });
+    qc.invalidateQueries({ queryKey: ["admin-errors"] });
+    qc.invalidateQueries({ queryKey: ["admin-notifications"] });
+    toast({ title: "Logged admin error test", description: "Admin error registered and sent to admin notifications." });
+  };
+
+  const filteredLogs = (data ?? []).filter((e) => {
+    if (selectedScope === "all") return true;
+    const msg = String(e.message || "").toLowerCase();
+    const detailsObj = e.details as { scope?: string } | undefined;
+    const scopeVal = detailsObj?.scope?.toLowerCase() || "";
+    return scopeVal === selectedScope || msg.includes(`[${selectedScope}]`);
+  });
+
   return (
     <div>
-      <SectionHeader title="Error logs" desc="Runtime errors captured across the app."
-        action={<Button variant="outline" className="border-destructive/30 text-destructive" onClick={clear}><Trash2 className="mr-1 h-4 w-4" />Clear</Button>} />
-      <Tabs value={level} onValueChange={setLevel} className="mb-4">
-        <TabsList className="bg-card/60">
-          {["all", "fatal", "error", "warn", "info"].map((l) => <TabsTrigger key={l} value={l} className="capitalize">{l}</TabsTrigger>)}
-        </TabsList>
-      </Tabs>
-      {isLoading ? <div className="grid place-items-center py-20"><Loader2 className="h-7 w-7 animate-spin text-primary" /></div>
-      : !data?.length ? <p className="rounded-2xl glass p-10 text-center text-muted-foreground">No errors logged. 🎉</p> : (
-        <TableShell head={<>
-          <th className="px-4 py-3">Level</th><th className="px-4 py-3">Message</th><th className="px-4 py-3 text-right">When</th>
-        </>}>
-          {data.map((e) => (
-            <tr key={e.id as string} className="border-b border-white/5 last:border-0 hover:bg-card/40">
-              <td className="px-4 py-3"><Badge className={`${levelStyles[(e.level as string)] ?? ""} capitalize`}>{e.level as string}</Badge></td>
-              <td className="px-4 py-3"><AlertTriangle className="mr-1 inline h-3.5 w-3.5 text-muted-foreground" />{e.message as string}</td>
-              <td className="px-4 py-3 text-right text-muted-foreground">{timeAgo(e.created_at as string)}</td>
-            </tr>
+      <SectionHeader
+        title="Error logs & system alerts"
+        desc="Real-time error tracking for payments, admin features, and client runtime."
+        action={
+          <div className="flex flex-wrap items-center gap-2">
+            <Button size="sm" variant="outline" className="border-emerald-500/30 text-emerald-300 hover:bg-emerald-500/10" onClick={triggerTestPaymentError}>
+              <CreditCard className="mr-1 h-3.5 w-3.5" /> Test Payment Error
+            </Button>
+            <Button size="sm" variant="outline" className="border-amber-500/30 text-amber-300 hover:bg-amber-500/10" onClick={triggerTestAdminError}>
+              <Shield className="mr-1 h-3.5 w-3.5" /> Test Admin Error
+            </Button>
+            <Button size="sm" variant="outline" className="border-destructive/30 text-destructive hover:bg-destructive/10" onClick={clear}>
+              <Trash2 className="mr-1 h-3.5 w-3.5" /> Clear Logs
+            </Button>
+          </div>
+        }
+      />
+
+      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        {/* Scope Filter Buttons */}
+        <div className="flex flex-wrap items-center gap-1.5">
+          <span className="mr-1 text-xs font-medium text-muted-foreground">Scope:</span>
+          {[
+            { id: "all", label: "All Scopes" },
+            { id: "payment", label: "Payments", icon: CreditCard, color: "text-emerald-400" },
+            { id: "admin", label: "Admin Hub", icon: Shield, color: "text-amber-400" },
+            { id: "social", label: "Social", icon: Send, color: "text-blue-400" },
+            { id: "ai", label: "AI", icon: Sparkles, color: "text-purple-400" },
+            { id: "client", label: "Client", icon: Bug, color: "text-indigo-400" },
+          ].map((s) => (
+            <button
+              key={s.id}
+              onClick={() => setSelectedScope(s.id)}
+              className={`flex items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-semibold transition-all ${
+                selectedScope === s.id
+                  ? "bg-primary text-primary-foreground shadow-glow"
+                  : "bg-card/60 text-muted-foreground hover:bg-card hover:text-foreground border border-white/10"
+              }`}
+            >
+              {s.icon && <s.icon className={`h-3 w-3 ${s.color ?? ""}`} />}
+              {s.label}
+            </button>
           ))}
+        </div>
+
+        {/* Severity Tabs */}
+        <Tabs value={level} onValueChange={setLevel}>
+          <TabsList className="bg-card/60 border border-white/10">
+            {["all", "fatal", "error", "warn", "info"].map((l) => (
+              <TabsTrigger key={l} value={l} className="capitalize text-xs">
+                {l}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+        </Tabs>
+      </div>
+
+      {isLoading ? (
+        <div className="grid place-items-center py-20">
+          <Loader2 className="h-7 w-7 animate-spin text-primary" />
+        </div>
+      ) : !filteredLogs.length ? (
+        <div className="rounded-2xl glass p-10 text-center text-muted-foreground">
+          <Bug className="mx-auto mb-2 h-8 w-8 text-primary-glow/60" />
+          <p className="font-medium text-foreground">No error logs for this filter.</p>
+          <p className="mt-1 text-xs">When errors occur in payments or admin, they will appear here instantly.</p>
+        </div>
+      ) : (
+        <TableShell
+          head={
+            <>
+              <th className="px-4 py-3">Severity</th>
+              <th className="px-4 py-3">Scope</th>
+              <th className="px-4 py-3">Error Message</th>
+              <th className="px-4 py-3 text-right">When</th>
+              <th className="px-4 py-3 text-center">Inspect</th>
+            </>
+          }
+        >
+          {filteredLogs.map((e) => {
+            const rawMsg = (e.message as string) || "";
+            const detailsObj = (e.details as { scope?: string; path?: string; details?: unknown; stack?: string }) || {};
+            const parsedScope = detailsObj.scope || (rawMsg.match(/^\[(.*?)\]/)?.[1]?.toLowerCase() ?? "system");
+            const cleanMsg = rawMsg.replace(/^\[.*?\]\s*/, "");
+
+            return (
+              <tr key={e.id as string} className="border-b border-white/5 last:border-0 hover:bg-card/40 transition-colors">
+                <td className="px-4 py-3">
+                  <Badge variant="outline" className={`${levelStyles[(e.level as string)] ?? ""} capitalize font-semibold`}>
+                    {e.level as string}
+                  </Badge>
+                </td>
+                <td className="px-4 py-3">
+                  <Badge variant="outline" className={`${scopeStyles[parsedScope] ?? scopeStyles.system} uppercase text-[10px] tracking-wider font-bold`}>
+                    {parsedScope}
+                  </Badge>
+                </td>
+                <td className="px-4 py-3 max-w-md truncate font-mono text-xs">
+                  <AlertTriangle className="mr-1.5 inline h-3.5 w-3.5 text-warning shrink-0" />
+                  <span className="text-foreground font-medium">{cleanMsg}</span>
+                </td>
+                <td className="px-4 py-3 text-right text-xs text-muted-foreground whitespace-nowrap">
+                  {timeAgo(e.created_at as string)}
+                </td>
+                <td className="px-4 py-3 text-center">
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="h-7 w-7 p-0 text-muted-foreground hover:text-foreground hover:bg-white/10"
+                    onClick={() => setInspectItem(e as Record<string, unknown>)}
+                  >
+                    <Eye className="h-3.5 w-3.5" />
+                  </Button>
+                </td>
+              </tr>
+            );
+          })}
         </TableShell>
       )}
+
+      {/* Inspect Error Modal */}
+      <Dialog open={!!inspectItem} onOpenChange={(o) => !o && setInspectItem(null)}>
+        <DialogContent className="max-w-2xl border-white/15 bg-card/95 backdrop-blur-xl text-foreground">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 font-display text-lg">
+              <AlertTriangle className="h-5 w-5 text-destructive" />
+              Error Details & Stack Trace
+            </DialogTitle>
+            <DialogDescription className="text-xs text-muted-foreground">
+              Captured at {inspectItem?.created_at ? new Date(inspectItem.created_at as string).toLocaleString() : "—"}
+            </DialogDescription>
+          </DialogHeader>
+
+          {inspectItem && (
+            <div className="mt-3 space-y-4 text-xs">
+              <div className="flex gap-2">
+                <Badge variant="outline" className={`${levelStyles[(inspectItem.level as string)] ?? ""} capitalize font-bold`}>
+                  {inspectItem.level as string}
+                </Badge>
+              </div>
+
+              <div>
+                <label className="text-[11px] font-semibold text-muted-foreground uppercase">Message</label>
+                <div className="mt-1 rounded-xl border border-white/10 bg-black/50 p-3 font-mono text-xs text-destructive-foreground font-medium leading-relaxed">
+                  {inspectItem.message as string}
+                </div>
+              </div>
+
+              {inspectItem.details && (
+                <div>
+                  <label className="text-[11px] font-semibold text-muted-foreground uppercase">Details & Context</label>
+                  <pre className="mt-1 max-h-60 overflow-auto rounded-xl border border-white/10 bg-black/60 p-3 font-mono text-[11px] text-amber-200/90 whitespace-pre-wrap">
+                    {JSON.stringify(inspectItem.details, null, 2)}
+                  </pre>
+                </div>
+              )}
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

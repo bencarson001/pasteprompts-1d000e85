@@ -187,12 +187,12 @@ export function stripImageBrief(text: string): string {
     .trim();
 }
 
-/** Post to the Page, then share to 9 random active groups. */
+/** Post to the Page, then share to 9 random active groups (if enabled). */
 export async function publishToFacebook(
   supabase: Client,
   rawMessage: string,
   imageUrl: string | null,
-  opts: { groupCount?: number } = {},
+  opts: { groupCount?: number; shareToGroups?: boolean } = {},
 ): Promise<FacebookPostResult> {
   const message = stripImageBrief(rawMessage);
   const { pageId, token } = await getPageCredentials(supabase);
@@ -206,7 +206,8 @@ export async function publishToFacebook(
   }
 
   const page = await postTo(pageId, message, imageUrl, token);
-  const groups = page.ok
+  const shouldShareGroups = opts.shareToGroups !== false && (opts.groupCount ?? 9) > 0;
+  const groups = page.ok && shouldShareGroups
     ? await shareToRandomGroups(supabase, message, imageUrl, token, opts.groupCount ?? 9)
     : [];
   return { pageOk: page.ok, fbPostId: page.id, error: page.error, groups };
