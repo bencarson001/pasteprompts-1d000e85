@@ -467,6 +467,7 @@ function ScheduleCard() {
           </label>
           <Input
             type="time"
+            step={3600}
             value={timeStr}
             onChange={(e) => handleTimeChange(e.target.value)}
             className="h-10 bg-card/60 border-white/10 rounded-xl font-mono text-sm"
