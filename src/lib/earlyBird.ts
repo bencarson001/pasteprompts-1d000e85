@@ -47,7 +47,7 @@ export async function checkAndApplyEarlyBirdPromo(
   userId: string,
   userEmail?: string,
   displayName?: string
-) {
+): Promise<{ applied: boolean; reason?: string; data?: unknown; error?: unknown }> {
   try {
     // Eligibility and the 10-recipient cap are enforced inside the
     // grant_early_bird_promo security-definer function; the profiles columns
