@@ -83,11 +83,10 @@ export async function checkAndApplyEarlyBirdPromo(
       .from("profiles")
       .update({
         membership_tier: "platinum",
-        subscription_status: "active",
-        subscription_period_end: endDate.toISOString(),
         is_creator: true,
         early_bird_recipient: true,
         early_bird_granted_at: new Date().toISOString(),
+        promo_expires_at: endDate.toISOString(),
       } as Record<string, unknown>)
       .eq("id", userId);
 
