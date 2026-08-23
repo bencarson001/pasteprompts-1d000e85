@@ -56,8 +56,12 @@ export default function PromptDetail() {
     queryKey: ["owned", prompt?.id, user?.id],
     enabled: !!prompt?.id && !!user?.id,
     queryFn: async () => {
-      const { data } = await supabase
-        .from("purchases").select("id").eq("prompt_id", prompt!.id).eq("buyer_id", user!.id).maybeSingle();
+      // Use the security-definer RPC: visitors signed in through the Firebase
+      // path have no Postgres session, and a direct table read errors for anon.
+      const { data } = await supabase.rpc("has_purchased", {
+        _user_id: user!.id,
+        _prompt_id: prompt!.id,
+      });
       return !!data;
     },
   });
@@ -329,6 +333,15 @@ export default function PromptDetail() {
                     <PromptVariableCustomizer
                       promptBody={body}
                       model={prompt.model}
+                      onBeforeCopy={() => {
+                        if (user) return true;
+                        if (hasReachedFreeLimit()) {
+                          setGateOpen(true);
+                          return false;
+                        }
+                        incrementFreeCopies();
+                        return true;
+                      }}
                       onCopySuccess={() => {
                         supabase.rpc("increment_prompt_copies", { _prompt_id: prompt.id });
                         setTimeout(() => setShareOpen(true), 900);

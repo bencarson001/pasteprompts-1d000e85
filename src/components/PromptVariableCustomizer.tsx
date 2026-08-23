@@ -10,9 +10,11 @@ interface PromptVariableCustomizerProps {
   promptBody: string;
   model: string;
   onCopySuccess?: () => void;
+  /** Return false to block the copy (used by the logged-out free-copy gate). */
+  onBeforeCopy?: () => boolean;
 }
 
-export function PromptVariableCustomizer({ promptBody, model, onCopySuccess }: PromptVariableCustomizerProps) {
+export function PromptVariableCustomizer({ promptBody, model, onCopySuccess, onBeforeCopy }: PromptVariableCustomizerProps) {
   const { toast } = useToast();
   const [copied, setCopied] = useState(false);
   const [values, setValues] = useState<Record<string, string>>({});
@@ -51,6 +53,7 @@ export function PromptVariableCustomizer({ promptBody, model, onCopySuccess }: P
   const filledCount = Object.values(values).filter((v) => v.trim() !== "").length;
 
   const handleCopy = async () => {
+    if (onBeforeCopy && !onBeforeCopy()) return;
     await navigator.clipboard.writeText(customizedPrompt);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -172,7 +175,8 @@ export function PromptVariableCustomizer({ promptBody, model, onCopySuccess }: P
             href="https://chatgpt.com"
             target="_blank"
             rel="noreferrer noopener"
-            onClick={() => {
+            onClick={(e) => {
+              if (onBeforeCopy && !onBeforeCopy()) { e.preventDefault(); return; }
               navigator.clipboard.writeText(customizedPrompt);
               toast({ title: "Customized Prompt Copied!", description: "Opening ChatGPT in a new tab..." });
             }}
@@ -184,7 +188,8 @@ export function PromptVariableCustomizer({ promptBody, model, onCopySuccess }: P
             href="https://claude.ai"
             target="_blank"
             rel="noreferrer noopener"
-            onClick={() => {
+            onClick={(e) => {
+              if (onBeforeCopy && !onBeforeCopy()) { e.preventDefault(); return; }
               navigator.clipboard.writeText(customizedPrompt);
               toast({ title: "Customized Prompt Copied!", description: "Opening Claude in a new tab..." });
             }}
@@ -196,7 +201,8 @@ export function PromptVariableCustomizer({ promptBody, model, onCopySuccess }: P
             href="https://gemini.google.com"
             target="_blank"
             rel="noreferrer noopener"
-            onClick={() => {
+            onClick={(e) => {
+              if (onBeforeCopy && !onBeforeCopy()) { e.preventDefault(); return; }
               navigator.clipboard.writeText(customizedPrompt);
               toast({ title: "Customized Prompt Copied!", description: "Opening Gemini in a new tab..." });
             }}

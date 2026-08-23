@@ -58,25 +58,27 @@ export function checkReservedName(
   const alphanumeric = clean.replace(/[^a-z0-9]/g, "");
   const unleetAlphanumeric = unleet.replace(/[^a-z0-9]/g, "");
 
-  // 1. Admin variations
-  const isAdminVariation =
-    /adm[i1l!]n/i.test(clean) ||
-    /4dm[i1l!]n/i.test(clean) ||
-    /administrat/i.test(unleetAlphanumeric) ||
-    unleetAlphanumeric.includes("admin");
+  // Only block when the reserved word stands alone as a token — not when it
+  // merely appears inside a longer legitimate name ("Padmini", "admin.jones").
+  const tokens = unleet.split(/[^a-z0-9]+/).filter(Boolean);
+  const RESERVED = new Set([
+    "admin", "admins", "administrator", "administrators",
+    "mod", "mods", "moderator", "moderators",
+  ]);
 
-  // 2. Mod / Moderator variations
+  const isAdminVariation =
+    tokens.some((t) => t === "admin" || t === "admins" || t.startsWith("administrator")) ||
+    unleetAlphanumeric === "admin" ||
+    unleetAlphanumeric === "administrator";
+
   const isModVariation =
-    /\b(mod|mods|m0d|m0ds)\b/i.test(clean) ||
-    /(^|[^a-z0-9])m[o0]ds?([^a-z0-9]|$)/i.test(clean) ||
-    alphanumeric === "mod" ||
-    alphanumeric === "mods" ||
-    alphanumeric === "m0d" ||
-    alphanumeric === "m0ds" ||
-    /m[o0]derat/i.test(unleetAlphanumeric) ||
-    /^(mod|m0d)[_-]|[_-](mod|m0d)$/i.test(clean) ||
-    /(team|site|lead|head|official|staff|community|discord|global|chat|forum)(mod|m0d)/i.test(unleetAlphanumeric) ||
-    /(mod|m0d)(team|site|lead|head|official|staff|community|discord|global|chat|forum|min|admin|erator)/i.test(unleetAlphanumeric);
+    tokens.some((t) => RESERVED.has(t) && t.startsWith("mod")) ||
+    unleetAlphanumeric === "mod" ||
+    unleetAlphanumeric === "mods" ||
+    unleetAlphanumeric === "moderator" ||
+    // Staff-style compounds such as "sitemod" / "modteam" remain reserved.
+    /^(team|site|lead|head|official|staff|community|discord|global|chat|forum)mods?$/.test(unleetAlphanumeric) ||
+    /^mods?(team|site|lead|head|official|staff|community|discord|global|chat|forum)$/.test(unleetAlphanumeric);
 
   if (isAdminVariation || isModVariation) {
     return {

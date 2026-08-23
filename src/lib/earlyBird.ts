@@ -15,17 +15,25 @@ export interface EarlyBirdStats {
 
 export async function fetchEarlyBirdStats(): Promise<EarlyBirdStats> {
   try {
-    const { data: recipients, error, count } = await supabase
-      .from("profiles")
-      .select("id, handle, display_name, avatar_url, subscription_period_end, created_at", { count: "exact" })
-      .eq("early_bird_recipient", true);
+    // Early-bird columns are not readable directly (column-level grants), so
+    // go through the security-definer RPC instead of the profiles table.
+    const { data, error } = await supabase.rpc("admin_early_bird_recipients");
 
     if (error) {
       console.warn("fetchEarlyBirdStats error:", error);
     }
 
+    const recipients = ((data as Array<Record<string, unknown>> | null) ?? []).map((r) => ({
+      id: String(r.id),
+      handle: (r.handle as string) ?? null,
+      display_name: (r.display_name as string) ?? null,
+      avatar_url: (r.avatar_url as string) ?? null,
+      subscription_period_end: (r.promo_expires_at as string) ?? null,
+      created_at: (r.granted_at as string) ?? "",
+    }));
+
     return {
-      claimedCount: count || (recipients?.length || 0),
+      claimedCount: recipients.length,
       totalLimit: 10,
       recipients: recipients || [],
     };
@@ -39,30 +47,11 @@ export async function checkAndApplyEarlyBirdPromo(
   userId: string,
   userEmail?: string,
   displayName?: string
-) {
+): Promise<{ applied: boolean; reason?: string; data?: unknown; error?: unknown }> {
   try {
-    // Check if user already got early bird
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("early_bird_recipient, created_at")
-      .eq("id", userId)
-      .maybeSingle();
-
-    if (profile?.early_bird_recipient) {
-      return { applied: false, reason: "Already received early bird promo" };
-    }
-
-    // Check how many users have received early bird promo so far
-    const { count } = await supabase
-      .from("profiles")
-      .select("id", { count: "exact", head: true })
-      .eq("early_bird_recipient", true);
-
-    const currentClaimed = count || 0;
-    if (currentClaimed >= 10) {
-      return { applied: false, reason: "Early bird limit of 10 reached" };
-    }
-
+    // Eligibility and the 10-recipient cap are enforced inside the
+    // grant_early_bird_promo security-definer function; the profiles columns
+    // behind them are not readable from the client.
     // Attempt RPC grant_early_bird_promo
     const { data: rpcResult, error: rpcError } = await supabase.rpc(
       "grant_early_bird_promo",
@@ -94,11 +83,10 @@ export async function checkAndApplyEarlyBirdPromo(
       .from("profiles")
       .update({
         membership_tier: "platinum",
-        subscription_status: "active",
-        subscription_period_end: endDate.toISOString(),
         is_creator: true,
         early_bird_recipient: true,
         early_bird_granted_at: new Date().toISOString(),
+        promo_expires_at: endDate.toISOString(),
       } as Record<string, unknown>)
       .eq("id", userId);
 

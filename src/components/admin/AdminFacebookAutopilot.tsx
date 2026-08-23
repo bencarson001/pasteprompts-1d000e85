@@ -239,7 +239,7 @@ function ScheduleCard() {
 
   const [timeStr, setTimeStr] = useState<string>(() => {
     const saved = typeof window !== "undefined" ? localStorage.getItem("fb_autopilot_post_time") : null;
-    return saved || "18:00";
+    return saved ? `${saved.split(":")[0]}:00` : "18:00";
   });
   const [saving, setSaving] = useState(false);
   const [checkingDiag, setCheckingDiag] = useState(false);
@@ -254,10 +254,9 @@ function ScheduleCard() {
       setForm({ ...data, share_to_groups: shareToGroups });
 
       if (savedTime && savedTime.startsWith(`${String(data.post_hour).padStart(2, "0")}:`)) {
-        setTimeStr(savedTime);
+        setTimeStr(`${String(data.post_hour).padStart(2, "0")}:00`);
       } else {
-        const fallbackMin = (savedTime && savedTime.split(":")[1]) || "00";
-        setTimeStr(`${String(data.post_hour).padStart(2, "0")}:${fallbackMin}`);
+        setTimeStr(`${String(data.post_hour).padStart(2, "0")}:00`);
       }
     } else {
       const shareToGroups = savedShare !== null ? savedShare === "true" : true;
@@ -266,11 +265,14 @@ function ScheduleCard() {
   }, [data]);
 
   const handleTimeChange = (newVal: string) => {
-    setTimeStr(newVal);
-    if (typeof window !== "undefined") {
-      localStorage.setItem("fb_autopilot_post_time", newVal);
-    }
+    // Posting runs on an hourly cron, so only whole hours are honoured —
+    // snap the picker to :00 rather than promising a minute we can't hit.
     const [h] = newVal.split(":");
+    const normalized = `${(h || "18").padStart(2, "0")}:00`;
+    setTimeStr(normalized);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("fb_autopilot_post_time", normalized);
+    }
     const hourNum = parseInt(h, 10);
     if (!isNaN(hourNum)) {
       setForm((prev) => (prev ? { ...prev, post_hour: Math.min(23, Math.max(0, hourNum)) } : null));
@@ -467,6 +469,7 @@ function ScheduleCard() {
           </label>
           <Input
             type="time"
+            step={3600}
             value={timeStr}
             onChange={(e) => handleTimeChange(e.target.value)}
             className="h-10 bg-card/60 border-white/10 rounded-xl font-mono text-sm"

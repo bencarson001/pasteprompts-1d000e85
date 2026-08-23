@@ -427,7 +427,7 @@ export async function fetchAdminUsers(q?: string) {
   // Fallback: Query profiles table directly
   let query = supabase
     .from("profiles")
-    .select("id, handle, display_name, avatar_url, is_creator, membership_tier, total_sales, total_earnings_pence, created_at")
+    .select("id, handle, display_name, avatar_url, is_creator, membership_tier, total_sales, created_at")
     .order("created_at", { ascending: false })
     .limit(300);
 
