@@ -3,7 +3,7 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import {
-  Star, ShoppingBag, Copy, Check, Lock, Bookmark, Eye, ArrowLeft, Loader2, Play, Sparkles, HelpCircle, ExternalLink,
+  Star, ShoppingBag, Copy, Check, Lock, Bookmark, Eye, ArrowLeft, Loader2, Play, Sparkles, HelpCircle, ExternalLink, X,
 } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
@@ -42,7 +42,7 @@ export default function PromptDetail() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const qc = useQueryClient();
-  const { openCheckout, checkoutElement, isOpen } = useStripeCheckout();
+  const { openCheckout, closeCheckout, checkoutElement, isOpen } = useStripeCheckout();
   const [copied, setCopied] = useState(false);
   const [claiming, setClaiming] = useState(false);
   const [gateOpen, setGateOpen] = useState(false);
@@ -292,26 +292,36 @@ export default function PromptDetail() {
         <div className="grid gap-8 lg:grid-cols-[1fr_340px]">
           <div>
             <div className="mb-3 flex flex-wrap items-center gap-2">
-              <Link to={`/category/${category?.slug}`}><Badge variant="secondary" className="bg-secondary/70">{category?.name}</Badge></Link>
+              {category && <Link to={`/category/${category.slug}`}><Badge variant="secondary" className="bg-secondary/70">{category.name}</Badge></Link>}
               <Badge variant="outline" className="border-white/10 uppercase tracking-wide text-muted-foreground">{MODEL_LABELS[prompt.model] ?? prompt.model}</Badge>
+              <Badge variant="outline" className={prompt.is_free ? "border-success/40 text-success" : "border-white/10"}>{prompt.is_free ? "Free" : formatPrice(prompt.price_pence)}</Badge>
               {prompt.featured && <Badge className="bg-gradient-primary">Featured</Badge>}
             </div>
-            <h1 className="font-display text-3xl font-bold sm:text-4xl">{prompt.title}</h1>
+            <h1 className="break-words font-display text-3xl font-bold sm:text-4xl">{prompt.title}</h1>
             <p className="mt-3 text-lg text-muted-foreground">{prompt.description}</p>
 
-            {prompt.image_url && (
-              <div className="mt-6 overflow-hidden rounded-2xl border border-white/10 glass aspect-[16/9] max-h-[380px] w-full bg-black/40">
+            <div className="mt-6 aspect-[16/9] max-h-[380px] w-full overflow-hidden rounded-2xl border border-white/10 glass bg-card/40">
+              {prompt.image_url ? (
                 <img
                   src={prompt.image_url}
-                  alt={prompt.title}
+                  alt={`Example image for ${prompt.title}`}
                   referrerPolicy="no-referrer"
+                  width={1280}
+                  height={720}
                   className="h-full w-full object-cover"
                 />
-              </div>
-            )}
+              ) : (
+                <div className="grid h-full w-full place-items-center bg-gradient-to-br from-primary/15 via-card to-accent/10" aria-hidden="true">
+                  <div className="text-center">
+                    <Sparkles className="mx-auto h-10 w-10 text-primary-glow" />
+                    <p className="mt-2 text-sm font-medium text-muted-foreground">{modelLabel} prompt{category ? ` · ${category.name}` : ""}</p>
+                  </div>
+                </div>
+              )}
+            </div>
 
-            <div className="mt-4 flex flex-wrap items-center gap-5 text-sm text-muted-foreground">
-              <span className="flex items-center gap-1.5"><Star className="h-4 w-4 fill-warning text-warning" />{prompt.rating_count > 0 ? `${prompt.rating_avg.toFixed(1)} (${prompt.rating_count})` : "New"}</span>
+            <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-muted-foreground" aria-label="Prompt statistics">
+              <span className="flex items-center gap-1.5"><Star className={`h-4 w-4 ${prompt.rating_count > 0 ? "fill-warning text-warning" : ""}`} />{prompt.rating_count > 0 ? `${prompt.rating_avg.toFixed(1)} (${prompt.rating_count} ${prompt.rating_count === 1 ? "review" : "reviews"})` : "No ratings yet"}</span>
               <span className="flex items-center gap-1.5"><ShoppingBag className="h-4 w-4" />{formatCount(prompt.sales_count)} sales</span>
               <span className="flex items-center gap-1.5"><Copy className="h-4 w-4" />{formatCount(prompt.copies_count)} copies</span>
               <span className="flex items-center gap-1.5"><Eye className="h-4 w-4" />{formatCount(prompt.views)} views</span>
@@ -510,26 +520,39 @@ INPUTS (fill these in):
                 {prompt.is_free ? <span className="text-success">Free</span> : formatPrice(prompt.price_pence)}
               </div>
               {hasAccess ? (
-                <Button onClick={handleCopy} className="w-full bg-gradient-primary btn-glow" size="lg">
-                  {copied ? <><Check className="mr-1 h-4 w-4" /> Copied</> : <><Copy className="mr-1 h-4 w-4" /> Copy prompt</>}
+                <Button onClick={handleCopy} disabled={!body} aria-label="Copy the full prompt to your clipboard" className="min-h-12 w-full bg-gradient-primary btn-glow" size="lg">
+                  {!body ? <Loader2 className="h-4 w-4 animate-spin" /> : copied ? <><Check className="mr-1 h-4 w-4" /> Copied</> : <><Copy className="mr-1 h-4 w-4" /> Copy prompt</>}
                 </Button>
               ) : (
-                <Button onClick={handleGet} disabled={claiming} className="w-full bg-gradient-primary btn-glow" size="lg">
-                  {claiming ? <Loader2 className="h-4 w-4 animate-spin" /> : prompt.is_free ? "Get for free" : `Buy · ${formatPrice(prompt.price_pence)}`}
+                <Button onClick={handleGet} disabled={claiming} className="min-h-12 w-full bg-gradient-primary btn-glow" size="lg">
+                  {claiming ? <Loader2 className="h-4 w-4 animate-spin" /> : !user ? (prompt.is_free ? "Sign in to get for free" : `Sign in to buy · ${formatPrice(prompt.price_pence)}`) : prompt.is_free ? "Get for free" : `Buy · ${formatPrice(prompt.price_pence)}`}
                 </Button>
               )}
+              <p className="mt-2 text-center text-xs text-muted-foreground" aria-live="polite">
+                {copied
+                  ? "Copied — paste it into your AI tool."
+                  : hasAccess
+                    ? "Copies the complete prompt text."
+                    : prompt.is_free
+                      ? "Free with an account. Saved to My Library."
+                      : "One-off payment via secure Stripe checkout. Yours to keep."}
+              </p>
               <SaveButton promptId={prompt.id} />
 
-              <Link to={`/creators/${creator?.handle}`} className="mt-6 flex items-center gap-3 rounded-xl border border-white/5 p-3 transition-colors hover:bg-card/60">
+              {creator?.handle && (
+              <Link to={`/creators/${creator.handle}`} aria-label={`View ${creator.display_name}'s profile`} className="mt-6 flex items-center gap-3 rounded-xl border border-white/5 p-3 transition-colors hover:bg-card/60">
                 <Avatar className="h-10 w-10">
                   <AvatarImage src={creator?.avatar_url} alt={creator?.display_name ? `${creator.display_name} avatar` : "Creator avatar"} />
                   <AvatarFallback className="bg-gradient-primary text-xs text-primary-foreground">{(creator?.display_name ?? "?").slice(0, 2).toUpperCase()}</AvatarFallback>
                 </Avatar>
                 <div className="min-w-0">
                   <div className="truncate text-sm font-semibold">{creator?.display_name}</div>
-                  <div className="text-xs text-muted-foreground">{formatCount(creator?.total_sales ?? 0)} sales</div>
+                  <div className="text-xs text-muted-foreground">
+                    {(creator?.total_sales ?? 0) > 0 ? `${formatCount(creator.total_sales ?? 0)} sales · ` : ""}View profile
+                  </div>
                 </div>
               </Link>
+              )}
 
               {!!prompt.tags?.length && (
                 <div className="mt-4 flex flex-wrap gap-1.5">
@@ -571,8 +594,21 @@ INPUTS (fill these in):
         )}
       </div>
       {isOpen && (
-        <div className="fixed inset-0 z-[100] overflow-y-auto bg-background/90 p-4 backdrop-blur">
-          <div className="mx-auto max-w-xl py-8">{checkoutElement}</div>
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label={`Checkout for ${prompt.title}`}
+          onKeyDown={(e) => { if (e.key === "Escape") closeCheckout(); }}
+          className="fixed inset-0 z-[100] overflow-y-auto bg-background/90 p-4 backdrop-blur"
+        >
+          <div className="mx-auto max-w-xl py-8">
+            <div className="mb-3 flex justify-end">
+              <Button variant="outline" size="sm" onClick={closeCheckout} autoFocus aria-label="Close checkout">
+                <X className="mr-1 h-4 w-4" /> Close
+              </Button>
+            </div>
+            {checkoutElement}
+          </div>
         </div>
       )}
       <SignUpGate open={gateOpen} onOpenChange={setGateOpen} redirect={currentPath} />
