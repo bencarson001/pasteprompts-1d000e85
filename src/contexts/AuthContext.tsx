@@ -70,6 +70,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setSession(s);
     setUser(s?.user ?? null);
     const uid = s?.user?.id ?? null;
+    if (!uid) {
+      lastUserId.current = null;
+      setIsAdmin(false);
+      setRoleLoading(false);
+      return;
+    }
     if (uid !== lastUserId.current) {
       lastUserId.current = uid;
       if (s?.user) {
