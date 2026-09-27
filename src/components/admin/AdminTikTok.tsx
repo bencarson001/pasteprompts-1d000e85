@@ -385,7 +385,11 @@ function VideoCard({ video, onChange }: { video: TikTokVideo; onChange: () => vo
             <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" />{video.error}
           </p>
         )}
-        <span className="text-[11px] text-muted-foreground">{timeAgo(video.created_at)}</span>
+        <span className="text-[11px] text-muted-foreground">
+          {video.posted_at
+            ? <>Posted {new Date(video.posted_at).toLocaleString([], { dateStyle: "medium", timeStyle: "short" })} · {timeAgo(video.posted_at)}</>
+            : <>Created {new Date(video.created_at).toLocaleString([], { dateStyle: "medium", timeStyle: "short" })}</>}
+        </span>
         <div className="mt-auto flex flex-wrap gap-1.5 pt-1">
           {video.status === "ready" && (
             <Button size="sm" className="h-7" disabled={!!busy}
