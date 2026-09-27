@@ -431,6 +431,7 @@ export type Database = {
           enabled: boolean
           id: number
           post_hour: number
+          post_minute: number
           start_date: string
           updated_at: string
           weeks: number
@@ -441,6 +442,7 @@ export type Database = {
           enabled?: boolean
           id?: number
           post_hour?: number
+          post_minute?: number
           start_date?: string
           updated_at?: string
           weeks?: number
@@ -451,6 +453,7 @@ export type Database = {
           enabled?: boolean
           id?: number
           post_hour?: number
+          post_minute?: number
           start_date?: string
           updated_at?: string
           weeks?: number
