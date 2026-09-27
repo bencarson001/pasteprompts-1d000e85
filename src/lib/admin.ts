@@ -465,11 +465,12 @@ export async function setAdminRole(userId: string, makeAdmin: boolean) {
 
 /* ---------------- Sales ---------------- */
 export async function fetchAdminSales() {
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("purchases")
     .select("id, amount_pence, platform_fee_pence, creator_earning_pence, is_free, created_at, prompt:prompts(title)")
     .order("created_at", { ascending: false })
     .limit(300);
+  if (error) throw error;
   return data ?? [];
 }
 
