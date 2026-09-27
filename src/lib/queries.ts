@@ -432,7 +432,7 @@ export async function fetchMyPrompts(creatorId: string) {
   const { data, error } = await supabase
     .from("prompts")
     .select(
-      "id, slug, title, status, price_pence, is_free, views, sales_count, copies_count, rating_avg, rating_count, created_at, featured, category:categories(slug, name)",
+      "id, slug, title, description, example_output, tags, model, category_id, image_url, status, price_pence, is_free, views, sales_count, copies_count, rating_avg, rating_count, created_at, updated_at, featured, category:categories(slug, name)",
     )
     .eq("creator_id", targetId)
     .order("created_at", { ascending: false });
@@ -481,7 +481,7 @@ export async function createPrompt(
   creatorId: string,
   slug: string,
   input: NewPromptInput,
-): Promise<{ id: string; slug: string; vetting: VetResult } | null> {
+): Promise<{ id: string; slug: string; status: string; vetting: VetResult } | null> {
   let vetting: VetResult = { approved: true, reason: "Submitted." };
   try {
     const { data: vet } = await supabase.functions.invoke("vet-prompt", {
@@ -498,21 +498,53 @@ export async function createPrompt(
     vetting = { approved: false, reason: "Queued for manual review." };
   }
 
-  const status = vetting.approved ? "approved" : "rejected";
+  // Status is set server-side (non-admins always start as "pending").
   const { data, error } = await supabase
     .from("prompts")
     .insert({
       creator_id: creatorId,
       slug,
-      status: status as never,
       ...input,
       price_pence: input.is_free ? 0 : 25,
       model: input.model as never,
     })
-    .select("id, slug")
+    .select("id, slug, status")
     .maybeSingle();
   if (error) throw error;
   return data ? { ...data, vetting } : null;
+}
+
+export interface PromptEditInput {
+  title: string;
+  description: string;
+  body?: string;
+  example_output: string;
+  tags: string[];
+  category_id: string;
+  model: string;
+  is_free: boolean;
+}
+
+// Creator edits their own prompt. RLS limits this to the owner and a DB trigger
+// ignores protected fields (status, stats, owner, price).
+export async function updateMyPrompt(promptId: string, input: PromptEditInput) {
+  const patch: Record<string, unknown> = { ...input, model: input.model, price_pence: input.is_free ? 0 : 25 };
+  if (!input.body) delete patch.body;
+  const { data, error } = await supabase.from("prompts").update(patch as never).eq("id", promptId).select("id");
+  if (error) throw error;
+  if (!data?.length) throw new Error("You can only edit your own prompts.");
+}
+
+export async function deleteMyPrompt(promptId: string) {
+  const { data, error } = await supabase.from("prompts").delete().eq("id", promptId).select("id");
+  if (error) throw error;
+  if (!data?.length) throw new Error("You can only delete your own prompts.");
+}
+
+export async function fetchMyPromptBody(promptId: string): Promise<string> {
+  const { data, error } = await supabase.rpc("get_prompt_body", { _prompt_id: promptId });
+  if (error) throw error;
+  return (data as string | null) ?? "";
 }
 
 /* ------------------------------------------------------------------ */

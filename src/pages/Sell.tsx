@@ -1,5 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { Sparkles, Loader2, ArrowRight, ArrowLeft, Check, Crown, ShieldCheck, Info } from "lucide-react";
@@ -19,6 +19,8 @@ import { fetchCategories, createPrompt, updateMyProfile, fetchMyTierInfo } from 
 import { MODELS, MODEL_LABELS, slugify, formatPrice, TIERS } from "@/lib/format";
 
 const STEPS = ["Basics", "Content", "Pricing", "Review"];
+const IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+const MAX_IMAGE_MB = 5;
 
 export default function Sell() {
   const { user } = useAuth();
@@ -47,21 +49,57 @@ export default function Sell() {
     image_file: null as File | null,
   });
 
+  const [imageError, setImageError] = useState<string | null>(null);
+  const [touched, setTouched] = useState(false);
+  const submittedRef = useRef(false);
   const set = (patch: Partial<typeof form>) => setForm({ ...form, ...patch });
 
-  const canNext = () => {
-    if (step === 0) return form.title.trim().length > 4 && form.description.trim().length > 10 && !!form.category_id && !!form.image_file;
-    if (step === 1) return form.body.trim().length >= 200 && form.example_output.trim().length > 10;
-    return true;
+  const pickImage = (file: File | null) => {
+    if (!file) return set({ image_file: null });
+    if (!IMAGE_TYPES.includes(file.type)) {
+      setImageError("Please choose a JPG, PNG, WebP or GIF image.");
+      return set({ image_file: null });
+    }
+    if (file.size > MAX_IMAGE_MB * 1024 * 1024) {
+      setImageError(`That image is too large. The maximum size is ${MAX_IMAGE_MB} MB.`);
+      return set({ image_file: null });
+    }
+    setImageError(null);
+    set({ image_file: file });
+  };
+
+  const stepErrors = (): string[] => {
+    const e: string[] = [];
+    if (step === 0) {
+      if (form.title.trim().length < 5) e.push("Title must be at least 5 characters.");
+      if (form.title.trim().length > 100) e.push("Title must be 100 characters or fewer.");
+      if (form.description.trim().length < 11) e.push("Description must be at least 11 characters.");
+      if (form.description.trim().length > 300) e.push("Description must be 300 characters or fewer.");
+      if (!form.category_id) e.push("Choose a category.");
+      if (!form.image_file) e.push("Add a prompt image.");
+    }
+    if (step === 1) {
+      if (form.body.trim().length < 200) e.push("The prompt must be at least 200 characters.");
+      if (form.example_output.trim().length < 11) e.push("Example output must be at least 11 characters.");
+    }
+    return e;
+  };
+  const errors = stepErrors();
+  const canNext = () => errors.length === 0;
+  const goNext = () => {
+    if (!canNext()) { setTouched(true); return; }
+    setTouched(false);
+    setStep((s) => s + 1);
   };
 
   const submit = async () => {
-    if (!user || !form.image_file) return;
+    if (!user || !form.image_file || submitting || submittedRef.current) return;
     if (quotaReached) {
       toast({ title: "Monthly limit reached", description: `You've used all ${tier.quota} uploads for ${tier.name}. Upgrade for more.`, variant: "destructive" });
       return;
     }
     setSubmitting(true);
+    submittedRef.current = true;
     try {
       const fileExt = form.image_file.name.split('.').pop();
       const filePath = `${user.id}/${Math.random()}.${fileExt}`;
@@ -89,17 +127,17 @@ export default function Sell() {
         is_free: form.is_free,
         image_url: publicUrl,
       });
-      if (created?.vetting?.approved) {
-        toast({ title: "Approved & live! 🎉", description: created.vetting.reason });
+      if (created?.status === "approved") {
+        toast({ title: "Published", description: "Your prompt is live on the marketplace." });
       } else {
         toast({
-          title: "Not approved",
-          description: created?.vetting?.reason ?? "Your prompt didn't pass the quality review.",
-          variant: "destructive",
+          title: "Submitted for review",
+          description: "Your prompt is pending. It will appear on the marketplace once it has been approved.",
         });
       }
       navigate("/dashboard?published=1");
     } catch (e) {
+      submittedRef.current = false;
       toast({ title: "Could not submit", description: (e as Error).message, variant: "destructive" });
     } finally {
       setSubmitting(false);
@@ -116,7 +154,7 @@ export default function Sell() {
           </span>
           <div>
             <h1 className="font-display text-3xl font-bold">Sell a prompt</h1>
-            <p className="text-sm text-muted-foreground">Every prompt is AI-reviewed for quality the moment you submit it.</p>
+            <p className="text-sm text-muted-foreground">New prompts are reviewed before they appear on the marketplace.</p>
           </div>
         </div>
 
@@ -165,11 +203,11 @@ export default function Sell() {
             <>
               <div>
                 <Label htmlFor="t">Title</Label>
-                <Input id="t" value={form.title} onChange={(e) => set({ title: e.target.value })} placeholder="e.g. Viral Twitter Thread Engine" className="mt-1 bg-card/60 border-white/10" />
+                <Input id="t" maxLength={100} value={form.title} onChange={(e) => set({ title: e.target.value })} placeholder="e.g. Viral Twitter Thread Engine" className="mt-1 bg-card/60 border-white/10" />
               </div>
               <div>
                 <Label htmlFor="d">Short description</Label>
-                <Textarea id="d" value={form.description} onChange={(e) => set({ description: e.target.value })} placeholder="One or two sentences on what this prompt does for the buyer." className="mt-1 bg-card/60 border-white/10" />
+                <Textarea id="d" maxLength={300} value={form.description} onChange={(e) => set({ description: e.target.value })} placeholder="One or two sentences on what this prompt does for the buyer." className="mt-1 bg-card/60 border-white/10" />
               </div>
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
@@ -194,7 +232,7 @@ export default function Sell() {
               <div>
                 <Label>Prompt image (Required)</Label>
                 <div className="mt-1 rounded-xl border border-dashed border-white/20 p-6 text-center hover:border-primary transition-colors cursor-pointer">
-                  <Input type="file" onChange={(e) => set({ image_file: e.target.files?.[0] ?? null })} className="hidden" id="img" accept="image/*" />
+                  <Input type="file" onChange={(e) => pickImage(e.target.files?.[0] ?? null)} className="hidden" id="img" accept="image/jpeg,image/png,image/webp,image/gif" />
                   <Label htmlFor="img" className="cursor-pointer">
                     {form.image_file ? (
                       <span className="text-sm font-medium text-primary-glow">{form.image_file.name}</span>
@@ -202,7 +240,9 @@ export default function Sell() {
                       <span className="text-sm text-muted-foreground">Click to upload or drag and drop</span>
                     )}
                   </Label>
+                  <p className="mt-1 text-xs text-muted-foreground">JPG, PNG, WebP or GIF, up to {MAX_IMAGE_MB} MB. Shown on your listing card.</p>
                 </div>
+                {imageError && <p role="alert" className="mt-1 text-xs text-destructive">{imageError}</p>}
               </div>
             </>
           )}
@@ -227,8 +267,8 @@ export default function Sell() {
             <>
               <div className="flex items-center justify-between rounded-xl border border-white/5 p-4">
                 <div>
-                  <p className="text-sm font-medium">Offer for free</p>
-                  <p className="text-xs text-muted-foreground">Great for building a following and reviews.</p>
+                  <p className="text-sm font-medium">Offer for free (£0)</p>
+                  <p className="text-xs text-muted-foreground">Anyone signed in can get it at no cost. You earn nothing per copy, but it helps build a following. Turn off to sell it for £0.25.</p>
                 </div>
                 <Switch checked={form.is_free} onCheckedChange={(v) => set({ is_free: v })} />
               </div>
@@ -257,7 +297,7 @@ export default function Sell() {
               <Row label="Tags" value={form.tags || "—"} />
               <p className="flex items-start gap-2 rounded-xl border border-white/5 bg-card/40 p-4 text-xs text-muted-foreground">
                 <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-primary-glow" />
-                On submit, our AI reviews your prompt for quality and a 200-character minimum. Approved prompts go live instantly.
+                After you submit, your prompt is marked Pending and checked by the Paste Prompts team. It only appears on the marketplace once approved. You can track its status on your dashboard.
               </p>
               {!form.is_free && (
                 <p className="flex items-start gap-2 rounded-xl border border-warning/20 bg-warning/10 p-4 text-xs text-warning">
@@ -268,17 +308,23 @@ export default function Sell() {
             </div>
           )}
 
+          {touched && errors.length > 0 && (
+            <ul role="alert" className="space-y-1 rounded-xl border border-destructive/30 bg-destructive/10 p-3 text-xs text-destructive">
+              {errors.map((er) => <li key={er}>• {er}</li>)}
+            </ul>
+          )}
+
           <div className="flex items-center justify-between pt-2">
             <Button variant="ghost" disabled={step === 0} onClick={() => setStep((s) => s - 1)}>
               <ArrowLeft className="mr-1 h-4 w-4" /> Back
             </Button>
             {step < STEPS.length - 1 ? (
-              <Button disabled={!canNext()} onClick={() => setStep((s) => s + 1)} className="bg-gradient-primary btn-glow">
+              <Button onClick={goNext} aria-disabled={!canNext()} className="bg-gradient-primary btn-glow">
                 Next <ArrowRight className="ml-1 h-4 w-4" />
               </Button>
             ) : (
               <Button disabled={submitting || quotaReached} onClick={submit} className="bg-gradient-primary btn-glow">
-                {submitting ? <Loader2 className="mr-1 h-4 w-4 animate-spin" /> : <ShieldCheck className="mr-1 h-4 w-4" />} Submit for AI review
+                {submitting ? <Loader2 className="mr-1 h-4 w-4 animate-spin" /> : <ShieldCheck className="mr-1 h-4 w-4" />} {submitting ? "Submitting…" : "Submit for review"}
               </Button>
             )}
           </div>
