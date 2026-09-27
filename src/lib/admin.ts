@@ -393,23 +393,8 @@ export async function fetchAdminUsers(q?: string) {
 
   const { data: profiles, error } = await query;
   if (error) {
-    // If table permission is denied or missing for public anon role, return active user if logged in
-    const { data: { user: activeUser } } = await supabase.auth.getUser();
-
-    if (activeUser) {
-      const handle = activeUser.email ? activeUser.email.split("@")[0] : "user";
-      return [{
-        id: activeUser.id,
-        handle,
-        display_name: activeUser.user_metadata?.display_name || activeUser.user_metadata?.full_name || handle,
-        avatar_url: activeUser.user_metadata?.avatar_url || null,
-        is_creator: true,
-        membership_tier: "platinum",
-        total_sales: 0,
-        total_earnings_pence: 0,
-        created_at: activeUser.created_at || new Date().toISOString(),
-      }];
-    }
+    // Never invent a user record; admins see an empty list if the lookup fails.
+    console.warn("fetchAdminUsers fallback failed:", error);
     return [];
   }
 

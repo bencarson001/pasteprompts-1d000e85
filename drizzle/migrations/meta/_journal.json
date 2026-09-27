@@ -15,6 +15,13 @@
       "when": 1790527537758,
       "tag": "0001_lock_down_internal_functions",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1790528595023,
+      "tag": "0002_harden_profile_and_prompt_columns",
+      "breakpoints": true
     }
   ]
 }
