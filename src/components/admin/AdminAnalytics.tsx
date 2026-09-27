@@ -398,15 +398,16 @@ export function AdminAnalytics() {
   }
 
   const d = data;
-  const pageViews = d?.page_views ?? 14382;
-  const promptViews = d?.prompt_views ?? 8941;
-  const uniqueVisitors = d?.unique_visitors ?? 3217;
+  const pageViews = d?.page_views ?? 0;
+  const promptViews = d?.prompt_views ?? 0;
+  const uniqueVisitors = d?.unique_visitors ?? 0;
   const revenuePence = d?.revenue_pence ?? 0;
-  const repeatVisitors = d?.repeat_visitors ?? 812;
-  const repeatPct = uniqueVisitors > 0 ? ((repeatVisitors / uniqueVisitors) * 100).toFixed(1) : "25.2";
-  const conversionCtr = d?.conversion_rate_pct ?? 3.8;
-  const avgSession = "2m 14s";
-  const bounceRate = d?.bounce_rate_pct ?? 61;
+  const repeatVisitors = d?.repeat_visitors ?? 0;
+  const repeatPct = uniqueVisitors > 0 ? ((repeatVisitors / uniqueVisitors) * 100).toFixed(1) : "0";
+  const conversionCtr = d?.conversion_rate_pct ?? 0;
+  const avgSecs = d?.avg_session_seconds ?? 0;
+  const avgSession = `${Math.floor(avgSecs / 60)}m ${avgSecs % 60}s`;
+  const bounceRate = d?.bounce_rate_pct ?? 0;
 
   const keyMetricCards = [
     {
@@ -415,7 +416,7 @@ export function AdminAnalytics() {
       value: formatCount(pageViews),
       icon: Eye,
       iconColor: "text-purple-400",
-      changeText: "↑ 23.4% vs prev period",
+      changeText: `Last ${d?.days ?? 30} days`,
       changeType: "positive",
     },
     {
@@ -424,7 +425,7 @@ export function AdminAnalytics() {
       value: formatCount(promptViews),
       icon: FileText,
       iconColor: "text-cyan-400",
-      changeText: "↑ 18.1% vs prev period",
+      changeText: `Last ${d?.days ?? 30} days`,
       changeType: "positive",
     },
     {
@@ -433,7 +434,7 @@ export function AdminAnalytics() {
       value: formatCount(uniqueVisitors),
       icon: Users,
       iconColor: "text-amber-400",
-      changeText: "↑ 11.6% vs prev period",
+      changeText: `Last ${d?.days ?? 30} days`,
       changeType: "positive",
     },
     {
@@ -442,7 +443,7 @@ export function AdminAnalytics() {
       value: revenuePence > 0 ? formatPrice(revenuePence) : "£0",
       icon: PoundSterling,
       iconColor: "text-emerald-400",
-      changeText: revenuePence > 0 ? "↑ 14.2% vs prev period" : "— No sales yet",
+      changeText: revenuePence > 0 ? `Last ${d?.days ?? 30} days` : "— No sales yet",
       changeType: revenuePence > 0 ? "positive" : "neutral",
     },
     {
