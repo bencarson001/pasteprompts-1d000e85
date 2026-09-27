@@ -347,7 +347,6 @@ function ScheduleCard() {
           days_of_week: form.days_of_week.length ? form.days_of_week : [0, 1, 2, 3, 4, 5, 6],
           post_hour: validHour,
           post_minute: validMinute,
-        post_minute: validMinute,
           start_date: form.start_date,
           weeks: Math.min(260, Math.max(1, form.weeks || 1)),
         }, { onConflict: "id" });
