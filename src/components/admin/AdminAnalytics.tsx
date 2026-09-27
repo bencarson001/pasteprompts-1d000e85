@@ -461,7 +461,7 @@ export function AdminAnalytics() {
       value: `${conversionCtr}%`,
       icon: Sparkles,
       iconColor: "text-amber-400",
-      changeText: "↓ 0.4pp vs prev period",
+      changeText: `Last ${d?.days ?? 30} days`,
       changeType: "neutral-amber",
     },
     {
@@ -470,7 +470,7 @@ export function AdminAnalytics() {
       value: avgSession,
       icon: Clock,
       iconColor: "text-blue-400",
-      changeText: "↑ 8s vs prev period",
+      changeText: `Last ${d?.days ?? 30} days`,
       changeType: "positive",
     },
     {
@@ -479,7 +479,7 @@ export function AdminAnalytics() {
       value: `${bounceRate}%`,
       icon: Zap,
       iconColor: "text-rose-400",
-      changeText: "↑ 3pp (high is bad)",
+      changeText: "High is bad",
       changeType: "negative",
     },
   ];
@@ -826,7 +826,7 @@ export function AdminAnalytics() {
               </div>
               <div className="text-right">
                 <div className="text-sm font-bold text-white">
-                  ~{d?.seo_signals?.pages_indexed ?? 48} <span className="text-xs text-white/40">of {d?.seo_signals?.total_prompts ?? 80} prompts</span>
+                  {d?.seo_signals?.total_prompts ?? 0} <span className="text-xs text-white/40">live prompts (indexing: see Search Console)</span>
                 </div>
                 <div className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-400">
                   <CheckCircle2 className="h-3 w-3" /> Indexed & Discoverable
