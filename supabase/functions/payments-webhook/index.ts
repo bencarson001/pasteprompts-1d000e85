@@ -19,6 +19,7 @@ function getSupabase() {
 async function recordPurchase(session: {
   id: string;
   amount_total: number | null;
+  payment_status?: string;
   customer_details?: { email?: string } | null;
   metadata: Record<string, string> | null;
 }) {
@@ -30,6 +31,13 @@ async function recordPurchase(session: {
   // customer.subscription.* events, so skip them here.
   if (!promptId || !userId) {
     console.log("payments-webhook: session has no promptId/userId (likely a subscription)", session.id);
+    return;
+  }
+  // Never grant access for unpaid sessions. Delayed payment methods fire
+  // checkout.session.completed before money settles; they're fulfilled via
+  // checkout.session.async_payment_succeeded instead.
+  if (session.payment_status !== "paid") {
+    console.log("payments-webhook: session not paid, skipping", session.id, session.payment_status);
     return;
   }
 
@@ -63,7 +71,7 @@ async function recordPurchase(session: {
   }
   const platformFee = Math.max(0, amount - creatorEarning);
 
-  await supabase.from("purchases").insert({
+  const { error: insertError } = await supabase.from("purchases").insert({
     buyer_id: userId,
     prompt_id: promptId,
     amount_pence: amount,
@@ -72,6 +80,16 @@ async function recordPurchase(session: {
     is_free: false,
     stripe_session_id: session.id,
   });
+  if (insertError) {
+    // 23505 = unique (buyer_id, prompt_id): duplicate/concurrent delivery.
+    // Don't double-count sales or earnings.
+    if (insertError.code === "23505") {
+      console.log("payments-webhook: purchase already recorded", session.id);
+      return;
+    }
+    // Other failures: throw so Stripe retries.
+    throw new Error(`purchase insert failed: ${insertError.message}`);
+  }
 
   if (prompt) {
     await supabase
@@ -229,7 +247,12 @@ Deno.serve(async (req) => {
     const event = await verifyWebhook(req, env);
     switch (event.type) {
       case "checkout.session.completed":
+      case "checkout.session.async_payment_succeeded":
         await recordPurchase(event.data.object);
+        break;
+      case "checkout.session.async_payment_failed":
+      case "checkout.session.expired":
+        console.log("payments-webhook: checkout not paid", event.type, event.data.object?.id);
         break;
       case "customer.subscription.created":
         await handleSubscriptionCreated(event.data.object, env);

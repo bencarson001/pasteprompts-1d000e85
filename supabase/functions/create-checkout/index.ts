@@ -152,19 +152,32 @@ Deno.serve(async (req) => {
 
     const { data: prompt, error } = await supabase
       .from("prompts")
-      .select("id, title, price_pence, is_free, status")
+      .select("id, title, price_pence, is_free, status, creator_id")
       .eq("id", promptId)
       .maybeSingle();
 
-    if (error || !prompt) {
-      return new Response(JSON.stringify({ error: "Prompt not found" }), {
-        status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" },
+    const json = (body: unknown, status: number) =>
+      new Response(JSON.stringify(body), {
+        status, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
+
+    if (error || !prompt || prompt.status !== "approved") {
+      return json({ error: "This prompt isn't available to buy right now." }, 404);
     }
     if (prompt.is_free || prompt.price_pence <= 0) {
-      return new Response(JSON.stringify({ error: "This prompt is free" }), {
-        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      return json({ error: "This prompt is free — no payment needed." }, 400);
+    }
+    if (prompt.creator_id === userId) {
+      return json({ error: "You created this prompt, so you already have access." }, 400);
+    }
+    const { data: owned } = await supabase
+      .from("purchases")
+      .select("id")
+      .eq("buyer_id", userId)
+      .eq("prompt_id", prompt.id)
+      .maybeSingle();
+    if (owned) {
+      return json({ error: "You already own this prompt. Find it in your library." }, 409);
     }
 
     const customerId = await resolveOrCreateCustomer(stripe, { email: customerEmail, userId });
