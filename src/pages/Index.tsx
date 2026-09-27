@@ -139,7 +139,7 @@ export default function Index() {
       <section className="relative overflow-hidden border-b border-border/50">
         <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top_left,hsl(var(--primary)/0.18),transparent_60%)]" />
         <div className="container-wide grid items-center gap-10 py-10 lg:grid-cols-12 lg:py-16">
-          <div className="lg:col-span-7">
+          <div className="min-w-0 lg:col-span-7">
             <p className="mb-4 inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-semibold text-primary-glow">
               <Sparkles className="h-3.5 w-3.5" /> The AI prompt marketplace
             </p>
@@ -181,7 +181,7 @@ export default function Index() {
           </div>
 
           {heroCards.length > 0 && (
-            <div className="lg:col-span-5">
+            <div className="hidden min-w-0 lg:col-span-5 lg:block">
               <div className="space-y-3">
                 {heroCards.map((p, i) => (
                   <Link
