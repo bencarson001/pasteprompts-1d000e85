@@ -63,10 +63,9 @@ export default function Index() {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [activeModel, setActiveModel] = useState("all");
-  const [email, setEmail] = useState("");
-  const [subscribed, setSubscribed] = useState(false);
+  const { data: stats } = useStats();
 
-  const { data: trending } = useQuery({ 
+  const { data: trending, isLoading: trendingLoading } = useQuery({ 
     queryKey: ["trending-home"], 
     queryFn: () => fetchPrompts({ sort: "trending", limit: 4 }) 
   });
@@ -80,112 +79,30 @@ export default function Index() {
     }
   };
 
-  const handleSubscribe = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (email) {
-      setSubscribed(true);
-      setEmail("");
-    }
+  // Real database listings only — no invented ratings, images or creators.
+  type HomeCard = {
+    id: string; title: string; href: string; image: string | null; model: string | null;
+    price_pence: number; is_free: boolean; rating_avg: number; rating_count: number;
+    creatorName: string | null; category: string | null;
   };
-
-  // Curated showcase prompts highlighting world-class diversity
-  const showcaseFeatured = {
-    id: "feat-hero-1",
-    title: "Cinematic 8K Hyper-Realistic Studio Portraits",
-    price_pence: 499,
-    rating_avg: 5.0,
-    rating_count: 248,
-    model: "Midjourney v6.1",
-    category: "Photography & Art",
-    image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80",
-    creator: { display_name: "ApexVisuals", sales: "1.4k sales" },
-    slug: "browse"
-  };
-
-  const showcaseSecondary = [
-    {
-      id: "feat-hero-2",
-      title: "SaaS Cold Outreach & Email Closing Playbook",
-      price_pence: 699,
-      rating_avg: 4.9,
-      rating_count: 182,
-      model: "ChatGPT / Claude",
-      category: "Marketing",
-      image: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=600&q=80",
-      creator: { display_name: "GrowthCopy" },
-      slug: "browse"
-    },
-    {
-      id: "feat-hero-3",
-      title: "Photorealistic 3D Luxury Product Mockups",
-      price_pence: 599,
-      rating_avg: 5.0,
-      rating_count: 94,
-      model: "Flux Pro",
-      category: "Design",
-      image: "https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=600&q=80",
-      creator: { display_name: "StudioRender" },
-      slug: "browse"
-    }
-  ];
-
-  const topPrompts = [
-    {
-      id: "top-1",
-      title: "Ultimate Content Creator Bundle",
-      price_pence: 999,
-      rating_avg: 5.0,
-      rating_count: 175,
-      model: "ChatGPT",
-      image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=600&q=80",
-      creator: { display_name: "PromptPro" }
-    },
-    {
-      id: "top-2",
-      title: "Midjourney Master Collection",
-      price_pence: 1299,
-      rating_avg: 5.0,
-      rating_count: 116,
-      model: "Midjourney",
-      image: "https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=600&q=80",
-      creator: { display_name: "AI Artist" }
-    },
-    {
-      id: "top-3",
-      title: "Business Growth Toolkit",
-      price_pence: 899,
-      rating_avg: 4.9,
-      rating_count: 76,
-      model: "Claude",
-      image: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=600&q=80",
-      creator: { display_name: "GrowthHacks" }
-    },
-    {
-      id: "top-4",
-      title: "Coding Assistant Pro",
-      price_pence: 799,
-      rating_avg: 5.0,
-      rating_count: 63,
-      model: "ChatGPT",
-      image: "https://images.unsplash.com/photo-1607799279861-4dd421887fb3?auto=format&fit=crop&w=600&q=80",
-      creator: { display_name: "DevPrompt" }
-    }
-  ];
-
-  // Merge with real database entries if they are loaded
-  const displayTrending = trending && trending.length > 0 
-    ? trending.map((p, index) => ({
-        id: p.id,
-        title: p.title,
-        price_pence: p.price_pence || 0,
-        rating_avg: p.rating_avg || 5.0,
-        rating_count: p.rating_count || (120 - index * 15),
-        model: p.model || "ChatGPT",
-        image: topPrompts[index % 4].image,
-        creator: { display_name: p.creator?.display_name || topPrompts[index % 4].creator.display_name },
-        slug: p.slug
-      }))
-    : topPrompts.map((p) => ({ ...p, slug: "browse" }));
+  const cards: HomeCard[] = (trending ?? []).map((p: any) => ({
+    id: p.id,
+    title: p.title,
+    href: p.slug ? `/prompt/${p.slug}` : "/browse",
+    image: p.image_url || null,
+    model: p.model || null,
+    price_pence: p.price_pence || 0,
+    is_free: !!p.is_free,
+    rating_avg: Number(p.rating_avg) || 0,
+    rating_count: p.rating_count || 0,
+    creatorName: p.creator?.display_name || p.creator?.handle || null,
+    category: p.category?.name || null,
+  }));
+  const featured = cards[0];
+  const secondary = cards.slice(1, 3);
+  const promptCountLabel = stats
+    ? `${stats.prompts.toLocaleString("en-GB")} prompt${stats.prompts === 1 ? "" : "s"} listed`
+    : "Browse the marketplace";
 
   const modelQuickFilters = [
     { label: "All", value: "all", icon: "✨" },
@@ -226,9 +143,9 @@ export default function Index() {
                 className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-[11px] font-black tracking-wider text-primary-glow mb-3.5 w-fit"
               >
                 <span className="flex h-2 w-2 rounded-full bg-primary animate-pulse" />
-                <span className="text-white font-extrabold">#1 AI PROMPT MARKETPLACE</span>
+                <span className="text-white font-extrabold">AI PROMPT MARKETPLACE</span>
                 <span className="text-muted-foreground">•</span>
-                <span>12,000+ Active Users</span>
+                <span>Buy, sell &amp; share prompts</span>
               </motion.div>
 
               {/* High-Impact Main Heading */}
@@ -270,7 +187,7 @@ export default function Index() {
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Search 5,000+ prompts (e.g. 'Photorealistic portrait', 'SaaS email', 'Logo design')..."
+                    placeholder="Search prompts (e.g. 'Photorealistic portrait', 'SaaS email', 'Logo design')..."
                     className="w-full bg-transparent px-3 py-2 text-xs sm:text-sm text-white placeholder:text-muted-foreground/60 focus:outline-none"
                   />
                   <Button 
@@ -338,146 +255,134 @@ export default function Index() {
                   <Zap className="h-3 w-3 fill-primary-glow" /> 1-Click Instant Copy
                 </span>
                 <span className="flex items-center gap-1 text-amber-400">
-                  <Star className="h-3 w-3 fill-amber-400" /> 4.9/5 Average Rating
+                  <Star className="h-3 w-3 fill-amber-400" /> Community Ratings
                 </span>
               </motion.div>
 
             </div>
 
-            {/* Right Column: Live High-Impact Showcase Deck */}
+            {/* Right Column: Showcase of real listings (hidden when none exist) */}
+            {featured && (
             <div className="lg:col-span-5 relative">
               <div className="relative mx-auto max-w-md lg:max-w-none">
-                
-                {/* Main Showcase Featured Card */}
                 <motion.div
                   initial={{ opacity: 0, scale: 0.95, y: 15 }}
                   animate={{ opacity: 1, scale: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: 0.15 }}
                   className="group relative rounded-2xl bg-[#0b0a13] border border-white/10 overflow-hidden shadow-xl transition-all duration-300 hover:border-primary/40 max-w-sm mx-auto"
                 >
-                  {/* Top Header inside card */}
                   <div className="flex items-center justify-between px-3 py-2 bg-black/40 border-b border-white/5 text-[10px] font-bold">
                     <span className="flex items-center gap-1 text-primary-glow">
-                      <Flame className="h-3 w-3 fill-primary-glow" /> #1 Featured
+                      <Flame className="h-3 w-3 fill-primary-glow" /> Trending
                     </span>
-                    <span className="text-muted-foreground font-semibold">
-                      {showcaseFeatured.category}
-                    </span>
+                    {featured.category && (
+                      <span className="text-muted-foreground font-semibold">{featured.category}</span>
+                    )}
                   </div>
 
-                  {/* Image with live badges - reduced aspect ratio */}
-                  <div className="relative aspect-[16/9] w-full overflow-hidden">
-                    <img 
-                      src={showcaseFeatured.image} 
-                      alt={showcaseFeatured.title} 
-                      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                      referrerPolicy="no-referrer"
-                    />
+                  <div className="relative aspect-[16/9] w-full overflow-hidden bg-white/5">
+                    {featured.image ? (
+                      <img
+                        src={featured.image}
+                        alt={featured.title}
+                        className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                        referrerPolicy="no-referrer"
+                      />
+                    ) : (
+                      <div className="flex h-full w-full items-center justify-center text-primary-glow/60">
+                        <FileText className="h-10 w-10" />
+                      </div>
+                    )}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-                    
-                    {/* Model Badge */}
-                    <div className="absolute bottom-2 left-2">
-                      <span className="rounded-lg bg-black/80 backdrop-blur-md px-2 py-0.5 text-[9px] font-black text-white uppercase tracking-wider border border-white/10 flex items-center gap-1">
-                        <Sparkles className="h-2.5 w-2.5 text-primary-glow" /> {showcaseFeatured.model}
-                      </span>
-                    </div>
-
-                    {/* Quick Preview Hover Overlay */}
-                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 bg-black/50 backdrop-blur-xs transition-opacity duration-300">
-                      <Button asChild size="sm" className="bg-primary hover:bg-primary/90 text-white font-black text-[10px] rounded-xl shadow-glow">
-                        <Link to="/browse" className="flex items-center gap-1">
-                          <Eye className="h-3 w-3" /> Details
-                        </Link>
-                      </Button>
-                    </div>
+                    {featured.model && (
+                      <div className="absolute bottom-2 left-2">
+                        <span className="rounded-lg bg-black/80 backdrop-blur-md px-2 py-0.5 text-[9px] font-black text-white uppercase tracking-wider border border-white/10 flex items-center gap-1">
+                          <Sparkles className="h-2.5 w-2.5 text-primary-glow" /> {featured.model}
+                        </span>
+                      </div>
+                    )}
                   </div>
 
-                  {/* Card Details - more compact */}
                   <div className="p-3">
                     <div className="flex items-start justify-between gap-2">
                       <h3 className="font-display font-black text-white text-xs leading-snug line-clamp-1 group-hover:text-primary-glow transition-colors">
-                        {showcaseFeatured.title}
+                        <Link to={featured.href} className="after:absolute after:inset-0 after:z-10">{featured.title}</Link>
                       </h3>
                       <span className="font-display text-xs font-black text-primary-glow shrink-0">
-                        {formatPrice(showcaseFeatured.price_pence)}
+                        {featured.is_free ? "Free" : formatPrice(featured.price_pence)}
                       </span>
                     </div>
-
-                    {/* Creator and Rating Footer */}
                     <div className="mt-2 pt-2 flex items-center justify-between border-t border-white/5 text-[9px]">
-                      <div className="flex items-center gap-1.5">
-                        <span className="flex h-4 w-4 items-center justify-center rounded-full bg-primary/25 text-[8px] font-black text-primary-glow border border-primary/20">
-                          {showcaseFeatured.creator.display_name[0]}
-                        </span>
-                        <span className="font-bold text-white">
-                          {showcaseFeatured.creator.display_name}
-                        </span>
-                        <span className="text-[8px] text-muted-foreground font-semibold">
-                          ({showcaseFeatured.creator.sales})
-                        </span>
-                      </div>
-
-                      <div className="flex items-center gap-1 font-black text-amber-400">
-                        <Star className="h-2.5 w-2.5 fill-amber-400" />
-                        <span>5.0</span>
-                        <span className="text-muted-foreground text-[8px] font-semibold">({showcaseFeatured.rating_count})</span>
-                      </div>
+                      <span className="font-bold text-white truncate">{featured.creatorName ?? ""}</span>
+                      {featured.rating_count > 0 ? (
+                        <div className="flex items-center gap-1 font-black text-amber-400">
+                          <Star className="h-2.5 w-2.5 fill-amber-400" />
+                          <span>{featured.rating_avg.toFixed(1)}</span>
+                          <span className="text-muted-foreground text-[8px] font-semibold">({featured.rating_count})</span>
+                        </div>
+                      ) : (
+                        <span className="text-muted-foreground font-semibold">No ratings yet</span>
+                      )}
                     </div>
                   </div>
                 </motion.div>
 
-                {/* Floating Secondary Mini Cards for Depth */}
+                {secondary.length > 0 && (
                 <div className="mt-3 grid grid-cols-2 gap-2.5">
-                  {showcaseSecondary.map((s, idx) => (
+                  {secondary.map((s, idx) => (
                     <motion.div
                       key={s.id}
                       initial={{ opacity: 0, y: 15 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.5, delay: 0.25 + idx * 0.1 }}
-                      onClick={() => navigate("/browse")}
-                      className="group cursor-pointer rounded-xl bg-[#0b0a13] border border-white/5 p-2 sm:p-2.5 hover:border-primary/30 transition-all flex items-center gap-2 sm:gap-2.5"
                     >
-                      <img 
-                        src={s.image} 
-                        alt={s.title} 
-                        className="h-10 w-10 sm:h-11 sm:w-11 rounded-lg object-cover shrink-0 border border-white/5 group-hover:scale-105 transition-transform"
-                        referrerPolicy="no-referrer"
-                      />
-                      <div className="overflow-hidden">
-                        <span className="block text-[9px] font-black text-primary-glow uppercase tracking-wider truncate">
-                          {s.model}
-                        </span>
-                        <h4 className="font-bold text-white text-[10px] sm:text-[11px] truncate leading-tight mt-0.5 group-hover:text-white">
-                          {s.title}
-                        </h4>
-                        <div className="flex items-center gap-1.5 text-[9px] font-bold text-muted-foreground mt-1">
-                          <span className="text-white font-extrabold">{formatPrice(s.price_pence)}</span>
-                          <span>•</span>
-                          <span className="flex items-center gap-0.5 text-amber-400">
-                            <Star className="h-2.5 w-2.5 fill-amber-400" /> 5.0
+                      <Link
+                        to={s.href}
+                        className="group rounded-xl bg-[#0b0a13] border border-white/5 p-2 sm:p-2.5 hover:border-primary/30 transition-all flex items-center gap-2 sm:gap-2.5"
+                      >
+                        {s.image ? (
+                          <img
+                            src={s.image}
+                            alt={s.title}
+                            className="h-10 w-10 sm:h-11 sm:w-11 rounded-lg object-cover shrink-0 border border-white/5"
+                            referrerPolicy="no-referrer"
+                          />
+                        ) : (
+                          <span className="flex h-10 w-10 sm:h-11 sm:w-11 shrink-0 items-center justify-center rounded-lg bg-white/5 text-primary-glow/60">
+                            <FileText className="h-4 w-4" />
                           </span>
+                        )}
+                        <div className="overflow-hidden">
+                          {s.model && (
+                            <span className="block text-[9px] font-black text-primary-glow uppercase tracking-wider truncate">{s.model}</span>
+                          )}
+                          <h4 className="font-bold text-white text-[10px] sm:text-[11px] truncate leading-tight mt-0.5">{s.title}</h4>
+                          <div className="text-[9px] font-extrabold text-white mt-1">
+                            {s.is_free ? "Free" : formatPrice(s.price_pence)}
+                          </div>
                         </div>
-                      </div>
+                      </Link>
                     </motion.div>
                   ))}
                 </div>
-
+                )}
               </div>
             </div>
+            )}
 
           </div>
         </div>
       </section>
 
-      {/* Sleek High-Density Trust Metrics Bar */}
+      {/* Trust bar — only genuine figures */}
       <section className="border-b border-white/5 bg-[#08070e]/80 py-3 sm:py-3.5">
         <div className="container-wide">
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 md:divide-x md:divide-white/5">
             {[
-              { icon: UsersIcon, value: "12,000+", label: "Happy Customers" },
-              { icon: Sparkles, value: "5,000+", label: "Tested Prompts" },
-              { icon: Award, value: "600+", label: "Expert Creators" },
-              { icon: Wallet, value: "£120K+", label: "Paid to Creators" }
+              { icon: Sparkles, value: stats ? stats.prompts.toLocaleString("en-GB") : "—", label: "Prompts listed" },
+              { icon: Gift, value: "Free", label: "Account & free prompts" },
+              { icon: Wallet, value: "Up to 90%", label: "Creator share per sale" },
+              { icon: Lock, value: "Stripe", label: "Secure checkout" }
             ].map((item, index) => (
               <div key={index} className="flex items-center justify-center gap-2.5 px-2">
                 <span className="flex h-7 w-7 sm:h-8 sm:w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 border border-primary/20 text-primary-glow">
@@ -493,15 +398,15 @@ export default function Index() {
         </div>
       </section>
 
-      {/* Top Selling Prompts Section exactly matching image layout */}
+      {/* Trending Prompts — real listings only */}
       <section className="container-wide py-7">
         <div className="mb-5 flex items-end justify-between">
           <div>
             <h2 className="font-display text-lg sm:text-xl font-black text-white flex items-center gap-2">
-              <span className="text-amber-400">🔥</span> Top Selling Prompts
+              <span className="text-amber-400">🔥</span> Trending Prompts
             </h2>
             <p className="text-[11px] sm:text-xs text-muted-foreground font-medium mt-0.5">
-              The most popular AI prompts bought and rated by the community this week
+              Popular prompts on Paste Prompts right now
             </p>
           </div>
           <Link to="/browse?sort=trending" className="text-xs font-black text-primary-glow hover:text-white flex items-center gap-1 transition-colors uppercase tracking-wider">
@@ -509,131 +414,111 @@ export default function Index() {
           </Link>
         </div>
 
+        {trendingLoading ? (
+          <div className="grid grid-cols-2 gap-3 sm:gap-5 lg:gap-6 lg:grid-cols-4">
+            {[0, 1, 2, 3].map((i) => (
+              <div key={i} className="aspect-[4/5] rounded-2xl bg-white/5 animate-pulse" />
+            ))}
+          </div>
+        ) : cards.length === 0 ? (
+          <div className="rounded-2xl border border-white/5 bg-[#0b0a13] p-8 text-center text-sm text-muted-foreground">
+            No prompts are listed yet. <Link to="/sell" className="text-primary-glow font-bold">Be the first to sell one</Link>.
+          </div>
+        ) : (
         <div className="grid grid-cols-2 gap-3 sm:gap-5 lg:gap-6 lg:grid-cols-4">
-          {displayTrending.map((p, i) => (
+          {cards.map((p, i) => (
             <motion.article
               key={p.id}
               initial={{ opacity: 0, y: 15 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: i * 0.05 }}
-              className="group flex flex-col rounded-2xl bg-[#0b0a13] border border-white/5 overflow-hidden shadow-2xl transition-all duration-300 hover:border-primary/30 hover:translate-y-[-2px]"
+              className="group relative flex flex-col rounded-2xl bg-[#0b0a13] border border-white/5 overflow-hidden shadow-2xl transition-all duration-300 hover:border-primary/30 hover:translate-y-[-2px]"
             >
-              {/* Product Cover Card Image */}
-              <div className="relative aspect-[4/3] lg:aspect-[16/10] w-full overflow-hidden">
-                {/* Rank Corner Badge exactly as image design */}
+              <div className="relative aspect-[4/3] lg:aspect-[16/10] w-full overflow-hidden bg-white/5">
                 <div className={`absolute top-2 left-2 sm:top-3 sm:left-3 z-20 flex h-5 w-5 sm:h-6 sm:w-6 items-center justify-center rounded-md font-display text-[9px] sm:text-[11px] font-black text-white ${
                   i === 0 ? "bg-amber-500 shadow-md" : i === 1 ? "bg-primary" : i === 2 ? "bg-red-500" : "bg-neutral-800"
                 }`}>
                   {i + 1}
                 </div>
 
-                <img 
-                  src={p.image} 
-                  alt={p.title} 
-                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  referrerPolicy="no-referrer"
-                />
-                
-                {/* Model badge inside image at bottom-left */}
-                <div className="absolute bottom-2 left-2 sm:bottom-3 sm:left-3 z-20">
-                  <span className="rounded bg-black/80 backdrop-blur-sm px-2 py-0.5 text-[8px] sm:text-[10px] font-black text-white uppercase tracking-wider border border-white/5">
-                    {p.model}
-                  </span>
-                </div>
+                {p.image ? (
+                  <img
+                    src={p.image}
+                    alt={p.title}
+                    loading="lazy"
+                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    referrerPolicy="no-referrer"
+                  />
+                ) : (
+                  <div className="flex h-full w-full items-center justify-center text-primary-glow/60">
+                    <FileText className="h-8 w-8" />
+                  </div>
+                )}
+
+                {p.model && (
+                  <div className="absolute bottom-2 left-2 sm:bottom-3 sm:left-3 z-20">
+                    <span className="rounded bg-black/80 backdrop-blur-sm px-2 py-0.5 text-[8px] sm:text-[10px] font-black text-white uppercase tracking-wider border border-white/5">
+                      {p.model}
+                    </span>
+                  </div>
+                )}
               </div>
 
-              {/* Card Body */}
               <div className="flex flex-1 flex-col p-3 sm:p-3.5">
                 <h3 className="font-display font-black text-white text-[11px] sm:text-xs lg:text-[13px] leading-snug group-hover:text-primary-glow transition-colors line-clamp-2 min-h-[1.5rem] sm:min-h-[2rem]">
-                  <Link to={p.slug ? `/browse` : "#"}>{p.title}</Link>
+                  <Link to={p.href} className="after:absolute after:inset-0 after:z-10">{p.title}</Link>
                 </h3>
 
-                {/* Pricing & Rating on single line */}
                 <div className="mt-1.5 pt-1.5 sm:mt-2.5 sm:pt-2.5 flex items-center justify-between border-t border-white/5">
                   <span className="font-display text-xs sm:text-sm font-black text-white">
-                    {formatPrice(p.price_pence)}
+                    {p.is_free ? "Free" : formatPrice(p.price_pence)}
                   </span>
-                  <span className="flex items-center gap-1 text-[10px] sm:text-xs font-black text-white">
-                    <Star className="h-3 w-3 fill-amber-500 text-amber-500" />
-                    {p.rating_avg.toFixed(1)} <span className="text-[9px] text-muted-foreground font-semibold">({p.rating_count})</span>
-                  </span>
+                  {p.rating_count > 0 ? (
+                    <span className="flex items-center gap-1 text-[10px] sm:text-xs font-black text-white">
+                      <Star className="h-3 w-3 fill-amber-500 text-amber-500" />
+                      {p.rating_avg.toFixed(1)} <span className="text-[9px] text-muted-foreground font-semibold">({p.rating_count})</span>
+                    </span>
+                  ) : (
+                    <span className="text-[9px] sm:text-[10px] text-muted-foreground font-semibold">No ratings yet</span>
+                  )}
                 </div>
 
-                {/* Creator signature row */}
-                <div className="mt-1.5 pt-1.5 sm:mt-2 sm:pt-2 flex items-center gap-1.5 border-t border-white/5">
-                  <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-primary/25 text-[8px] text-primary-glow font-black border border-primary/20">
-                    {p.creator.display_name.slice(0, 1)}
-                  </span>
-                  <span className="text-[9px] sm:text-[10px] font-bold text-muted-foreground truncate">
-                    {p.creator.display_name}
-                  </span>
-                </div>
+                {p.creatorName && (
+                  <div className="mt-1.5 pt-1.5 sm:mt-2 sm:pt-2 flex items-center gap-1.5 border-t border-white/5">
+                    <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-primary/25 text-[8px] text-primary-glow font-black border border-primary/20">
+                      {p.creatorName.slice(0, 1)}
+                    </span>
+                    <span className="text-[9px] sm:text-[10px] font-bold text-muted-foreground truncate">
+                      {p.creatorName}
+                    </span>
+                  </div>
+                )}
               </div>
             </motion.article>
           ))}
         </div>
+        )}
       </section>
 
       {/* Dual Spotlight Modules matching image exactly */}
       <section className="container-wide py-8">
         <div className="grid gap-5 md:grid-cols-2 lg:gap-6">
-          {/* Left Module: Creator Spotlight */}
+          {/* Left Module: Discover Creators (no fabricated spotlight data) */}
           <div className="rounded-3xl border border-white/5 bg-[#0b0a13] p-6 lg:p-8 relative overflow-hidden flex flex-col justify-between min-h-[340px]">
             <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-2xl pointer-events-none" />
             <div>
               <div className="mb-4 flex items-center gap-2 text-xs lg:text-sm font-black text-primary-glow">
-                <Star className="h-4 w-4 fill-primary text-primary" /> Creator Spotlight
+                <Star className="h-4 w-4 fill-primary text-primary" /> Discover Creators
               </div>
-
-              <div className="flex items-center gap-4 mb-5">
-                <div className="relative">
-                  <span className="flex h-12 w-12 lg:h-14 lg:w-14 items-center justify-center rounded-full bg-gradient-primary p-0.5 shadow-glow">
-                    <img 
-                      src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80" 
-                      className="h-full w-full object-cover rounded-full" 
-                      alt="Spotlight Prompt Engineer Avatar" 
-                      loading="lazy"
-                      decoding="async"
-                      referrerPolicy="no-referrer"
-                    />
-                  </span>
-                  <span className="absolute -bottom-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[8px] font-black text-white border border-card">
-                    ✓
-                  </span>
-                </div>
-                <div>
-                  <h3 className="font-display text-base lg:text-lg font-black text-white">PromptPro</h3>
-                  <div className="text-[11px] lg:text-xs font-bold text-primary-glow">Top Creator</div>
-                  <p className="mt-0.5 text-xs text-muted-foreground font-medium">Specializing in marketing &amp; content creation prompts.</p>
-                </div>
-              </div>
-
-              {/* Spotlight Stats */}
-              <div className="grid grid-cols-3 gap-3 border-t border-white/5 pt-4 mb-5">
-                <div>
-                  <div className="font-display text-sm lg:text-base font-black text-white flex items-center gap-1">
-                    <Star className="h-3 w-3 text-primary fill-primary" /> 1,245
-                  </div>
-                  <div className="text-[10px] text-muted-foreground font-semibold mt-0.5">Sales</div>
-                </div>
-                <div>
-                  <div className="font-display text-sm lg:text-base font-black text-white">
-                    4.9 ★
-                  </div>
-                  <div className="text-[10px] text-muted-foreground font-semibold mt-0.5">Rating</div>
-                </div>
-                <div>
-                  <div className="font-display text-sm lg:text-base font-black text-white">
-                    50+
-                  </div>
-                  <div className="text-[10px] text-muted-foreground font-semibold mt-0.5">Prompts</div>
-                </div>
-              </div>
+              <h3 className="font-display text-lg lg:text-xl font-black text-white mb-3">Follow the people behind the prompts</h3>
+              <p className="text-xs lg:text-[13px] font-medium text-muted-foreground">
+                Browse creator profiles, see every prompt they have published, and follow them to hear about new releases.
+              </p>
             </div>
 
-            <Button onClick={() => navigate("/browse")} className="w-full bg-primary hover:bg-primary/90 text-white font-bold rounded-xl h-10 transition-all text-xs tracking-wider uppercase">
-              View Profile
+            <Button onClick={() => navigate("/creators")} className="w-full bg-primary hover:bg-primary/90 text-white font-bold rounded-xl h-10 transition-all text-xs tracking-wider uppercase">
+              Browse Creators
             </Button>
           </div>
 
@@ -652,10 +537,10 @@ export default function Index() {
 
               <ul className="space-y-2.5 mb-5">
                 {[
-                  "Easy to get started — Instant approvals",
-                  "Set your own prices & Keep up to 90%",
-                  "Fast weekly payouts direct to your bank",
-                  "Grow your audience & brand across the globe"
+                  "Free to join and list your prompts",
+                  "Set your own prices & keep up to 90%",
+                  "Secure checkout powered by Stripe",
+                  "Build a following with your creator profile"
                 ].map((text, idx) => (
                   <li key={idx} className="flex items-start gap-2">
                     <Check className="h-3.5 w-3.5 text-primary mt-0.5 shrink-0" />
@@ -686,12 +571,12 @@ export default function Index() {
 
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
           {[
-            { label: "Marketing", count: "120+ prompts", icon: Megaphone, slug: "marketing" },
-            { label: "Business", count: "98+ prompts", icon: Briefcase, slug: "business" },
-            { label: "Coding", count: "150+ prompts", icon: Code, slug: "coding" },
-            { label: "Design", count: "85+ prompts", icon: Paintbrush, slug: "design" },
-            { label: "YouTube", count: "60+ prompts", icon: Play, slug: "youtube" },
-            { label: "Writing", count: "110+ prompts", icon: PenTool, slug: "writing" }
+            { label: "Marketing", icon: Megaphone, slug: "marketing" },
+            { label: "Business", icon: Briefcase, slug: "business" },
+            { label: "Coding", icon: Code, slug: "coding" },
+            { label: "Design", icon: Paintbrush, slug: "design" },
+            { label: "YouTube", icon: Play, slug: "youtube" },
+            { label: "Writing", icon: PenTool, slug: "writing" }
           ].map((item, index) => (
             <Link
               key={index}
@@ -702,7 +587,7 @@ export default function Index() {
                 <item.icon className="h-4 w-4" />
               </div>
               <div className="font-display font-black text-white text-xs sm:text-sm leading-tight group-hover:text-primary-glow transition-colors">{item.label}</div>
-              <div className="mt-1 text-[10px] text-muted-foreground font-semibold">{item.count}</div>
+              <div className="mt-1 text-[10px] text-muted-foreground font-semibold">Browse prompts</div>
             </Link>
           ))}
         </div>
@@ -736,11 +621,11 @@ export default function Index() {
                 1. Discover &amp; Filter
               </h3>
               <p className="text-xs sm:text-[13px] text-muted-foreground leading-relaxed">
-                Browse thousands of tested prompts across ChatGPT, Claude, Gemini, Midjourney, and Flux. Filter by price, category, and community ratings.
+                Browse prompts for ChatGPT, Claude, Gemini, Midjourney, and Flux. Filter by price, category, and community ratings.
               </p>
             </div>
             <div className="mt-6 pt-4 border-t border-white/5 flex items-center justify-between">
-              <span className="text-[11px] font-bold text-primary-glow">Over 5,000+ Templates</span>
+              <span className="text-[11px] font-bold text-primary-glow">{promptCountLabel}</span>
               <Link to="/browse" className="text-xs font-bold text-white hover:text-primary-glow flex items-center gap-1">
                 Explore <ArrowRight className="h-3 w-3" />
               </Link>
@@ -784,11 +669,11 @@ export default function Index() {
                 3. Sell &amp; Earn 90%
               </h3>
               <p className="text-xs sm:text-[13px] text-muted-foreground leading-relaxed">
-                Prompt engineers and creators can upload verified prompts, set competitive pricing, and keep up to 90% of every sale with automatic weekly Stripe bank payouts.
+                Prompt engineers and creators can upload prompts, set their own price, and keep up to 90% of every sale.
               </p>
             </div>
             <div className="mt-6 pt-4 border-t border-white/5 flex items-center justify-between">
-              <span className="text-[11px] font-bold text-amber-400">Instant Creator Approval</span>
+              <span className="text-[11px] font-bold text-amber-400">Free to join</span>
               <Link to="/sell" className="text-xs font-bold text-white hover:text-amber-400 flex items-center gap-1">
                 Start Selling <ArrowRight className="h-3 w-3" />
               </Link>
@@ -798,7 +683,7 @@ export default function Index() {
       </section>
 
 
-      {/* Newsletter Block */}
+      {/* Stay in the loop — free account CTA (no newsletter service is configured) */}
       <section className="container-wide py-8">
         <div className="rounded-3xl border border-white/5 bg-[#0b0a13] p-6 md:p-8 lg:p-10 relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-glow opacity-30 pointer-events-none" />
@@ -806,34 +691,12 @@ export default function Index() {
             <div className="text-left max-w-lg">
               <h2 className="font-display text-xl lg:text-2xl font-black text-white">Stay in the Loop</h2>
               <p className="mt-1 text-xs lg:text-sm text-muted-foreground font-semibold">
-                Get the best new prompts, creator discounts &amp; weekly exclusive drops.
+                Create a free account to save prompts and follow creators for their new releases.
               </p>
             </div>
-
-            <div className="w-full md:w-auto flex-1 max-w-md">
-              {subscribed ? (
-                <div className="rounded-xl bg-primary/10 border border-primary/30 p-3 text-center text-xs font-semibold text-primary">
-                  ✓ Awesome! You are officially subscribed to our prompt drop list.
-                </div>
-              ) : (
-                <form onSubmit={handleSubscribe} className="relative flex items-center bg-black/40 border border-white/10 rounded-full p-1.5 w-full focus-within:border-primary/40 transition-colors">
-                  <input
-                    type="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Enter your email"
-                    className="bg-transparent text-xs lg:text-sm text-white px-3 py-1.5 w-full focus:outline-none focus:ring-0"
-                  />
-                  <Button type="submit" className="bg-primary hover:bg-primary/90 text-white font-black text-xs rounded-full h-9 px-6 transition-all shrink-0 uppercase tracking-wider">
-                    Subscribe
-                  </Button>
-                </form>
-              )}
-              <div className="mt-2 text-left text-[10px] text-muted-foreground/60 font-semibold">
-                No spam, unsubscribe anytime.
-              </div>
-            </div>
+            <Button asChild className="bg-primary hover:bg-primary/90 text-white font-black text-xs rounded-full h-10 px-6 uppercase tracking-wider">
+              <Link to={user ? "/creators" : "/auth"}>{user ? "Follow creators" : "Create free account"}</Link>
+            </Button>
           </div>
         </div>
       </section>
@@ -843,9 +706,9 @@ export default function Index() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 lg:gap-6">
           {[
             { icon: Zap, title: "Instant Access", desc: "Get prompts immediately" },
-            { icon: Lock, title: "Secure Payments", desc: "Safe 256-bit encrypted checkout" },
-            { icon: Award, title: "Quality Guaranteed", desc: "100% verified test outputs" },
-            { icon: CheckCircle2, title: "24/7 Support", desc: "Dedicated support team" }
+            { icon: Lock, title: "Secure Payments", desc: "Checkout handled by Stripe" },
+            { icon: Award, title: "Reviewed Listings", desc: "Prompts are reviewed before listing" },
+            { icon: CheckCircle2, title: "Support", desc: "Reach us via the contact page" }
           ].map((badge, idx) => (
             <div key={idx} className="flex items-start gap-3">
               <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary border border-primary/20">
