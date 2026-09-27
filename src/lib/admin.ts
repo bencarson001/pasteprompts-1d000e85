@@ -1,6 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
 import { db } from "@/lib/db";
-import { auth as firebaseAuth } from "@/lib/firebase";
 import { getStoredLocalLogs, clearLocalLogs } from "@/lib/logger";
 
 /* ---------------- Audit ---------------- */
@@ -117,209 +116,165 @@ export async function fetchAdminAnalytics(days = 30): Promise<AdminAnalytics> {
     const eventUniqueVisitors = new Set(events.map((e) => e.visitor_id)).size;
     const eventNewVisitors = events.filter((e) => e.is_new_visitor).length;
 
-    // Derived or sensible baseline from actual prompt views
-    const baseMultiplier = Math.max(1, Math.round(days / 30));
-    const finalPromptViews = Math.max(
-      promptViewsTotal > 0 ? Math.round(promptViewsTotal * (days / 30)) : 8941 * baseMultiplier,
-      eventPromptViews,
-      rpcData?.prompt_views ?? 0
+    // ---- Real metrics only (from analytics_events + purchases) ----
+    const pageViews = Math.max(eventPageViews, Number(rpcData?.page_views ?? 0));
+    const promptViews = Math.max(eventPromptViews, Number(rpcData?.prompt_views ?? 0));
+    const uniqueVisitors = Math.max(eventUniqueVisitors, Number(rpcData?.unique_visitors ?? 0));
+    const newVisitors = Math.min(
+      uniqueVisitors,
+      Math.max(new Set(events.filter((e) => e.is_new_visitor).map((e) => e.visitor_id)).size, Number(rpcData?.new_visitors ?? 0)),
     );
-    const finalPageViews = Math.max(
-      Math.round(finalPromptViews * 1.608),
-      eventPageViews,
-      rpcData?.page_views ?? 0
-    );
-    const finalUniqueVisitors = Math.max(
-      Math.round(finalPageViews * 0.223),
-      eventUniqueVisitors,
-      rpcData?.unique_visitors ?? 0
-    );
-    const finalNewVisitors = Math.max(
-      Math.round(finalUniqueVisitors * 0.748),
-      eventNewVisitors,
-      rpcData?.new_visitors ?? 0
-    );
-    const repeatVisitors = Math.max(0, finalUniqueVisitors - finalNewVisitors);
+    void eventNewVisitors;
+    const repeatVisitors = Math.max(0, uniqueVisitors - newVisitors);
 
-    // Top Prompts
-    const categoryPalette: Record<string, string> = {
-      "AI Tools": "bg-purple-500/20 text-purple-300 border-purple-500/30",
-      "Image Gen": "bg-emerald-500/20 text-emerald-300 border-emerald-500/30",
-      Writing: "bg-amber-500/20 text-amber-300 border-amber-500/30",
-      Business: "bg-blue-500/20 text-blue-300 border-blue-500/30",
-      Marketing: "bg-indigo-500/20 text-indigo-300 border-indigo-500/30",
-      Coding: "bg-teal-500/20 text-teal-300 border-teal-500/30",
-      Education: "bg-rose-500/20 text-rose-300 border-rose-500/30",
-    };
+    // Sessions
+    const sessions = new Map<string, { first: number; last: number; pages: number }>();
+    for (const e of events) {
+      const key = e.session_id || e.visitor_id;
+      const t = new Date(e.created_at).getTime();
+      const s = sessions.get(key) || { first: t, last: t, pages: 0 };
+      s.first = Math.min(s.first, t);
+      s.last = Math.max(s.last, t);
+      if (e.event_type === "page_view" || e.event_type === "prompt_view") s.pages += 1;
+      sessions.set(key, s);
+    }
+    const sessionList = [...sessions.values()];
+    const avgSessionSeconds = sessionList.length
+      ? Math.round(sessionList.reduce((a, s) => a + (s.last - s.first) / 1000, 0) / sessionList.length)
+      : 0;
+    const bounceRate = sessionList.length
+      ? Math.round((sessionList.filter((s) => s.pages <= 1).length / sessionList.length) * 100)
+      : 0;
+    const pagesPerSession = sessionList.length
+      ? Number((sessionList.reduce((a, s) => a + s.pages, 0) / sessionList.length).toFixed(1))
+      : 0;
 
+    // Purchases
+    const paid = purchases.filter((p: { is_free: boolean }) => !p.is_free);
+    const free = purchases.filter((p: { is_free: boolean }) => p.is_free);
+    const buyerCounts = new Map<string, number>();
+    for (const p of purchases as { buyer_id: string }[]) buyerCounts.set(p.buyer_id, (buyerCounts.get(p.buyer_id) || 0) + 1);
+    const totalBuyers = buyerCounts.size;
+    const repeatBuyers = [...buyerCounts.values()].filter((n) => n > 1).length;
+    const conversionRate = uniqueVisitors > 0 ? Number(((totalBuyers / uniqueVisitors) * 100).toFixed(1)) : 0;
+
+    // Traffic sources from referrer
+    const srcCounts: Record<string, number> = { Direct: 0, Organic: 0, Social: 0, Referral: 0 };
+    const seenVisitor = new Set<string>();
+    for (const e of events) {
+      if (seenVisitor.has(e.visitor_id)) continue;
+      seenVisitor.add(e.visitor_id);
+      const r = (e.referrer || "").toLowerCase();
+      if (!r || r.includes("pasteprompts")) srcCounts.Direct++;
+      else if (/google|bing|duckduckgo|yahoo|ecosia/.test(r)) srcCounts.Organic++;
+      else if (/facebook|instagram|tiktok|twitter|t\.co|x\.com|reddit|youtube|linkedin|pinterest/.test(r)) srcCounts.Social++;
+      else srcCounts.Referral++;
+    }
+    const srcTotal = Object.values(srcCounts).reduce((a, b) => a + b, 0);
+    const srcColors: Record<string, string> = { Direct: "#8B5CF6", Organic: "#06B6D4", Social: "#F59E0B", Referral: "#3B82F6" };
+    const trafficSources = srcTotal
+      ? Object.entries(srcCounts).map(([name, n]) => ({ name, value: Math.round((n / srcTotal) * 100), color: srcColors[name] }))
+      : [];
+
+    // Top prompts (real counts)
     const topPrompts: TopPromptAnalytics[] = prompts.slice(0, 10).map((p) => {
       const views = Number(p.views) || 0;
       const sales = Number(p.sales_count) || 0;
       const copies = Number(p.copies_count) || 0;
-      const conversions = sales + copies;
-      const ctr = views > 0 ? Number(((conversions / views) * 100).toFixed(1)) : 4.2;
       const catObj = p.category as { name?: string; slug?: string } | null;
       return {
         id: p.id,
         title: p.title,
         slug: p.slug,
         category: catObj?.name || "General",
-        views: views > 0 ? views : Math.floor(Math.random() * 800 + 400),
+        views,
         sales_count: sales,
         copies_count: copies,
-        ctr: ctr > 0 ? ctr : 3.8,
+        ctr: views > 0 ? Number((((sales + copies) / views) * 100).toFixed(1)) : 0,
       };
     });
 
-    // Fallback top prompts if database prompts table is completely empty
-    if (topPrompts.length === 0) {
-      topPrompts.push(
-        { title: "Ultimate ChatGPT Jailbreak 2026", slug: "chatgpt-jailbreak", category: "AI Tools", views: 1842, sales_count: 84, copies_count: 142, ctr: 7.2 },
-        { title: "Midjourney Realistic Portrait Master", slug: "midjourney-portrait", category: "Image Gen", views: 1411, sales_count: 52, copies_count: 98, ctr: 5.8 },
-        { title: "SEO Blog Content Architecture System", slug: "seo-blog-system", category: "Writing", views: 987, sales_count: 28, copies_count: 65, ctr: 3.4 },
-        { title: "Business Plan & Pitch Deck Generator", slug: "business-plan-generator", category: "Business", views: 734, sales_count: 19, copies_count: 42, ctr: 2.9 },
-        { title: "Viral Social Media Hooks & Scripts", slug: "viral-hooks", category: "Marketing", views: 612, sales_count: 14, copies_count: 38, ctr: 4.1 },
-        { title: "Full Stack Python Code Review Assistant", slug: "python-code-review", category: "Coding", views: 401, sales_count: 9, copies_count: 24, ctr: 4.4 }
-      );
-    }
-
-    // Category distribution
-    const categoryCountMap: Record<string, { count: number; views: number }> = {};
+    // Category performance (real)
+    const categoryCountMap: Record<string, { count: number; views: number; slug: string }> = {};
     for (const p of prompts) {
-      const catObj = p.category as { name?: string } | null;
-      const catName = catObj?.name || "AI Tools";
-      if (!categoryCountMap[catName]) categoryCountMap[catName] = { count: 0, views: 0 };
+      const catObj = p.category as { name?: string; slug?: string } | null;
+      const catName = catObj?.name || "Uncategorised";
+      if (!categoryCountMap[catName]) categoryCountMap[catName] = { count: 0, views: 0, slug: catObj?.slug || "" };
       categoryCountMap[catName].count += 1;
       categoryCountMap[catName].views += Number(p.views) || 0;
     }
+    void categories;
+    const categoryPerformance: CategoryAnalytics[] = Object.entries(categoryCountMap)
+      .map(([name, s]) => ({ name, slug: s.slug || name.toLowerCase().replace(/\s+/g, "-"), views: s.views, prompts_count: s.count }))
+      .sort((a, b) => b.views - a.views);
 
-    const categoryPerformance: CategoryAnalytics[] = Object.entries(categoryCountMap).map(([name, stat]) => ({
-      name,
-      slug: name.toLowerCase().replace(/\s+/g, "-"),
-      views: stat.views > 0 ? stat.views : stat.count * 180,
-      prompts_count: stat.count,
-    })).sort((a, b) => b.views - a.views);
-
-    if (categoryPerformance.length === 0) {
-      categoryPerformance.push(
-        { name: "AI Tools", slug: "ai-tools", views: 4120, prompts_count: 32 },
-        { name: "Image Gen", slug: "image-gen", views: 2480, prompts_count: 24 },
-        { name: "Writing", slug: "writing", views: 1890, prompts_count: 18 },
-        { name: "Business", slug: "business", views: 1420, prompts_count: 14 },
-        { name: "Marketing", slug: "marketing", views: 980, prompts_count: 11 },
-        { name: "Coding", slug: "coding", views: 760, prompts_count: 9 }
-      );
+    // Daily series from real events
+    const dayMap = new Map<string, { page_views: number; prompt_views: number; visitors: Set<string> }>();
+    const span = Math.min(days, 90);
+    for (let i = span - 1; i >= 0; i--) {
+      const key = new Date(Date.now() - i * 86400000).toISOString().slice(0, 10);
+      dayMap.set(key, { page_views: 0, prompt_views: 0, visitors: new Set() });
     }
-
-    // Daily time series generation
-    const daily: { day: string; page_views: number; prompt_views: number; visitors: number }[] = [];
-    const intervalDays = Math.min(days, 30);
-    const dayStep = Math.max(1, Math.floor(days / intervalDays));
-
-    for (let i = intervalDays; i >= 0; i--) {
-      const d = new Date(Date.now() - i * dayStep * 24 * 60 * 60 * 1000);
-      const dayLabel = d.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
-      
-      // Natural growth curve with realistic slight noise
-      const growthFactor = 1 + ((intervalDays - i) / intervalDays) * 1.5;
-      const noise = (Math.sin(i * 1.7) * 0.15) + 1;
-      const pageV = Math.round((finalPageViews / days) * growthFactor * noise);
-      const promptV = Math.round(pageV * 0.62);
-      const visV = Math.round(pageV * 0.28);
-
-      daily.push({
-        day: dayLabel,
-        page_views: Math.max(12, pageV),
-        prompt_views: Math.max(8, promptV),
-        visitors: Math.max(4, visV),
-      });
+    for (const e of events) {
+      const d = dayMap.get(e.created_at.slice(0, 10));
+      if (!d) continue;
+      if (e.event_type === "page_view") d.page_views++;
+      if (e.event_type === "prompt_view") d.prompt_views++;
+      d.visitors.add(e.visitor_id);
     }
+    const daily = [...dayMap.entries()].map(([k, v]) => ({
+      day: new Date(k).toLocaleDateString("en-GB", { day: "numeric", month: "short" }),
+      page_views: v.page_views,
+      prompt_views: v.prompt_views,
+      visitors: v.visitors.size,
+    }));
+
+    // Funnel (real)
+    const promptViewers = new Set(events.filter((e) => e.event_type === "prompt_view").map((e) => e.visitor_id)).size;
+    const pct = (n: number) => (uniqueVisitors > 0 ? Math.round((n / uniqueVisitors) * 100) : 0);
 
     return {
       days,
-      page_views: finalPageViews,
-      prompt_views: finalPromptViews,
-      unique_visitors: finalUniqueVisitors,
-      new_visitors: finalNewVisitors,
+      page_views: pageViews,
+      prompt_views: promptViews,
+      unique_visitors: uniqueVisitors,
+      new_visitors: newVisitors,
       repeat_visitors: repeatVisitors,
-      sales: totalSalesCount || purchases.length,
-      revenue_pence: totalRevenuePence,
-      free_claims: totalCopiesCount,
-      repeat_buyers: Math.round(purchases.length * 0.28),
-      total_buyers: purchases.length || totalSalesCount,
-      avg_session_seconds: 134, // 2m 14s
-      bounce_rate_pct: 61,
-      conversion_rate_pct: 3.8,
+      sales: paid.length,
+      revenue_pence: paid.reduce((s: number, p: { amount_pence: number }) => s + (Number(p.amount_pence) || 0), 0),
+      free_claims: free.length,
+      repeat_buyers: repeatBuyers,
+      total_buyers: totalBuyers,
+      avg_session_seconds: avgSessionSeconds,
+      bounce_rate_pct: bounceRate,
+      conversion_rate_pct: conversionRate,
       daily,
-      traffic_sources: [
-        { name: "Direct", value: 38, color: "#8B5CF6" },
-        { name: "Organic", value: 31, color: "#06B6D4" },
-        { name: "Social", value: 18, color: "#F59E0B" },
-        { name: "Referral", value: 9, color: "#3B82F6" },
-        { name: "Other", value: 4, color: "#6B7280" },
-      ],
+      traffic_sources: trafficSources,
       top_prompts: topPrompts,
-      geography: [
-        { country: "United Kingdom", code: "GB", percent: 34.1, color: "#8B5CF6" },
-        { country: "United States", code: "US", percent: 29.6, color: "#06B6D4" },
-        { country: "Canada", code: "CA", percent: 11.2, color: "#F59E0B" },
-        { country: "Australia", code: "AU", percent: 7.8, color: "#3B82F6" },
-        { country: "Germany", code: "DE", percent: 4.3, color: "#A855F7" },
-        { country: "Other", code: "🌐", percent: 13.0, color: "#6B7280" },
-      ],
+      geography: [], // Not tracked
       funnel: [
-        { step: "Visits", count: finalUniqueVisitors, percent: 100 },
-        { step: "Prompt views", count: Math.round(finalUniqueVisitors * 0.73), percent: 73 },
-        { step: "Preview", count: Math.round(finalUniqueVisitors * 0.38), percent: 38 },
-        { step: "Copy / Purchase", count: Math.round(finalUniqueVisitors * 0.13), percent: 13 },
+        { step: "Visitors", count: uniqueVisitors, percent: uniqueVisitors ? 100 : 0 },
+        { step: "Viewed a prompt", count: promptViewers, percent: pct(promptViewers) },
+        { step: "Bought / claimed", count: totalBuyers, percent: pct(totalBuyers) },
       ],
       category_performance: categoryPerformance,
       seo_signals: {
-        pages_indexed: Math.min(prompts.length, 48) || 48,
-        total_prompts: Math.max(prompts.length, 80),
-        avg_time_seconds: 108,
-        pages_per_session: 2.8,
-        mobile_pct: 58,
-        desktop_pct: 42,
+        pages_indexed: 0, // Not tracked — check Google Search Console
+        total_prompts: prompts.length,
+        avg_time_seconds: avgSessionSeconds,
+        pages_per_session: pagesPerSession,
+        mobile_pct: 0, // Not tracked
+        desktop_pct: 0, // Not tracked
       },
     };
   } catch (err) {
-    console.error("fetchAdminAnalytics aggregation fallback:", err);
+    console.error("fetchAdminAnalytics failed:", err);
     return {
-      days,
-      page_views: 14382,
-      prompt_views: 8941,
-      unique_visitors: 3217,
-      new_visitors: 2405,
-      repeat_visitors: 812,
-      sales: 0,
-      revenue_pence: 0,
-      free_claims: 245,
-      repeat_buyers: 0,
-      total_buyers: 0,
-      avg_session_seconds: 134,
-      bounce_rate_pct: 61,
-      conversion_rate_pct: 3.8,
-      daily: [],
-      traffic_sources: [
-        { name: "Direct", value: 38, color: "#8B5CF6" },
-        { name: "Organic", value: 31, color: "#06B6D4" },
-        { name: "Social", value: 18, color: "#F59E0B" },
-        { name: "Referral", value: 9, color: "#3B82F6" },
-        { name: "Other", value: 4, color: "#6B7280" },
-      ],
-      top_prompts: [],
-      geography: [],
-      funnel: [],
-      category_performance: [],
-      seo_signals: {
-        pages_indexed: 48,
-        total_prompts: 80,
-        avg_time_seconds: 108,
-        pages_per_session: 2.8,
-        mobile_pct: 58,
-        desktop_pct: 42,
-      },
+      days, page_views: 0, prompt_views: 0, unique_visitors: 0, new_visitors: 0, repeat_visitors: 0,
+      sales: 0, revenue_pence: 0, free_claims: 0, repeat_buyers: 0, total_buyers: 0,
+      avg_session_seconds: 0, bounce_rate_pct: 0, conversion_rate_pct: 0, daily: [],
+      traffic_sources: [], top_prompts: [], geography: [], funnel: [], category_performance: [],
+      seo_signals: { pages_indexed: 0, total_prompts: 0, avg_time_seconds: 0, pages_per_session: 0, mobile_pct: 0, desktop_pct: 0 },
     };
   }
 }
@@ -439,18 +394,7 @@ export async function fetchAdminUsers(q?: string) {
   const { data: profiles, error } = await query;
   if (error) {
     // If table permission is denied or missing for public anon role, return active user if logged in
-    const fbUser = firebaseAuth.currentUser;
-    const { data: { user: authUser } } = await supabase.auth.getUser();
-    const activeUser = authUser || (fbUser ? {
-      id: fbUser.uid,
-      email: fbUser.email,
-      user_metadata: {
-        display_name: fbUser.displayName,
-        avatar_url: fbUser.photoURL,
-        full_name: fbUser.displayName,
-      },
-      created_at: fbUser.metadata.creationTime,
-    } : null);
+    const { data: { user: activeUser } } = await supabase.auth.getUser();
 
     if (activeUser) {
       const handle = activeUser.email ? activeUser.email.split("@")[0] : "user";
