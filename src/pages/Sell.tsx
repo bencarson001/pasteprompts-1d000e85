@@ -203,11 +203,11 @@ export default function Sell() {
             <>
               <div>
                 <Label htmlFor="t">Title</Label>
-                <Input id="t" value={form.title} onChange={(e) => set({ title: e.target.value })} placeholder="e.g. Viral Twitter Thread Engine" className="mt-1 bg-card/60 border-white/10" />
+                <Input id="t" maxLength={100} value={form.title} onChange={(e) => set({ title: e.target.value })} placeholder="e.g. Viral Twitter Thread Engine" className="mt-1 bg-card/60 border-white/10" />
               </div>
               <div>
                 <Label htmlFor="d">Short description</Label>
-                <Textarea id="d" value={form.description} onChange={(e) => set({ description: e.target.value })} placeholder="One or two sentences on what this prompt does for the buyer." className="mt-1 bg-card/60 border-white/10" />
+                <Textarea id="d" maxLength={300} value={form.description} onChange={(e) => set({ description: e.target.value })} placeholder="One or two sentences on what this prompt does for the buyer." className="mt-1 bg-card/60 border-white/10" />
               </div>
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
