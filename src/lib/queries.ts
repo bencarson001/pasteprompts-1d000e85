@@ -30,14 +30,23 @@ export function sanitizeSearchTerm(raw: string): string {
 }
 
 export async function fetchPrompts(filters: BrowseFilters = {}) {
+  return (await fetchPromptsPage(filters)).rows;
+}
+
+/** Same as fetchPrompts but also returns the exact total number of matches. */
+export async function fetchPromptsPage(filters: BrowseFilters = {}) {
   let query = supabase
     .from("prompts")
-    .select(PROMPT_CARD_SELECT)
+    .select(PROMPT_CARD_SELECT, { count: "exact" })
     .eq("status", "approved");
 
   if (filters.q) {
     const term = sanitizeSearchTerm(filters.q);
-    if (term) query = query.or(`title.ilike.%${term}%,description.ilike.%${term}%`);
+    if (term) {
+      // Case-insensitive partial match on title/description, plus exact tag match.
+      const tag = term.toLowerCase().replace(/[{}\s]+/g, "-");
+      query = query.or(`title.ilike.%${term}%,description.ilike.%${term}%,tags.cs.{${tag}}`);
+    }
   }
   if (filters.model && filters.model !== "all") {
     query = query.eq("model", filters.model as never);
@@ -54,7 +63,8 @@ export async function fetchPrompts(filters: BrowseFilters = {}) {
       .select("id")
       .eq("slug", filters.categorySlug)
       .maybeSingle();
-    if (cat) query = query.eq("category_id", cat.id);
+    if (!cat) return { rows: [], total: 0 };
+    query = query.eq("category_id", cat.id);
   }
 
   switch (filters.sort) {
@@ -65,19 +75,21 @@ export async function fetchPrompts(filters: BrowseFilters = {}) {
       query = query.order("rating_avg", { ascending: false }).order("rating_count", { ascending: false });
       break;
     case "popular":
-      query = query.order("sales_count", { ascending: false });
+      query = query.order("sales_count", { ascending: false }).order("copies_count", { ascending: false });
       break;
     default:
       query = query.order("trending_score", { ascending: false }).order("sales_count", { ascending: false });
   }
+  // Stable tie-breaker so paging never duplicates or skips rows.
+  query = query.order("id", { ascending: true });
 
   const limit = filters.limit ?? 24;
   const offset = filters.offset ?? 0;
   query = query.range(offset, offset + limit - 1);
 
-  const { data, error } = await query;
+  const { data, error, count } = await query;
   if (error) throw error;
-  return data ?? [];
+  return { rows: data ?? [], total: count ?? (data?.length ?? 0) };
 }
 
 export async function fetchCategories() {

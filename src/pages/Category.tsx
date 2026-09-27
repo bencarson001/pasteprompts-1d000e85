@@ -11,7 +11,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { fetchPrompts, fetchCategoryBySlug, fetchCategories } from "@/lib/queries";
+import { fetchPromptsPage, fetchCategoryBySlug, fetchCategories } from "@/lib/queries";
 import { getCategoryContent } from "@/lib/categoryContent";
 
 const SITE_URL = "https://pasteprompts.co.uk";
@@ -25,10 +25,12 @@ const DEFAULT_FAQ = [
 export default function Category() {
   const { slug = "" } = useParams();
   const { data: category } = useQuery({ queryKey: ["category", slug], queryFn: () => fetchCategoryBySlug(slug) });
-  const { data: prompts, isLoading } = useQuery({
+  const { data: page, isLoading } = useQuery({
     queryKey: ["category-prompts", slug],
-    queryFn: () => fetchPrompts({ categorySlug: slug, sort: "trending", limit: 48 }),
+    queryFn: () => fetchPromptsPage({ categorySlug: slug, sort: "trending", limit: 48 }),
   });
+  const prompts = page?.rows;
+  const total = page?.total ?? 0;
   const { data: allCategories } = useQuery({ queryKey: ["categories"], queryFn: fetchCategories });
   const relatedCategories = (allCategories ?? [])
     .filter((c) => c.slug !== slug)
@@ -107,6 +109,14 @@ export default function Category() {
         <header className="mb-8 max-w-2xl">
           <h1 className="font-display text-3xl font-bold sm:text-4xl">{heading}</h1>
           <p className="mt-3 text-muted-foreground">{lead}</p>
+          {!isLoading && (
+            <p className="mt-3 text-sm text-muted-foreground">
+              {total} {total === 1 ? "prompt" : "prompts"} in {name}
+              {total > promptList.length ? ` · showing the top ${promptList.length}` : ""} ·{" "}
+              <Link to={`/browse/all/all/${slug}`} className="text-primary-glow hover:underline">Filter & sort</Link>{" · "}
+              <Link to="/browse" className="text-primary-glow hover:underline">All categories</Link>
+            </p>
+          )}
         </header>
 
         <PromptGrid prompts={promptList as never} loading={isLoading} emptyMessage="No prompts in this category yet." />
@@ -126,7 +136,7 @@ export default function Category() {
 
             <div className="flex flex-wrap gap-3 pt-2">
               <Link
-                to={`/browse?price=free&category=${slug}`}
+                to={`/browse/free/all/${slug}`}
                 className="rounded-xl bg-gradient-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground btn-glow"
               >
                 Browse free {name} prompts

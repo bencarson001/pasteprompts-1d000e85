@@ -19,9 +19,15 @@ export function BrowseSidebar({ price, model, category, onNavigate }: BrowseSide
   const { data: categories } = useQuery({ queryKey: ["categories"], queryFn: fetchCategories });
   const { search } = useLocation();
 
-  // Preserve the active sort when navigating between filters.
-  const sort = new URLSearchParams(search).get("sort");
-  const withSort = (path: string) => (sort ? `${path}?sort=${sort}` : path);
+  // Preserve the active search and sort when navigating between filters.
+  const current = new URLSearchParams(search);
+  const keep = new URLSearchParams();
+  const qv = current.get("q");
+  const sv = current.get("sort");
+  if (qv) keep.set("q", qv);
+  if (sv) keep.set("sort", sv);
+  const keepStr = keep.toString();
+  const withSort = (path: string) => (keepStr ? `${path}?${keepStr}` : path);
 
   const Row = ({
     to,
@@ -65,7 +71,7 @@ export function BrowseSidebar({ price, model, category, onNavigate }: BrowseSide
           {PRICE_BANDS.map((band) => (
             <Row
               key={band}
-              to={browsePath(band, model, category)}
+              to={browsePath(band, model ?? "all", category ?? "all")}
               active={price === band}
               label={PRICE_LABELS[band]}
             />
@@ -79,14 +85,14 @@ export function BrowseSidebar({ price, model, category, onNavigate }: BrowseSide
         </p>
         <div className="space-y-0.5">
           <Row
-            to={browsePath(price ?? "all", "all", category)}
+            to={browsePath(price ?? "all", "all", category ?? "all")}
             active={!model || model === "all"}
             label="All platforms"
           />
           {MODELS.map((m) => (
             <Row
               key={m}
-              to={browsePath(price ?? "all", m, category)}
+              to={browsePath(price ?? "all", m, category ?? "all")}
               active={model === m}
               icon={modelIcon(m)}
               label={MODEL_LABELS[m]}

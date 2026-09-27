@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import { ArrowRight, ArrowLeft, Gift, Search, Sparkles, Tag, Filter } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
@@ -24,7 +24,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
-  fetchPrompts,
+  fetchPromptsPage,
   fetchCategories,
   fetchCategoryBySlug,
   fetchCategoryCounts,
@@ -72,7 +72,7 @@ function PriceStep() {
             <Gift className="h-7 w-7" />
           </div>
           <h2 className="font-display text-2xl font-bold">Free prompts</h2>
-          <p className="mt-2 text-muted-foreground">Hundreds of ready-to-use prompts you can copy right now — no sign-up needed.</p>
+          <p className="mt-2 text-muted-foreground">Ready-to-use prompts you can copy right away at no cost.</p>
           <span className="mt-4 inline-flex items-center text-sm font-semibold text-primary-glow">
             Choose free <ArrowRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
           </span>
@@ -82,7 +82,7 @@ function PriceStep() {
             <Sparkles className="h-7 w-7" />
           </div>
           <h2 className="font-display text-2xl font-bold">Paid prompts</h2>
-          <p className="mt-2 text-muted-foreground">Premium, battle-tested prompts engineered for serious results and edge cases.</p>
+          <p className="mt-2 text-muted-foreground">Detailed prompts for 25p each — buy once and keep them in your library.</p>
           <span className="mt-4 inline-flex items-center text-sm font-semibold text-primary-glow">
             Choose paid <ArrowRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
           </span>
@@ -203,31 +203,43 @@ function ResultsView({
     enabled: !!categoryFilter,
   });
 
+  const qParam = params.get("q") ?? "";
+  const sortParam = (params.get("sort") as BrowseFilters["sort"]) ?? "trending";
   const filters: BrowseFilters = {
-    q: params.get("q") ?? undefined,
+    q: qParam || undefined,
     categorySlug: categoryFilter,
     model: modelFilter,
     price: priceFilter,
-    sort: (params.get("sort") as BrowseFilters["sort"]) ?? "trending",
+    sort: sortParam,
     limit: PAGE_SIZE,
     offset: page * PAGE_SIZE,
   };
 
-  useEffect(() => setPage(0), [params, price, model, category]);
+  const paramsKey = params.toString();
+  useEffect(() => setPage(0), [paramsKey, price, model, category]);
+  // Keep the search box in sync with the URL (back/forward, links).
+  useEffect(() => setQ(qParam), [qParam]);
 
-  const { data: prompts, isLoading } = useQuery({
-    queryKey: ["browse-results", price, model, category, params.toString()],
-    queryFn: () => fetchPrompts(filters),
+  const { data: result, isLoading, isFetching } = useQuery({
+    queryKey: ["browse-results", price, model, category, paramsKey, page],
+    queryFn: () => fetchPromptsPage(filters),
+    placeholderData: keepPreviousData,
+    staleTime: 60_000,
   });
+  const prompts = result?.rows;
+  const total = result?.total ?? 0;
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+
+  const { data: allCategories } = useQuery({ queryKey: ["categories"], queryFn: fetchCategories, staleTime: 300_000 });
 
   const heading = useMemo(() => {
-    if (params.get("q")) return `Results for “${params.get("q")}”`;
+    if (qParam) return `Results for “${qParam}”`;
     const parts: string[] = [];
     if (priceFilter) parts.push(PRICE_LABELS[priceFilter as keyof typeof PRICE_LABELS]);
     if (cat?.name) parts.push(cat.name);
     else if (modelFilter) parts.push(MODEL_LABELS[modelFilter] ?? modelFilter);
     return parts.length ? `${parts.join(" · ")} prompts` : "All prompts";
-  }, [params, priceFilter, modelFilter, cat]);
+  }, [qParam, priceFilter, modelFilter, cat]);
 
   const updateSort = (value: string) => {
     const next = new URLSearchParams(params);
@@ -239,23 +251,40 @@ function ResultsView({
   const submitSearch = (e: React.FormEvent) => {
     e.preventDefault();
     const next = new URLSearchParams(params);
-    if (q) next.set("q", q);
+    const clean = q.trim();
+    if (clean) next.set("q", clean);
     else next.delete("q");
-    navigate(`${browsePath(price ?? "all", model ?? "all", category ?? "all")}?${next.toString()}`);
+    const qs = next.toString();
+    navigate(`${browsePath(price ?? "all", model ?? "all", category ?? "all")}${qs ? `?${qs}` : ""}`);
+  };
+
+  const clearSearch = () => {
+    const next = new URLSearchParams(params);
+    next.delete("q");
+    setQ("");
+    const qs = next.toString();
+    navigate(`${browsePath(price ?? "all", model ?? "all", category ?? "all")}${qs ? `?${qs}` : ""}`);
+  };
+
+  const hasNarrowing = !!(priceFilter || modelFilter || categoryFilter);
+  const goPage = (p: number) => {
+    setPage(p);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
     <div>
       <Breadcrumb price={price} model={model} category={cat?.name ?? category} />
       <header className="mb-6">
-        <h1 className="font-display text-3xl font-bold sm:text-4xl">{heading}</h1>
-        <p className="mt-2 text-muted-foreground">
-          {prompts?.length ?? 0} results · {cat?.description ?? "find a prompt for exactly what you're building."}
+        <h1 className="break-words font-display text-3xl font-bold sm:text-4xl">{heading}</h1>
+        <p className="mt-2 text-muted-foreground" aria-live="polite">
+          {isLoading ? "Searching…" : `${total} ${total === 1 ? "prompt" : "prompts"}`}
+          {cat?.description ? ` · ${cat.description}` : ""}
         </p>
       </header>
 
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center">
-        <form onSubmit={submitSearch} className="relative flex-1">
+        <form onSubmit={submitSearch} role="search" className="relative flex-1">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <label htmlFor="browse-search" className="sr-only">
             Search prompts
@@ -263,42 +292,83 @@ function ResultsView({
           <Input
             id="browse-search"
             type="search"
-            aria-label="Search prompts"
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            placeholder="Search prompts, descriptions, tags…"
+            placeholder="Search titles, descriptions, tags…"
             className="h-11 pl-10 bg-card/60 border-white/10"
           />
         </form>
-        <Select value={params.get("sort") ?? "trending"} onValueChange={updateSort}>
-          <SelectTrigger className="h-11 w-full sm:w-[160px] bg-card/60 border-white/10">
+        <Select value={sortParam} onValueChange={updateSort}>
+          <SelectTrigger aria-label="Sort prompts" className="h-11 w-full sm:w-[190px] bg-card/60 border-white/10">
             <SelectValue placeholder="Sort" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="trending">Trending</SelectItem>
-            <SelectItem value="newest">Newest</SelectItem>
-            <SelectItem value="rated">Top rated</SelectItem>
+            <SelectItem value="trending">Trending (recent activity)</SelectItem>
+            <SelectItem value="newest">Newest first</SelectItem>
+            <SelectItem value="rated">Highest rated</SelectItem>
             <SelectItem value="popular">Most sold</SelectItem>
           </SelectContent>
         </Select>
       </div>
 
-      <PromptGrid
-        prompts={(prompts ?? []) as never}
-        loading={isLoading}
-        emptyMessage="No prompts match your filters. Try widening your search."
-      />
+      {(qParam || hasNarrowing) && (
+        <div className="mb-5 flex flex-wrap items-center gap-2 text-sm">
+          <span className="text-muted-foreground">Active:</span>
+          {qParam && (
+            <button onClick={clearSearch} className="rounded-full border border-white/15 px-3 py-1 hover:bg-card" aria-label={`Remove search ${qParam}`}>
+              “{qParam}” ✕
+            </button>
+          )}
+          {priceFilter && <span className="rounded-full bg-card/60 px-3 py-1">{PRICE_LABELS[priceFilter as keyof typeof PRICE_LABELS]}</span>}
+          {modelFilter && <span className="rounded-full bg-card/60 px-3 py-1">{MODEL_LABELS[modelFilter] ?? modelFilter}</span>}
+          {cat?.name && <span className="rounded-full bg-card/60 px-3 py-1">{cat.name}</span>}
+          <Link to={qParam ? `/browse/all/all/all?q=${encodeURIComponent(qParam)}` : "/browse/all/all/all"} className="text-primary-glow underline-offset-4 hover:underline">
+            Clear filters
+          </Link>
+        </div>
+      )}
 
-      {!!prompts?.length && prompts.length >= PAGE_SIZE && (
-        <div className="mt-10 flex justify-center gap-3">
-          <Button variant="outline" disabled={page === 0} onClick={() => setPage((p) => Math.max(0, p - 1))}>
+      {!isLoading && !prompts?.length ? (
+        <div className="rounded-2xl glass p-8 text-center">
+          <p className="font-medium">No prompts match {qParam ? `“${qParam}”` : "these filters"}.</p>
+          <p className="mt-1 text-sm text-muted-foreground">Try a shorter word, check the spelling, or remove a filter.</p>
+          <div className="mt-4 flex flex-wrap justify-center gap-2">
+            {qParam && <Button variant="outline" size="sm" onClick={clearSearch}>Clear search</Button>}
+            {hasNarrowing && (
+              <Button asChild variant="outline" size="sm">
+                <Link to={qParam ? `/browse/all/all/all?q=${encodeURIComponent(qParam)}` : "/browse/all/all/all"}>Search all prompts</Link>
+              </Button>
+            )}
+          </div>
+          {!!allCategories?.length && (
+            <div className="mt-6">
+              <p className="mb-2 text-sm text-muted-foreground">Or browse a category:</p>
+              <div className="flex flex-wrap justify-center gap-2">
+                {allCategories.slice(0, 10).map((c) => (
+                  <Link key={c.id} to={`/category/${c.slug}`} className="rounded-full border border-white/10 px-3 py-1 text-sm hover:bg-card">
+                    {c.name}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      ) : (
+        <div className={isFetching && !isLoading ? "opacity-60 transition-opacity" : ""}>
+          <PromptGrid prompts={(prompts ?? []) as never} loading={isLoading} />
+        </div>
+      )}
+
+      {total > PAGE_SIZE && (
+        <nav aria-label="Pagination" className="mt-10 flex items-center justify-center gap-3">
+          <Button variant="outline" disabled={page === 0} onClick={() => goPage(Math.max(0, page - 1))}>
             <ArrowLeft className="mr-1 h-4 w-4" /> Previous
           </Button>
-          <span className="grid place-items-center px-3 text-sm text-muted-foreground">Page {page + 1}</span>
-          <Button variant="outline" onClick={() => setPage((p) => p + 1)}>
+          <span className="px-2 text-sm text-muted-foreground">Page {page + 1} of {totalPages}</span>
+          <Button variant="outline" disabled={page + 1 >= totalPages} onClick={() => goPage(page + 1)}>
             Next <ArrowRight className="ml-1 h-4 w-4" />
           </Button>
-        </div>
+        </nav>
       )}
     </div>
   );
