@@ -25,6 +25,13 @@ import {
   Search,
 } from "lucide-react";
 
+/** Admin-only lookup of the email a member signed up with (server checks admin role). */
+async function lookupSignupEmail(userId: string): Promise<string | null> {
+  const { data } = await supabase.rpc("admin_find_user", { _q: userId });
+  const row = (data as { id: string; email: string }[] | null)?.find((r) => r.id === userId);
+  return row?.email ?? null;
+}
+
 export default function AdminMailbox() {
   const queryClient = useQueryClient();
   const [recipientUserId, setRecipientUserId] = useState("");
@@ -197,7 +204,13 @@ export default function AdminMailbox() {
           });
         }
 
-        if (targetEmail && sendEmail) {
+        // For a selected member, always email the address they signed up with.
+        const toEmail = recipientUserId ? await lookupSignupEmail(recipientUserId) : targetEmail.trim();
+        if (recipientUserId && sendEmail && !toEmail) {
+          throw new Error("Couldn't find this member's sign-up email.");
+        }
+
+        if (toEmail && sendEmail) {
           const emailHtml = `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 12px; background-color: #ffffff;">
               <h2 style="color: #6366f1;">Notice from Paste Prompts Admin</h2>
@@ -211,7 +224,7 @@ export default function AdminMailbox() {
           `;
 
           await supabase.from("email_send_log").insert({
-            recipient_email: targetEmail,
+            recipient_email: toEmail,
             template_name: "admin_notice",
             status: "pending",
             metadata: {
@@ -387,8 +400,14 @@ export default function AdminMailbox() {
                     </label>
                     <select
                       value={recipientUserId}
-                      onChange={(e) => {
-                        setRecipientUserId(e.target.value);
+                      onChange={async (e) => {
+                        const id = e.target.value;
+                        setRecipientUserId(id);
+                        setTargetEmail("");
+                        if (id) {
+                          const email = await lookupSignupEmail(id);
+                          setTargetEmail(email ?? "");
+                        }
                       }}
                       className="w-full h-9 px-3 rounded-md border border-input bg-background text-sm"
                     >
@@ -403,13 +422,14 @@ export default function AdminMailbox() {
 
                   <div>
                     <label className="text-xs font-semibold text-muted-foreground mb-1 block">
-                      Target Email Address:
+                      {recipientUserId ? "Sign-up email (used automatically):" : "Target Email Address:"}
                     </label>
                     <Input
                       type="email"
-                      placeholder="user@example.com"
+                      placeholder={recipientUserId ? "Looking up sign-up email…" : "user@example.com"}
                       value={targetEmail}
                       onChange={(e) => setTargetEmail(e.target.value)}
+                      readOnly={!!recipientUserId}
                       className="h-9 text-sm"
                     />
                   </div>
