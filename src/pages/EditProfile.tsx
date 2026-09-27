@@ -454,6 +454,8 @@ export default function EditProfile() {
       <SEO
         title="Edit Profile | Paste Prompts"
         description="Customise your Paste Prompts creator profile and portfolio."
+        canonical="/profile/edit"
+        noindex
       />
 
       <div className="container-wide max-w-3xl py-8 sm:py-12">
