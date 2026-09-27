@@ -88,16 +88,39 @@ export async function fetchAdminAnalytics(days = 30): Promise<AdminAnalytics> {
 
   // Fetch live tables in parallel for complete, real-time fidelity
   try {
-    const [promptsRes, categoriesRes, purchasesRes, eventsRes] = await Promise.all([
-      supabase
-        .from("prompts")
-        .select("id, title, slug, views, sales_count, copies_count, price_pence, is_free, created_at, category:categories(name, slug)")
-        .order("views", { ascending: false })
-        .limit(100),
+    // The API returns at most 1000 rows per request, so page through everything.
+    const fetchAll = async <T,>(build: (from: number, to: number) => PromiseLike<{ data: T[] | null; error: unknown }>, cap = 100000) => {
+      const out: T[] = [];
+      for (let from = 0; from < cap; from += 1000) {
+        const { data, error } = await build(from, from + 999);
+        if (error) throw error;
+        out.push(...(data || []));
+        if (!data || data.length < 1000) break;
+      }
+      return out;
+    };
+    const [promptsData, categoriesRes, purchasesData, eventsData] = await Promise.all([
+      fetchAll((a, b) =>
+        supabase
+          .from("prompts")
+          .select("id, title, slug, views, sales_count, copies_count, price_pence, is_free, created_at, category:categories(name, slug)")
+          .order("views", { ascending: false })
+          .order("id")
+          .range(a, b)),
       supabase.from("categories").select("id, name, slug"),
-      db.from("purchases").select("id, amount_pence, is_free, buyer_id, created_at").gte("created_at", sinceIso),
-      supabase.from("analytics_events").select("id, event_type, visitor_id, session_id, path, is_new_visitor, referrer, created_at").gte("created_at", sinceIso).limit(5000),
+      fetchAll((a, b) => db.from("purchases").select("id, amount_pence, is_free, buyer_id, created_at").gte("created_at", sinceIso).order("id").range(a, b)),
+      fetchAll((a, b) =>
+        supabase
+          .from("analytics_events")
+          .select("id, event_type, visitor_id, session_id, path, is_new_visitor, referrer, created_at")
+          .gte("created_at", sinceIso)
+          .order("created_at")
+          .order("id")
+          .range(a, b)),
     ]);
+    const promptsRes = { data: promptsData };
+    const purchasesRes = { data: purchasesData };
+    const eventsRes = { data: eventsData };
 
     const prompts = promptsRes.data || [];
     const categories = categoriesRes.data || [];
