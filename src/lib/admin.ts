@@ -280,62 +280,120 @@ export async function fetchAdminAnalytics(days = 30): Promise<AdminAnalytics> {
 }
 
 /* ---------------- Stats ---------------- */
-export async function fetchAdminOverview() {
-  try {
-    const [prompts, approved, pending, rejected, users, creators, purchases, subs] = await Promise.all([
-      supabase.from("prompts").select("id", { count: "exact", head: true }),
-      supabase.from("prompts").select("id", { count: "exact", head: true }).eq("status", "approved"),
-      supabase.from("prompts").select("id", { count: "exact", head: true }).eq("status", "pending"),
-      supabase.from("prompts").select("id", { count: "exact", head: true }).eq("status", "rejected"),
-      supabase.from("profiles").select("id", { count: "exact", head: true }),
-      supabase.from("profiles").select("id", { count: "exact", head: true }).eq("is_creator", true),
-      supabase.from("purchases").select("amount_pence, platform_fee_pence, creator_earning_pence"),
-      supabase.from("subscriptions").select("status, price_id").in("status", ["active", "trialing", "past_due"]),
-    ]);
-    const rows = purchases.data ?? [];
-    const gross = rows.reduce((s, p) => s + (p.amount_pence ?? 0), 0);
-    const fees = rows.reduce((s, p) => s + (p.platform_fee_pence ?? 0), 0);
-    const payouts = rows.reduce((s, p) => s + (p.creator_earning_pence ?? 0), 0);
-    const mrr = (subs.data ?? []).reduce((s, r) => {
-      const id = (r as { price_id?: string }).price_id ?? "";
-      if (id.includes("platinum")) return s + (id.includes("year") ? 1599 / 12 : 1599);
-      if (id.includes("pro")) return s + (id.includes("year") ? 999 / 12 : 999);
-      return s;
-    }, 0);
-    return {
-      prompts: prompts.count ?? 0, approved: approved.count ?? 0, pending: pending.count ?? 0, rejected: rejected.count ?? 0,
-      users: users.count ?? 0, creators: creators.count ?? 0,
-      sales: rows.length, grossPence: gross, feesPence: fees, payoutsPence: payouts,
-      activeSubs: subs.data?.length ?? 0, mrrPence: Math.round(mrr),
-    };
-  } catch (err) {
-    console.warn("fetchAdminOverview error:", err);
-    return {
-      prompts: 0, approved: 0, pending: 0, rejected: 0,
-      users: 0, creators: 0,
-      sales: 0, grossPence: 0, feesPence: 0, payoutsPence: 0,
-      activeSubs: 0, mrrPence: 0,
-    };
+export type AdminOverviewData = {
+  users: number; creators: number;
+  prompts: number; approved: number; pending: number; rejected: number;
+  approvedFree: number; approvedPaid: number;
+  paidSales: number; freeClaims: number;
+  grossPence: number; feesPence: number; creatorEarnedPence: number;
+  activeSubs: number;
+  periodDays: number;
+  submissionsByDay: { date: string; count: number }[];
+  purchasesByDay: { date: string; paid: number; free: number }[];
+  topCategories: { name: string; count: number }[];
+  topCreators: { handle: string; count: number }[];
+  recent: { kind: "prompt" | "purchase" | "member"; label: string; at: string }[];
+  partial: string[];
+};
+
+function dayKeys(days: number) {
+  const out: string[] = [];
+  const now = new Date();
+  for (let i = days - 1; i >= 0; i--) {
+    const d = new Date(now); d.setUTCDate(now.getUTCDate() - i);
+    out.push(d.toISOString().slice(0, 10));
   }
+  return out;
+}
+
+// All figures come straight from the database. Purchases are only written by the
+// payment webhook after Stripe confirms payment, so every row is a completed sale/claim.
+export async function fetchAdminOverview(periodDays = 30): Promise<AdminOverviewData> {
+  const since = new Date(Date.now() - periodDays * 86400000).toISOString();
+  const head = { count: "exact" as const, head: true };
+  const partial: string[] = [];
+  const [users, creators, prompts, approved, pending, rejected, approvedFree, purchases, subs, recentPrompts, recentMembers, cats] = await Promise.all([
+    supabase.from("profiles").select("id", head),
+    supabase.from("profiles").select("id", head).eq("is_creator", true),
+    supabase.from("prompts").select("id", head),
+    supabase.from("prompts").select("id", head).eq("status", "approved"),
+    supabase.from("prompts").select("id", head).eq("status", "pending"),
+    supabase.from("prompts").select("id", head).eq("status", "rejected"),
+    supabase.from("prompts").select("id", head).eq("status", "approved").eq("is_free", true),
+    supabase.from("purchases").select("amount_pence, platform_fee_pence, creator_earning_pence, is_free, created_at, prompt:prompts(title)").order("created_at", { ascending: false }).limit(5000),
+    supabase.from("subscriptions").select("id", head).in("status", ["active", "trialing"]),
+    supabase.from("prompts").select("title, status, category_id, created_at, creator:profiles!prompts_creator_id_fkey(handle)").gte("created_at", since).order("created_at", { ascending: false }).limit(2000),
+    supabase.from("profiles").select("handle, created_at").order("created_at", { ascending: false }).limit(5),
+    supabase.from("categories").select("id, name"),
+  ]);
+  for (const [name, r] of Object.entries({ users, prompts, purchases, subs, recentPrompts })) {
+    if ((r as { error: unknown }).error) partial.push(name);
+  }
+  const rows = (purchases.data ?? []) as Array<{ amount_pence: number; platform_fee_pence: number; creator_earning_pence: number; is_free: boolean; created_at: string; prompt: { title?: string } | null }>;
+  const paidRows = rows.filter((r) => !r.is_free);
+  const keys = dayKeys(periodDays);
+  const sub = new Map(keys.map((k) => [k, 0]));
+  const pur = new Map(keys.map((k) => [k, { paid: 0, free: 0 }]));
+  const catName = new Map((cats.data ?? []).map((c) => [c.id as string, c.name as string]));
+  const catCount = new Map<string, number>();
+  const creatorCount = new Map<string, number>();
+  const newPrompts = (recentPrompts.data ?? []) as Array<{ title: string; status: string; category_id: string; created_at: string; creator: { handle?: string } | null }>;
+  for (const p of newPrompts) {
+    const k = p.created_at.slice(0, 10);
+    if (sub.has(k)) sub.set(k, (sub.get(k) ?? 0) + 1);
+    const cn = catName.get(p.category_id) ?? "Uncategorised";
+    catCount.set(cn, (catCount.get(cn) ?? 0) + 1);
+    const h = p.creator?.handle ?? "unknown";
+    creatorCount.set(h, (creatorCount.get(h) ?? 0) + 1);
+  }
+  for (const r of rows) {
+    const e = pur.get(r.created_at.slice(0, 10));
+    if (e) { if (r.is_free) e.free++; else e.paid++; }
+  }
+  const recent: AdminOverviewData["recent"] = [
+    ...newPrompts.slice(0, 5).map((p) => ({ kind: "prompt" as const, label: `New prompt “${p.title}” (${p.status}) by @${p.creator?.handle ?? "unknown"}`, at: p.created_at })),
+    ...rows.slice(0, 5).map((r) => ({ kind: "purchase" as const, label: `${r.is_free ? "Free claim" : "Paid sale"}: ${r.prompt?.title ?? "prompt"}`, at: r.created_at })),
+    ...((recentMembers.data ?? []) as Array<{ handle: string; created_at: string }>).map((m) => ({ kind: "member" as const, label: `New member @${m.handle}`, at: m.created_at })),
+  ].sort((a, b) => b.at.localeCompare(a.at)).slice(0, 10);
+  const top = (m: Map<string, number>) => [...m.entries()].sort((a, b) => b[1] - a[1]).slice(0, 6);
+  return {
+    users: users.count ?? 0, creators: creators.count ?? 0,
+    prompts: prompts.count ?? 0, approved: approved.count ?? 0, pending: pending.count ?? 0, rejected: rejected.count ?? 0,
+    approvedFree: approvedFree.count ?? 0, approvedPaid: Math.max(0, (approved.count ?? 0) - (approvedFree.count ?? 0)),
+    paidSales: paidRows.length, freeClaims: rows.length - paidRows.length,
+    grossPence: paidRows.reduce((s, p) => s + (p.amount_pence ?? 0), 0),
+    feesPence: paidRows.reduce((s, p) => s + (p.platform_fee_pence ?? 0), 0),
+    creatorEarnedPence: paidRows.reduce((s, p) => s + (p.creator_earning_pence ?? 0), 0),
+    activeSubs: subs.count ?? 0,
+    periodDays,
+    submissionsByDay: keys.map((k) => ({ date: k, count: sub.get(k) ?? 0 })),
+    purchasesByDay: keys.map((k) => ({ date: k, ...(pur.get(k) ?? { paid: 0, free: 0 }) })),
+    topCategories: top(catCount).map(([name, count]) => ({ name, count })),
+    topCreators: top(creatorCount).map(([handle, count]) => ({ handle, count })),
+    recent, partial,
+  };
 }
 
 /* ---------------- Prompts ---------------- */
-export async function fetchAdminPrompts(status?: string, q?: string) {
+export const ADMIN_PROMPTS_PAGE = 25;
+export async function fetchAdminPrompts(status?: string, q?: string, page = 0) {
   let query = supabase
     .from("prompts")
-    .select("id, slug, title, description, image_url, status, price_pence, is_free, featured, views, sales_count, created_at, category_id, model, creator:profiles!prompts_creator_id_fkey(handle, display_name)")
+    .select("id, slug, title, description, example_output, tags, image_url, status, price_pence, is_free, featured, views, sales_count, copies_count, created_at, updated_at, category_id, model, category:categories(name), creator:profiles!prompts_creator_id_fkey(handle, display_name)", { count: "exact" })
     .order("created_at", { ascending: false })
-    .limit(300);
+    .range(page * ADMIN_PROMPTS_PAGE, page * ADMIN_PROMPTS_PAGE + ADMIN_PROMPTS_PAGE - 1);
   if (status && status !== "all") query = query.eq("status", status as never);
-  if (q) query = query.ilike("title", `%${q}%`);
-  const { data, error } = await query;
+  const term = q?.trim().replace(/[,()%]/g, " ");
+  if (term) query = query.or(`title.ilike.%${term}%,description.ilike.%${term}%`);
+  const { data, error, count } = await query;
   if (error) throw error;
-  return data ?? [];
+  return { rows: data ?? [], total: count ?? 0 };
 }
 
 export async function setPromptStatus(id: string, status: "approved" | "rejected" | "pending") {
-  const { error } = await supabase.from("prompts").update({ status: status as never }).eq("id", id);
+  const { data, error } = await supabase.from("prompts").update({ status: status as never }).eq("id", id).select("id");
   if (error) throw error;
+  if (!data?.length) throw new Error("No change was saved — you may not have permission.");
   await logAdminAction(`prompt.${status}`, "prompt", id);
 }
 
@@ -358,91 +416,34 @@ export async function deletePromptAdmin(id: string) {
 }
 
 export async function bulkPromptStatus(ids: string[], status: "approved" | "rejected") {
-  const { error } = await supabase.from("prompts").update({ status: status as never }).in("id", ids);
+  const { data, error } = await supabase.from("prompts").update({ status: status as never }).in("id", ids).select("id");
   if (error) throw error;
+  if ((data?.length ?? 0) < ids.length) throw new Error(`Only ${data?.length ?? 0} of ${ids.length} prompts were updated.`);
   await logAdminAction(`prompt.bulk.${status}`, "prompt", ids.join(","));
 }
 
 /* ---------------- Users & memberships ---------------- */
 // Protected columns (membership_tier, earnings) are read via an admin-only RPC or fallback to profiles.
 export async function fetchAdminUsers(q?: string) {
-  try {
-    const { data, error } = await supabase.rpc("admin_list_users", { _q: q ?? null } as never);
-    if (!error && Array.isArray(data) && data.length > 0) {
-      return data as Array<{
-        id: string; handle: string; display_name: string; avatar_url: string | null;
-        is_creator: boolean; membership_tier: string; total_sales: number;
-        total_earnings_pence: number; created_at: string;
-      }>;
-    }
-  } catch (e) {
-    console.warn("admin_list_users RPC failed:", e);
-  }
-
-  // Fallback: Query profiles table directly
-  let query = supabase
-    .from("profiles")
-    .select("id, handle, display_name, avatar_url, is_creator, membership_tier, total_sales, created_at")
-    .order("created_at", { ascending: false })
-    .limit(300);
-
-  if (q && q.trim()) {
-    const searchTerm = q.trim();
-    query = query.or(`handle.ilike.%${searchTerm}%,display_name.ilike.%${searchTerm}%`);
-  }
-
-  const { data: profiles, error } = await query;
-  if (error) {
-    // Never invent a user record; admins see an empty list if the lookup fails.
-    console.warn("fetchAdminUsers fallback failed:", error);
-    return [];
-  }
-
-  return (profiles ?? []).map((p) => {
-    const row = p as {
-      id: string;
-      handle?: string | null;
-      display_name?: string | null;
-      avatar_url?: string | null;
-      is_creator?: boolean | null;
-      membership_tier?: string | null;
-      total_sales?: number | null;
-      total_earnings_pence?: number | null;
-      created_at?: string | null;
-    };
-    return {
-      id: row.id,
-      handle: row.handle || "user",
-      display_name: row.display_name || row.handle || "Member",
-      avatar_url: row.avatar_url || null,
-      is_creator: !!row.is_creator,
-      membership_tier: row.membership_tier || "free",
-      total_sales: row.total_sales || 0,
-      total_earnings_pence: row.total_earnings_pence || 0,
-      created_at: row.created_at || new Date().toISOString(),
-    };
-  });
+  // Admin-only RPC (checks has_role server-side). Private columns are never read from the table directly.
+  const { data, error } = await supabase.rpc("admin_list_users", { _q: q?.trim() || null } as never);
+  if (error) throw error;
+  return (data ?? []) as Array<{
+    id: string; handle: string; display_name: string; avatar_url: string | null;
+    is_creator: boolean; membership_tier: string; total_sales: number;
+    total_earnings_pence: number; created_at: string;
+  }>;
 }
 
 export async function setUserTier(userId: string, tier: "free" | "pro" | "platinum") {
   const { error } = await supabase.rpc("admin_set_user_tier", { _user_id: userId, _tier: tier } as never);
-  if (error) {
-    const { error: fallbackErr } = await supabase.from("profiles").update({ membership_tier: tier } as never).eq("id", userId);
-    if (fallbackErr) {
-      console.warn("setUserTier fallback warning:", fallbackErr.message);
-    }
-  }
+  if (error) throw error;
   await logAdminAction("user.set_tier", "user", userId, { tier });
 }
 
 export async function setUserCreator(userId: string, is_creator: boolean) {
   const { error } = await supabase.rpc("admin_set_user_creator", { _user_id: userId, _is_creator: is_creator } as never);
-  if (error) {
-    const { error: fallbackErr } = await supabase.from("profiles").update({ is_creator } as never).eq("id", userId);
-    if (fallbackErr) {
-      console.warn("setUserCreator fallback warning:", fallbackErr.message);
-    }
-  }
+  if (error) throw error;
   await logAdminAction("user.set_creator", "user", userId, { is_creator });
 }
 
@@ -464,11 +465,12 @@ export async function setAdminRole(userId: string, makeAdmin: boolean) {
 
 /* ---------------- Sales ---------------- */
 export async function fetchAdminSales() {
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("purchases")
     .select("id, amount_pence, platform_fee_pence, creator_earning_pence, is_free, created_at, prompt:prompts(title)")
     .order("created_at", { ascending: false })
     .limit(300);
+  if (error) throw error;
   return data ?? [];
 }
 

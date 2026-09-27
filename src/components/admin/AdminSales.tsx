@@ -5,14 +5,16 @@ import { formatPrice, timeAgo } from "@/lib/format";
 import { TableShell, SectionHeader } from "./shared";
 
 export function AdminSales() {
-  const { data, isLoading } = useQuery({ queryKey: ["admin-sales"], queryFn: fetchAdminSales });
+  const { data, isLoading, isError } = useQuery({ queryKey: ["admin-sales"], queryFn: fetchAdminSales });
 
   if (isLoading) return <div className="grid place-items-center py-20"><Loader2 className="h-7 w-7 animate-spin text-primary" /></div>;
 
   return (
     <div>
-      <SectionHeader title="Sales" desc="Every purchase with platform fee and creator payout split." />
-      {!data?.length ? (
+      <SectionHeader title="Sales" desc="Completed purchases (recorded only after Stripe confirms payment), newest 300. Creator share is owed, not yet paid out." />
+      {isError ? (
+        <p className="rounded-2xl glass p-10 text-center text-destructive">Couldn't load sales.</p>
+      ) : !data?.length ? (
         <p className="rounded-2xl glass p-10 text-center text-muted-foreground">No sales yet.</p>
       ) : (
         <TableShell
@@ -20,7 +22,7 @@ export function AdminSales() {
             <th className="px-4 py-3">Prompt</th>
             <th className="px-4 py-3">Sale</th>
             <th className="hidden px-4 py-3 sm:table-cell">Platform fee</th>
-            <th className="hidden px-4 py-3 sm:table-cell">Creator</th>
+            <th className="hidden px-4 py-3 sm:table-cell">Creator share (unpaid)</th>
             <th className="px-4 py-3 text-right">When</th>
           </>}
         >

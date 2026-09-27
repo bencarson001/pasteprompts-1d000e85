@@ -26,7 +26,7 @@ export function AdminUsers() {
   const [q, setQ] = useState("");
   const [search, setSearch] = useState("");
 
-  const { data: users, isLoading } = useQuery({ queryKey: ["admin-users", search], queryFn: () => fetchAdminUsers(search) });
+  const { data: users, isLoading, isError, error } = useQuery({ queryKey: ["admin-users", search], queryFn: () => fetchAdminUsers(search) });
   const { data: roles } = useQuery({ queryKey: ["admin-roles"], queryFn: fetchAdminRoles });
   const adminIds = new Set((roles ?? []).filter((r) => r.role === "admin").map((r) => r.user_id));
 
@@ -57,15 +57,19 @@ export function AdminUsers() {
 
       {isLoading ? (
         <div className="grid place-items-center py-20"><Loader2 className="h-7 w-7 animate-spin text-primary" /></div>
+      ) : isError ? (
+        <p className="rounded-2xl glass p-10 text-center text-destructive">Couldn't load members: {(error as Error).message}</p>
       ) : !users?.length ? (
-        <p className="rounded-2xl glass p-10 text-center text-muted-foreground">No members found.</p>
+        <p className="rounded-2xl glass p-10 text-center text-muted-foreground">{search ? `No members match “${search}”.` : "No members found."}</p>
       ) : (
+        <>
+        <p className="mb-2 text-xs text-muted-foreground">Showing {users.length} member{users.length === 1 ? "" : "s"}{users.length >= 200 ? " (newest 200 — search to narrow)" : ""}</p>
         <TableShell
           head={<>
             <th className="px-4 py-3">Member</th>
             <th className="hidden px-4 py-3 sm:table-cell">Tier</th>
             <th className="hidden px-4 py-3 md:table-cell">Sales</th>
-            <th className="hidden px-4 py-3 lg:table-cell">Earnings</th>
+            <th className="hidden px-4 py-3 lg:table-cell">Earned (unpaid)</th>
             <th className="px-4 py-3 text-right">Manage</th>
           </>}
         >
@@ -119,6 +123,7 @@ export function AdminUsers() {
             );
           })}
         </TableShell>
+        </>
       )}
     </div>
   );

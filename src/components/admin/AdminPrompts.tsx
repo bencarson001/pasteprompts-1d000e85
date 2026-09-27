@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { Check, X, Star, Trash2, Search, Loader2, Pencil } from "lucide-react";
+import { Check, X, Star, Trash2, Search, Loader2, Pencil, Eye, ChevronLeft, ChevronRight } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -16,7 +16,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import {
   fetchAdminPrompts, setPromptStatus, setPromptFeatured, deletePromptAdmin,
-  updatePromptAdmin, bulkPromptStatus,
+  updatePromptAdmin, bulkPromptStatus, ADMIN_PROMPTS_PAGE,
 } from "@/lib/admin";
 import { formatPrice, timeAgo } from "@/lib/format";
 import { TableShell, SectionHeader } from "./shared";
@@ -27,7 +27,7 @@ const statusStyles: Record<string, string> = {
   rejected: "bg-destructive/15 text-destructive",
 };
 
-type Row = Awaited<ReturnType<typeof fetchAdminPrompts>>[number];
+type Row = Awaited<ReturnType<typeof fetchAdminPrompts>>["rows"][number];
 
 export function AdminPrompts() {
   const { toast } = useToast();
@@ -37,11 +37,16 @@ export function AdminPrompts() {
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [editing, setEditing] = useState<Row | null>(null);
+  const [reviewing, setReviewing] = useState<Row | null>(null);
+  const [page, setPage] = useState(0);
 
-  const { data: prompts, isLoading } = useQuery({
-    queryKey: ["admin-prompts2", filter, search],
-    queryFn: () => fetchAdminPrompts(filter, search),
+  const { data, isLoading, isError, error } = useQuery({
+    queryKey: ["admin-prompts2", filter, search, page],
+    queryFn: () => fetchAdminPrompts(filter, search, page),
   });
+  const prompts = data?.rows;
+  const total = data?.total ?? 0;
+  const pages = Math.max(1, Math.ceil(total / ADMIN_PROMPTS_PAGE));
 
   const refresh = () => {
     qc.invalidateQueries({ queryKey: ["admin-prompts2"] });
@@ -67,7 +72,7 @@ export function AdminPrompts() {
       <SectionHeader title="Prompts" desc="Moderate, edit, feature and remove listings." />
 
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-        <Tabs value={filter} onValueChange={(v) => { setFilter(v); setSelected(new Set()); }}>
+        <Tabs value={filter} onValueChange={(v) => { setFilter(v); setPage(0); setSelected(new Set()); }}>
           <TabsList className="bg-card/60">
             <TabsTrigger value="pending">Pending</TabsTrigger>
             <TabsTrigger value="approved">Approved</TabsTrigger>
@@ -100,9 +105,9 @@ export function AdminPrompts() {
           >
             ⚡ Auto-Generate Missing Images
           </Button>
-          <form onSubmit={(e) => { e.preventDefault(); setSearch(q); }} className="relative w-full max-w-xs">
+          <form onSubmit={(e) => { e.preventDefault(); setSearch(q); setPage(0); }} className="relative w-full max-w-xs">
             <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search title…" className="pl-9" />
+            <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search title or description…" aria-label="Search prompts" className="pl-9" />
           </form>
         </div>
       </div>
@@ -123,9 +128,13 @@ export function AdminPrompts() {
 
       {isLoading ? (
         <div className="grid place-items-center py-20"><Loader2 className="h-7 w-7 animate-spin text-primary" /></div>
+      ) : isError ? (
+        <p className="rounded-2xl glass p-10 text-center text-destructive">Couldn't load prompts: {(error as Error).message}</p>
       ) : !prompts?.length ? (
-        <p className="rounded-2xl glass p-10 text-center text-muted-foreground">Nothing here.</p>
+        <p className="rounded-2xl glass p-10 text-center text-muted-foreground">{search ? `No ${filter === "all" ? "" : filter + " "}prompts match “${search}”.` : `No ${filter === "all" ? "" : filter + " "}prompts.`}</p>
       ) : (
+        <>
+        <p className="mb-2 text-xs text-muted-foreground">{total} {filter === "all" ? "" : filter} prompt{total === 1 ? "" : "s"}{search ? ` matching “${search}”` : ""} · page {page + 1} of {pages}</p>
         <TableShell
           head={<>
             <th className="w-10 px-4 py-3"></th>
@@ -178,13 +187,16 @@ export function AdminPrompts() {
                         ⚡ Gen Image
                       </Button>
                     )}
+                    <Button size="sm" variant="outline" className="h-8 border-white/15" aria-label="Review details" title="Review details" onClick={() => setReviewing(p)}>
+                      <Eye className="h-4 w-4" />
+                    </Button>
                     {p.status !== "approved" && (
-                      <Button size="sm" variant="outline" className="h-8 border-success/30 text-success hover:bg-success/10" onClick={() => act(() => setPromptStatus(p.id, "approved"), "Approved")}>
+                      <Button size="sm" variant="outline" aria-label="Approve" title="Approve" className="h-8 border-success/30 text-success hover:bg-success/10" onClick={() => act(() => setPromptStatus(p.id, "approved"), "Approved")}>
                         <Check className="h-4 w-4" />
                       </Button>
                     )}
                     {p.status !== "rejected" && (
-                      <Button size="sm" variant="outline" className="h-8 border-destructive/30 text-destructive hover:bg-destructive/10" onClick={() => act(() => setPromptStatus(p.id, "rejected"), "Rejected")}>
+                      <Button size="sm" variant="outline" aria-label="Reject" title="Reject" className="h-8 border-destructive/30 text-destructive hover:bg-destructive/10" onClick={() => act(() => setPromptStatus(p.id, "rejected"), "Rejected")}>
                         <X className="h-4 w-4" />
                       </Button>
                     )}
@@ -204,8 +216,20 @@ export function AdminPrompts() {
             );
           })}
         </TableShell>
+        {pages > 1 && (
+          <div className="mt-3 flex items-center justify-end gap-2">
+            <Button size="sm" variant="outline" disabled={page === 0} onClick={() => { setPage(page - 1); setSelected(new Set()); }}><ChevronLeft className="h-4 w-4" /> Prev</Button>
+            <Button size="sm" variant="outline" disabled={page + 1 >= pages} onClick={() => { setPage(page + 1); setSelected(new Set()); }}>Next <ChevronRight className="h-4 w-4" /></Button>
+          </div>
+        )}
+        </>
       )}
 
+      <ReviewDialog
+        row={reviewing}
+        onClose={() => setReviewing(null)}
+        onAct={(status) => { const r = reviewing!; setReviewing(null); act(() => setPromptStatus(r.id, status), status === "approved" ? `Approved “${r.title}”` : `Rejected “${r.title}”`); }}
+      />
       <EditDialog
         row={editing}
         onClose={() => setEditing(null)}
@@ -286,6 +310,48 @@ function EditDialog({ row, onClose, onSaved }: { row: Row | null; onClose: () =>
         <DialogFooter>
           <Button variant="ghost" onClick={onClose}>Cancel</Button>
           <Button onClick={save} disabled={saving}>{saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}Save</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function ReviewDialog({ row, onClose, onAct }: { row: Row | null; onClose: () => void; onAct: (s: "approved" | "rejected") => void }) {
+  const [body, setBody] = useState<string | null>(null);
+  useEffect(() => {
+    setBody(null);
+    if (row) supabase.rpc("get_prompt_body", { _prompt_id: row.id }).then(({ data, error }) => setBody(error ? `Couldn't load prompt text: ${error.message}` : data ?? ""));
+  }, [row]);
+  if (!row) return null;
+  const r = row as unknown as Row & { example_output?: string; tags?: string[]; copies_count?: number; category?: { name?: string } | null; creator?: { handle?: string } | null };
+  return (
+    <Dialog open onOpenChange={(o) => { if (!o) onClose(); }}>
+      <DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto">
+        <DialogHeader><DialogTitle>{r.title}</DialogTitle></DialogHeader>
+        <div className="space-y-4 text-sm">
+          <div className="flex flex-wrap gap-2">
+            <Badge className={`${statusStyles[r.status] ?? ""} capitalize`}>{r.status}</Badge>
+            <Badge variant="outline">{r.category?.name ?? "No category"}</Badge>
+            <Badge variant="outline" className="capitalize">{r.model}</Badge>
+            <Badge variant="outline">{formatPrice(r.price_pence, r.is_free)}</Badge>
+            <span className="text-xs text-muted-foreground">by @{r.creator?.handle ?? "unknown"} · submitted {timeAgo(r.created_at)}</span>
+          </div>
+          <div><Label className="text-xs text-muted-foreground">Description</Label><p className="mt-1 whitespace-pre-wrap">{r.description}</p></div>
+          <div>
+            <Label className="text-xs text-muted-foreground">Prompt text{body !== null && ` (${body.length} characters)`}</Label>
+            <pre className="mt-1 max-h-60 overflow-auto whitespace-pre-wrap rounded-lg bg-secondary/50 p-3 font-mono text-xs">{body === null ? "Loading…" : body || "(empty)"}</pre>
+          </div>
+          <div>
+            <Label className="text-xs text-muted-foreground">Example output</Label>
+            <pre className="mt-1 max-h-40 overflow-auto whitespace-pre-wrap rounded-lg bg-secondary/50 p-3 text-xs">{r.example_output || "(none)"}</pre>
+          </div>
+          {!!r.tags?.length && <p className="text-xs text-muted-foreground">Tags: {r.tags.join(", ")}</p>}
+          <p className="text-xs text-muted-foreground">Views {r.views} · Copies {r.copies_count ?? 0} · Sales {r.sales_count}</p>
+        </div>
+        <DialogFooter className="gap-2">
+          <Button variant="ghost" onClick={onClose}>Close</Button>
+          {r.status !== "rejected" && <Button variant="outline" className="border-destructive/40 text-destructive" onClick={() => onAct("rejected")}><X className="mr-1 h-4 w-4" />Reject</Button>}
+          {r.status !== "approved" && <Button onClick={() => onAct("approved")}><Check className="mr-1 h-4 w-4" />Approve</Button>}
         </DialogFooter>
       </DialogContent>
     </Dialog>
