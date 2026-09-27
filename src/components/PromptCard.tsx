@@ -68,7 +68,12 @@ export function PromptCard({ prompt, index = 0 }: { prompt: PromptCardData; inde
           <h3 className="mb-1.5 line-clamp-2 font-display text-base font-semibold leading-snug group-hover:text-primary-glow">
             {prompt.title}
           </h3>
-          <p className="mb-4 line-clamp-2 text-sm text-muted-foreground">{prompt.description}</p>
+          <p className="mb-3 line-clamp-2 text-sm text-muted-foreground">{prompt.description}</p>
+          {prompt.creator && (prompt.creator.display_name || prompt.creator.handle) && (
+            <p className="mb-3 truncate text-xs text-muted-foreground">
+              by <span className="font-medium text-foreground/80">{prompt.creator.display_name || prompt.creator.handle}</span>
+            </p>
+          )}
 
           <div className="mt-auto flex items-center justify-between border-t border-white/5 pt-3">
             <div className="flex items-center gap-3 text-xs text-muted-foreground">
