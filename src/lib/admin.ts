@@ -108,7 +108,7 @@ export async function fetchAdminAnalytics(days = 30): Promise<AdminAnalytics> {
           .order("id")
           .range(a, b)),
       supabase.from("categories").select("id, name, slug"),
-      fetchAll((a, b) => db.from("purchases").select("id, amount_pence, is_free, buyer_id, created_at").gte("created_at", sinceIso).order("id").range(a, b)),
+      fetchAll<{ id: string; amount_pence: number; is_free: boolean; buyer_id: string; created_at: string }>((a, b) => db.from("purchases").select("id, amount_pence, is_free, buyer_id, created_at").gte("created_at", sinceIso).order("id").range(a, b)),
       fetchAll((a, b) =>
         supabase
           .from("analytics_events")
