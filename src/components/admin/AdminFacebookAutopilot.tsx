@@ -467,13 +467,18 @@ function ScheduleCard() {
             <span>Post Time (London Time)</span>
             <span className="text-[10px] text-muted-foreground font-mono">{timeStr}</span>
           </label>
-          <Input
-            type="time"
-            step={3600}
+          <select
+            aria-label="Post time (London time)"
             value={timeStr}
             onChange={(e) => handleTimeChange(e.target.value)}
-            className="h-10 bg-card/60 border-white/10 rounded-xl font-mono text-sm"
-          />
+            className="h-10 w-full bg-card/60 border border-input rounded-xl font-mono text-sm px-3 text-foreground"
+          >
+            {Array.from({ length: 24 }, (_, h) => {
+              const v = `${String(h).padStart(2, "0")}:00`;
+              return <option key={v} value={v}>{v}</option>;
+            })}
+          </select>
+          <p className="text-[10px] text-muted-foreground">Posts go out on the hour.</p>
           <div className="flex items-center gap-1 pt-1">
             <span className="text-[10px] text-muted-foreground">Presets:</span>
             {["09:00", "12:00", "18:00", "21:00"].map((t) => (
