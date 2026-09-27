@@ -8,6 +8,13 @@
       "when": 1790192646532,
       "tag": "0000_fix_subscriptions_grants",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1790527537758,
+      "tag": "0001_lock_down_internal_functions",
+      "breakpoints": true
     }
   ]
 }
