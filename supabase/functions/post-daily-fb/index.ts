@@ -35,22 +35,26 @@ Deno.serve(async (req) => {
   if (body?.scheduled) {
     const { data: sched } = await supabase
       .from("fb_autopilot_schedule")
-      .select("enabled, days_of_week, post_hour, start_date, weeks")
+      .select("enabled, days_of_week, post_hour, post_minute, start_date, weeks")
       .eq("id", 1)
       .maybeSingle();
 
     if (sched && sched.enabled === false) return json({ ok: true, skipped: "autopilot disabled" });
 
     const postHour = (sched?.post_hour as number | undefined) ?? 18;
+    const postMinute = (sched?.post_minute as number | undefined) ?? 0;
     const days = (sched?.days_of_week as number[] | undefined) ?? [0, 1, 2, 3, 4, 5, 6];
 
     const london = new Intl.DateTimeFormat("en-GB", {
-      timeZone: "Europe/London", hour: "2-digit", hour12: false, weekday: "short",
+      timeZone: "Europe/London", hour: "2-digit", minute: "2-digit", hour12: false, weekday: "short",
       year: "numeric", month: "2-digit", day: "2-digit",
     }).formatToParts(new Date());
     const part = (t: string) => london.find((p) => p.type === t)?.value ?? "";
     const hour = Number(part("hour")) % 24;
-    if (hour !== postHour) return json({ ok: true, skipped: `not ${postHour}:00 Europe/London` });
+    const minute = Number(part("minute"));
+    const slot = Math.floor(minute / 5) * 5;
+    const want = `${String(postHour).padStart(2, "0")}:${String(postMinute).padStart(2, "0")}`;
+    if (hour !== postHour || slot !== postMinute) return json({ ok: true, skipped: `not ${want} Europe/London` });
 
     const todayLondon = `${part("year")}-${part("month")}-${part("day")}`;
     const dow = new Date(`${todayLondon}T12:00:00Z`).getUTCDay();

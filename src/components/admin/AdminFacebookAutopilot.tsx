@@ -63,6 +63,7 @@ interface ScheduleRow {
   enabled: boolean;
   days_of_week: number[];
   post_hour: number;
+  post_minute?: number;
   start_date: string;
   weeks: number;
   share_to_groups?: boolean;
@@ -215,7 +216,7 @@ const DAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 async function fetchSchedule(): Promise<ScheduleRow | null> {
   const { data, error } = await supabase
     .from("fb_autopilot_schedule" as never)
-    .select("id, enabled, days_of_week, post_hour, start_date, weeks")
+    .select("id, enabled, days_of_week, post_hour, post_minute, start_date, weeks")
     .eq("id", 1)
     .maybeSingle();
   if (error) throw error;
@@ -239,7 +240,7 @@ function ScheduleCard() {
 
   const [timeStr, setTimeStr] = useState<string>(() => {
     const saved = typeof window !== "undefined" ? localStorage.getItem("fb_autopilot_post_time") : null;
-    return saved ? `${saved.split(":")[0]}:00` : "18:00";
+    return saved && /^\d{2}:\d{2}$/.test(saved) ? saved : "18:00";
   });
   const [saving, setSaving] = useState(false);
   const [checkingDiag, setCheckingDiag] = useState(false);
@@ -253,11 +254,7 @@ function ScheduleCard() {
       const shareToGroups = savedShare !== null ? savedShare === "true" : (data.share_to_groups ?? true);
       setForm({ ...data, share_to_groups: shareToGroups });
 
-      if (savedTime && savedTime.startsWith(`${String(data.post_hour).padStart(2, "0")}:`)) {
-        setTimeStr(`${String(data.post_hour).padStart(2, "0")}:00`);
-      } else {
-        setTimeStr(`${String(data.post_hour).padStart(2, "0")}:00`);
-      }
+      setTimeStr(`${String(data.post_hour).padStart(2, "0")}:${String(data.post_minute ?? 0).padStart(2, "0")}`);
     } else {
       const shareToGroups = savedShare !== null ? savedShare === "true" : true;
       setForm((prev) => ({ ...prev, share_to_groups: shareToGroups }));
@@ -265,18 +262,15 @@ function ScheduleCard() {
   }, [data]);
 
   const handleTimeChange = (newVal: string) => {
-    // Posting runs on an hourly cron, so only whole hours are honoured —
-    // snap the picker to :00 rather than promising a minute we can't hit.
-    const [h] = newVal.split(":");
-    const normalized = `${(h || "18").padStart(2, "0")}:00`;
+    // Posting checks every 5 minutes, so snap to the nearest 5-minute mark.
+    const [hs, ms] = newVal.split(":");
+    const h = Math.min(23, Math.max(0, parseInt(hs, 10) || 0));
+    let m = Math.round((parseInt(ms, 10) || 0) / 5) * 5;
+    if (m > 55) m = 55;
+    const normalized = `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
     setTimeStr(normalized);
-    if (typeof window !== "undefined") {
-      localStorage.setItem("fb_autopilot_post_time", normalized);
-    }
-    const hourNum = parseInt(h, 10);
-    if (!isNaN(hourNum)) {
-      setForm((prev) => (prev ? { ...prev, post_hour: Math.min(23, Math.max(0, hourNum)) } : null));
-    }
+    if (typeof window !== "undefined") localStorage.setItem("fb_autopilot_post_time", normalized);
+    setForm((prev) => (prev ? { ...prev, post_hour: h, post_minute: m } : prev));
   };
 
   const toggleDay = (d: number) =>
@@ -327,6 +321,8 @@ function ScheduleCard() {
     const [h] = timeStr.split(":");
     const hourNum = parseInt(h, 10);
     const validHour = !isNaN(hourNum) ? Math.min(23, Math.max(0, hourNum)) : form.post_hour;
+    const minNum = parseInt(timeStr.split(":")[1], 10);
+    const validMinute = !isNaN(minNum) ? Math.min(55, Math.max(0, Math.round(minNum / 5) * 5)) : 0;
 
     // Attempt upserting with share_to_groups; fallback gracefully if column is missing
     let { error } = await (supabase as unknown as { from: (t: string) => { upsert: (r: unknown, o: { onConflict: string }) => Promise<{ error: { message: string } | null }> } })
@@ -336,6 +332,7 @@ function ScheduleCard() {
         enabled: form.enabled,
         days_of_week: form.days_of_week.length ? form.days_of_week : [0, 1, 2, 3, 4, 5, 6],
         post_hour: validHour,
+        post_minute: validMinute,
         start_date: form.start_date,
         weeks: Math.min(260, Math.max(1, form.weeks || 1)),
         share_to_groups: form.share_to_groups ?? true,
@@ -349,6 +346,8 @@ function ScheduleCard() {
           enabled: form.enabled,
           days_of_week: form.days_of_week.length ? form.days_of_week : [0, 1, 2, 3, 4, 5, 6],
           post_hour: validHour,
+          post_minute: validMinute,
+        post_minute: validMinute,
           start_date: form.start_date,
           weeks: Math.min(260, Math.max(1, form.weeks || 1)),
         }, { onConflict: "id" });
@@ -467,18 +466,15 @@ function ScheduleCard() {
             <span>Post Time (London Time)</span>
             <span className="text-[10px] text-muted-foreground font-mono">{timeStr}</span>
           </label>
-          <select
-            aria-label="Post time (London time)"
+          <Input
+            type="time"
+            step={300}
             value={timeStr}
-            onChange={(e) => handleTimeChange(e.target.value)}
-            className="h-10 w-full bg-card/60 border border-input rounded-xl font-mono text-sm px-3 text-foreground"
-          >
-            {Array.from({ length: 24 }, (_, h) => {
-              const v = `${String(h).padStart(2, "0")}:00`;
-              return <option key={v} value={v}>{v}</option>;
-            })}
-          </select>
-          <p className="text-[10px] text-muted-foreground">Posts go out on the hour.</p>
+            onChange={(e) => { if (e.target.value) setTimeStr(e.target.value); }}
+            onBlur={(e) => handleTimeChange(e.target.value || timeStr)}
+            className="h-10 bg-card/60 border-white/10 rounded-xl font-mono text-sm"
+          />
+          <p className="text-[10px] text-muted-foreground">Rounded to the nearest 5 minutes when you leave the box.</p>
           <div className="flex items-center gap-1 pt-1">
             <span className="text-[10px] text-muted-foreground">Presets:</span>
             {["09:00", "12:00", "18:00", "21:00"].map((t) => (
