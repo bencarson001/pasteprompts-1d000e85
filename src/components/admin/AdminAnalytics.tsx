@@ -484,49 +484,13 @@ export function AdminAnalytics() {
     },
   ];
 
-  const trafficData = d?.traffic_sources && d.traffic_sources.length > 0 ? d.traffic_sources : [
-    { name: "Direct", value: 38, color: "#8B5CF6" },
-    { name: "Organic", value: 31, color: "#06B6D4" },
-    { name: "Social", value: 18, color: "#F59E0B" },
-    { name: "Referral", value: 9, color: "#3B82F6" },
-    { name: "Other", value: 4, color: "#6B7280" },
-  ];
-
-  const dailyChartData = d?.daily && d.daily.length > 0 ? d.daily : [];
-
-  const topPrompts = d?.top_prompts && d.top_prompts.length > 0 ? d.top_prompts : [
-    { title: "Ultimate ChatGPT Jailbreak 2026", slug: "chatgpt-jailbreak", category: "AI Tools", views: 1842, ctr: 7.2, sales_count: 84, copies_count: 142 },
-    { title: "Midjourney Realistic Portrait Master", slug: "midjourney-portrait", category: "Image Gen", views: 1411, ctr: 5.8, sales_count: 52, copies_count: 98 },
-    { title: "SEO Blog Content Architecture System", slug: "seo-blog-system", category: "Writing", views: 987, ctr: 3.4, sales_count: 28, copies_count: 65 },
-    { title: "Business Plan & Pitch Deck Generator", slug: "business-plan-generator", category: "Business", views: 734, ctr: 2.9, sales_count: 19, copies_count: 42 },
-    { title: "Viral Social Media Hooks & Scripts", slug: "viral-hooks", category: "Marketing", views: 612, ctr: 4.1, sales_count: 14, copies_count: 38 },
-    { title: "Full Stack Python Code Review Assistant", slug: "python-code-review", category: "Coding", views: 401, ctr: 4.4, sales_count: 9, copies_count: 24 },
-  ];
-
-  const geography = d?.geography && d.geography.length > 0 ? d.geography : [
-    { country: "United Kingdom", code: "GB", percent: 34.1, color: "#8B5CF6" },
-    { country: "United States", code: "US", percent: 29.6, color: "#06B6D4" },
-    { country: "Canada", code: "CA", percent: 11.2, color: "#F59E0B" },
-    { country: "Australia", code: "AU", percent: 7.8, color: "#3B82F6" },
-    { country: "Germany", code: "DE", percent: 4.3, color: "#A855F7" },
-    { country: "Other", code: "🌐", percent: 13.0, color: "#6B7280" },
-  ];
-
-  const funnel = d?.funnel && d.funnel.length > 0 ? d.funnel : [
-    { step: "Visits", count: 3217, percent: 100 },
-    { step: "Prompt views", count: 2348, percent: 73 },
-    { step: "Preview", count: 1222, percent: 38 },
-    { step: "Copy / Purchase", count: 412, percent: 13 },
-  ];
-
-  const categories = d?.category_performance && d.category_performance.length > 0 ? d.category_performance : [
-    { name: "AI Tools", slug: "ai-tools", views: 4120, prompts_count: 32 },
-    { name: "Image Gen", slug: "image-gen", views: 2480, prompts_count: 24 },
-    { name: "Writing", slug: "writing", views: 1890, prompts_count: 18 },
-    { name: "Business", slug: "business", views: 1420, prompts_count: 14 },
-    { name: "Marketing", slug: "marketing", views: 980, prompts_count: 11 },
-    { name: "Coding", slug: "coding", views: 760, prompts_count: 9 },
-  ];
+  // Real data only — empty lists render as empty states.
+  const trafficData = d?.traffic_sources ?? [];
+  const dailyChartData = d?.daily ?? [];
+  const topPrompts = d?.top_prompts ?? [];
+  const geography = d?.geography ?? [];
+  const funnel = d?.funnel ?? [];
+  const categories = d?.category_performance ?? [];
 
   const maxCatViews = Math.max(1, ...categories.map((c) => c.views));
 
