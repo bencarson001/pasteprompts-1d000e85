@@ -3,8 +3,14 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState, type ReactNode } from "react";
 import {
   ArrowRight, Search, Gift, Lock, Sparkles, Bookmark, UserPlus, Upload,
-  Copy, FileText, Flame, Clock, Star, Layers,
+  Copy, FileText, Flame, Clock, Star, Layers, Banknote, Play, Briefcase, PenTool, Zap,
+  Code, Paintbrush, Megaphone, Image as ImageIcon, type LucideIcon,
 } from "lucide-react";
+
+const CATEGORY_ICONS: Record<string, LucideIcon> = {
+  banknote: Banknote, play: Play, briefcase: Briefcase, "pen-tool": PenTool, zap: Zap,
+  sparkles: Sparkles, code: Code, paintbrush: Paintbrush, megaphone: Megaphone, image: ImageIcon,
+};
 import { Button } from "@/components/ui/button";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
@@ -223,9 +229,9 @@ export default function Index() {
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
             {topCategories.map((c) => (
               <Link key={c.id} to={`/category/${c.slug}`} className="group flex items-center gap-3 rounded-2xl border border-border bg-card p-4 transition-all hover:border-primary/40 hover:bg-muted/20">
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-xl">
-                  {c.icon || <Layers className="h-5 w-5 text-primary-glow" />}
-                </span>
+                {(() => { const I = CATEGORY_ICONS[c.icon ?? ""] ?? Layers; return (
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary-glow"><I className="h-5 w-5" aria-hidden /></span>
+                ); })()}
                 <span className="min-w-0">
                   <span className="block truncate font-display font-semibold text-foreground group-hover:text-primary-glow">{c.name}</span>
                   <span className="text-xs text-muted-foreground">{c.count.toLocaleString("en-GB")} prompt{c.count === 1 ? "" : "s"}</span>
