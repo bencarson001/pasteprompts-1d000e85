@@ -17,5 +17,9 @@ Disallow: /settings
 Disallow: /library
 Disallow: /saved
 Disallow: /checkout
+Disallow: /dashboard
+Disallow: /messages
+Disallow: /profile/edit
+Disallow: /.lovable/
 
 Sitemap: https://pasteprompts.co.uk/sitemap.xml
