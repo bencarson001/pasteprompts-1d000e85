@@ -793,7 +793,7 @@ export function AdminAnalytics() {
                   {d?.seo_signals?.total_prompts ?? 0} <span className="text-xs text-white/40">live prompts (indexing: see Search Console)</span>
                 </div>
                 <div className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-400">
-                  <CheckCircle2 className="h-3 w-3" /> Indexed & Discoverable
+                  <CheckCircle2 className="h-3 w-3" /> In sitemap
                 </div>
               </div>
             </div>
@@ -805,9 +805,9 @@ export function AdminAnalytics() {
                 <div className="text-[11px] text-white/40">User engagement depth</div>
               </div>
               <div className="text-right">
-                <div className="text-sm font-bold text-white">1m 48s</div>
+                <div className="text-sm font-bold text-white">{avgSession}</div>
                 <div className="text-[10px] font-semibold text-emerald-400">
-                  ↑ healthy
+                  Real average
                 </div>
               </div>
             </div>
@@ -819,9 +819,9 @@ export function AdminAnalytics() {
                 <div className="text-[11px] text-white/40">Exploration & discovery depth</div>
               </div>
               <div className="text-right">
-                <div className="text-sm font-bold text-white">2.8</div>
+                <div className="text-sm font-bold text-white">{d?.seo_signals?.pages_per_session ?? 0}</div>
                 <div className="text-[10px] font-semibold text-emerald-400">
-                  ↑ 0.3 vs last period
+                  Real average
                 </div>
               </div>
             </div>
@@ -833,9 +833,9 @@ export function AdminAnalytics() {
                 <div className="text-[11px] text-white/40">Device split across visitors</div>
               </div>
               <div className="text-right">
-                <div className="text-sm font-bold text-white">58% / 42%</div>
+                <div className="text-sm font-bold text-white">Not tracked</div>
                 <div className="text-[10px] font-semibold text-purple-300">
-                  Mobile majority
+                  Device type isn't recorded yet
                 </div>
               </div>
             </div>
