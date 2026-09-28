@@ -64,8 +64,8 @@ export const CATEGORY_CONTENT: Record<string, CategoryContent> = {
   "make-money-online": {
     title: "Make Money Online AI Prompts",
     metaDescription:
-      "Battle-tested make money online AI prompts for side hustles, freelancing, e-commerce and digital products. Free & premium prompts for ChatGPT, Claude & Gemini.",
-    lead: "Battle-tested prompts for side hustles, freelancing, e-commerce and digital products — from idea to first sale.",
+      "Make money online AI prompts for side hustles, freelancing, e-commerce and digital products. Free and 49p prompts for ChatGPT, Claude and Gemini.",
+    lead: "Prompts for side hustles, freelancing, e-commerce and digital products — from idea to a practical action plan.",
     sections: [
       {
         h2: "AI prompts for building an online income",

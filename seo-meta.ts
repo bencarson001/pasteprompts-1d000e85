@@ -158,5 +158,9 @@ export function applyMetaToHtml(html: string, meta: PageMeta, siteUrl = "https:/
   output = replaceMeta(output, "name", "twitter:description", meta.description);
   output = replaceMeta(output, "name", "robots", meta.noindex ? "noindex,nofollow" : "index,follow,max-image-preview:large,max-snippet:-1");
   output = output.replace(/<link(?=[^>]*\brel=["']canonical["'])[^>]*>/i, `<link rel="canonical" href="${escapeHtml(canonical)}" data-static-canonical="true" />`);
+  if (meta.canonicalPath !== "/") {
+    const fallback = `<div id="root"><main id="static-fallback" style="max-width:760px;margin:0 auto;padding:48px 20px;line-height:1.6"><h1>${escapeHtml(title)}</h1><p>${escapeHtml(meta.description)}</p><nav aria-label="Related pages"><a href="/">Home</a> · <a href="/browse">Browse prompts</a> · <a href="/guides">Guides</a></nav></main></div>\n    `;
+    output = output.replace(/<div id="root">[\s\S]*?(?=<script type="module")/, fallback);
+  }
   return output;
 }

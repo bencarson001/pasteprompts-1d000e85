@@ -35,6 +35,8 @@ describe("server SEO metadata", () => {
     expect(html).toContain("<title>Copywriting AI Prompts | Paste Prompts</title>");
     expect(html).toContain('href="https://pasteprompts.co.uk/category/copywriting"');
     expect(html).toContain('content="Browse copywriting prompts."');
+    expect(html).toContain('<main id="static-fallback"');
+    expect(html).not.toContain("Fallback</title>");
   });
 
   it("escapes database content before inserting it into HTML", () => {

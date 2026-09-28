@@ -5,7 +5,7 @@ import { fileURLToPath } from "url";
 import { createServer as createViteServer } from "vite";
 import { createClient } from "@supabase/supabase-js";
 import dotenv from "dotenv";
-import { applyMetaToHtml, resolveStaticMeta, type PageMeta } from "./seo-meta";
+import { applyMetaToHtml, escapeHtml, resolveStaticMeta, type PageMeta } from "./seo-meta";
 import { LANDING_PAGES } from "./src/lib/landingContent";
 import { CATEGORY_CONTENT } from "./src/lib/categoryContent";
 import { GUIDES } from "./src/lib/guides";
@@ -296,8 +296,8 @@ async function startServer() {
           const image = prompt.social_image_url || "https://storage.googleapis.com/gpt-engineer-file-uploads/gVA6LFVAv1NR5HdixPMdl8cXxqp2/social-images/social-1781312540994-4621.webp";
           pageMeta = { title, description: desc, canonicalPath: `/prompt/${slug}` };
           template = template
-            .replace(/<meta property="og:image" content="[^"]*"/i, `<meta property="og:image" content="${image}"`)
-            .replace(/<meta name="twitter:image" content="[^"]*"/i, `<meta name="twitter:image" content="${image}"`);
+            .replace(/<meta property="og:image" content="[^"]*"/i, `<meta property="og:image" content="${escapeHtml(image)}"`)
+            .replace(/<meta name="twitter:image" content="[^"]*"/i, `<meta name="twitter:image" content="${escapeHtml(image)}"`);
         }
       } else if (profileMatch && supabase) {
         const handle = profileMatch[1];
@@ -314,8 +314,8 @@ async function startServer() {
           const image = profile.avatar_url || "https://storage.googleapis.com/gpt-engineer-file-uploads/gVA6LFVAv1NR5HdixPMdl8cXxqp2/social-images/social-1781312540994-4621.webp";
           pageMeta = { title, description: desc, canonicalPath: `/creators/${profile.handle}` };
           template = template
-            .replace(/<meta property="og:image" content="[^"]*"/i, `<meta property="og:image" content="${image}"`)
-            .replace(/<meta name="twitter:image" content="[^"]*"/i, `<meta name="twitter:image" content="${image}"`);
+            .replace(/<meta property="og:image" content="[^"]*"/i, `<meta property="og:image" content="${escapeHtml(image)}"`)
+            .replace(/<meta name="twitter:image" content="[^"]*"/i, `<meta name="twitter:image" content="${escapeHtml(image)}"`);
         }
       } else if (categoryMatch && supabase) {
         const slug = categoryMatch[1];

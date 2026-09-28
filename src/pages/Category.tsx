@@ -44,13 +44,13 @@ export default function Category() {
   const lead =
     content?.lead ??
     category?.description ??
-    `Browse our curated collection of ${name.toLowerCase()} prompts. Each one is engineered for real-world results — parameterised, tested, and ready to paste straight into your favourite AI model.`;
+    `Browse ${name.toLowerCase()} prompts currently listed on Paste Prompts. Compare free and 49p options, then open a listing to see its model, creator and example output.`;
 
   const seoTitle = content?.title ?? `${name} prompts`;
   const seoDescription =
     content?.metaDescription ??
     category?.description ??
-    `Discover high-performing ${name} AI prompts — vetted, parameterised and ready to copy and paste.`;
+    `Browse ${name} AI prompts currently listed on Paste Prompts, with free and 49p options for popular AI tools.`;
 
   const promptList = prompts ?? [];
 
