@@ -421,11 +421,21 @@ export default function Browse() {
   // intermediate step pages are noindexed — they're navigation, not content.
   const canonicalPath = price ? browsePath(price, model, category) : "/browse";
   const isStepPage = !hasSearch && (!price || !model || !category);
+  const priceLabel = price && price !== "all" ? (price === "paid" ? "49p" : "Free") : "";
+  const modelLabel = model && model !== "all" ? (MODEL_LABELS[model] ?? model) : "";
+  const categoryLabel = category && category !== "all"
+    ? category.split("-").map((part) => part.charAt(0).toUpperCase() + part.slice(1)).join(" ")
+    : "";
+  const filterLabel = [priceLabel, categoryLabel, modelLabel].filter(Boolean).join(" ");
+  const seoTitle = filterLabel ? `${filterLabel} AI prompts` : "Browse AI prompts";
+  const seoDescription = filterLabel
+    ? `Browse ${filterLabel.toLowerCase()} on Paste Prompts. Compare real listings, choose a free or 49p prompt and open its full marketplace page.`
+    : "Browse AI prompts by price, platform and category. Find free and 49p prompts for ChatGPT, Claude, Gemini, Midjourney and more.";
   return (
     <Layout>
       <SEO
-        title="Browse AI prompts"
-        description="Browse high-performing AI prompts — filter by free or paid, AI platform and category. Prompts for ChatGPT, Claude, Gemini and more."
+        title={seoTitle}
+        description={seoDescription}
         canonical={canonicalPath}
         noindex={hasSearch || isStepPage}
       />

@@ -31,7 +31,7 @@ export function PromptCard({ prompt, index = 0 }: { prompt: PromptCardData; inde
       transition={{ duration: 0.35, delay: Math.min(index * 0.04, 0.3) }}
     >
       <Link
-        to={prompt.category ? `/prompt/${prompt.category.slug}/${prompt.slug}` : `/prompt/${prompt.slug}`}
+        to={`/prompt/${prompt.slug}`}
         className="card-hover group flex h-full flex-col overflow-hidden rounded-2xl glass"
       >
         {prompt.image_url ? (

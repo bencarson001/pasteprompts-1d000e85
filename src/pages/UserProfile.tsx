@@ -179,7 +179,7 @@ export default function UserProfile() {
       <SEO
         title={metaTitle}
         description={metaDescription}
-        canonical={`https://pasteprompts.co.uk/profile/${profile.handle}`}
+        canonical={`/creators/${profile.handle}`}
         jsonLd={[
           {
             "@context": "https://schema.org",
@@ -189,7 +189,7 @@ export default function UserProfile() {
               name: displayName,
               alternateName: `@${profile.handle}`,
               description: profile.bio || "AI Prompt Creator",
-              url: `https://pasteprompts.co.uk/profile/${profile.handle}`,
+              url: `https://pasteprompts.co.uk/creators/${profile.handle}`,
               image: profile.avatar_url ?? undefined,
             },
           },

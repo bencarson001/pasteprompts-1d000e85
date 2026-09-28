@@ -48,7 +48,7 @@ export default function PromptDetail() {
   const [gateOpen, setGateOpen] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
 
-  const currentPath = categorySlug ? `/prompt/${categorySlug}/${slug}` : `/prompt/${slug}`;
+  const currentPath = `/prompt/${slug}`;
 
   const { data: prompt, isLoading } = useQuery({ queryKey: ["prompt", slug], queryFn: () => fetchPromptBySlug(slug) });
 
