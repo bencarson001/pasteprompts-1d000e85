@@ -432,6 +432,7 @@ export type Database = {
           id: number
           post_hour: number
           post_minute: number
+          share_to_groups: boolean
           start_date: string
           updated_at: string
           weeks: number
@@ -443,6 +444,7 @@ export type Database = {
           id?: number
           post_hour?: number
           post_minute?: number
+          share_to_groups?: boolean
           start_date?: string
           updated_at?: string
           weeks?: number
@@ -454,6 +456,7 @@ export type Database = {
           id?: number
           post_hour?: number
           post_minute?: number
+          share_to_groups?: boolean
           start_date?: string
           updated_at?: string
           weeks?: number

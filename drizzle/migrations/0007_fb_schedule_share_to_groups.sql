@@ -1,0 +1,1 @@
+ALTER TABLE public.fb_autopilot_schedule ADD COLUMN IF NOT EXISTS share_to_groups boolean NOT NULL DEFAULT true;

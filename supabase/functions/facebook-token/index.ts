@@ -57,6 +57,32 @@ Deno.serve(async (req) => {
     const body = await req.json().catch(() => ({} as Record<string, unknown>));
     const action = String(body.action ?? "status");
 
+    if (action === "verify_groups") {
+      const creds = await getPageCredentials(supabase);
+      if (!creds?.token) return json({ error: "Facebook Page is not connected." }, 400);
+      const { data: groups } = await supabase.from("fb_groups").select("id, group_id, name");
+      const results: Array<{ id: string; group_id: string; ok: boolean; name?: string; error?: string }> = [];
+      for (const g of (groups ?? []) as Array<{ id: string; group_id: string; name: string }>) {
+        try {
+          const r = await fetch(
+            `https://graph.facebook.com/${GRAPH_VERSION}/${encodeURIComponent(g.group_id)}?fields=id,name&access_token=${encodeURIComponent(creds.token)}`,
+          );
+          const j = await r.json();
+          if (r.ok && j?.id) {
+            results.push({ id: g.id, group_id: g.group_id, ok: true, name: j.name });
+            await supabase.from("fb_groups").update({ last_error: null }).eq("id", g.id);
+          } else {
+            const msg = String(j?.error?.message ?? `HTTP ${r.status}`).slice(0, 300);
+            results.push({ id: g.id, group_id: g.group_id, ok: false, error: msg });
+            await supabase.from("fb_groups").update({ last_error: `Check failed: ${msg}` }).eq("id", g.id);
+          }
+        } catch (e) {
+          results.push({ id: g.id, group_id: g.group_id, ok: false, error: (e as Error).message });
+        }
+      }
+      return json({ ok: true, results });
+    }
+
     if (action === "get_groups") {
       const { data, error } = await supabase
         .from("fb_groups")
