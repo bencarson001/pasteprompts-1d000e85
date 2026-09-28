@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Loader2, Search, Copy, Wallet, CheckCircle2, AlertCircle, History } from "lucide-react";
+import { Loader2, Search, Copy, Wallet, CheckCircle2, AlertCircle, History, BarChart3 } from "lucide-react";
+import { SalesOverview, CreatorSalesDialog, useLiveSales, sumSales, inPeriod, type Period } from "./PayoutSalesStats";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -23,9 +24,12 @@ export function AdminPayouts() {
   const [q, setQ] = useState("");
   const [paying, setPaying] = useState<CreatorBalance | null>(null);
   const [history, setHistory] = useState<CreatorBalance | null>(null);
+  const [detail, setDetail] = useState<CreatorBalance | null>(null);
+  const [period, setPeriod] = useState<Period>("30");
 
   const { data, isLoading, isError, error } = useQuery({ queryKey: ["admin-balances"], queryFn: fetchCreatorBalances });
   const { data: payouts } = useQuery({ queryKey: ["admin-payouts"], queryFn: () => fetchPayouts() });
+  const { data: sales } = useLiveSales();
 
   const rows = useMemo(() => {
     const term = q.trim().toLowerCase();
@@ -56,6 +60,8 @@ export function AdminPayouts() {
   return (
     <div>
       <SectionHeader title="Creator payouts" desc="Who is owed money from real (live) sales. Send the money yourself (bank or PayPal), then record it here." />
+      <SalesOverview sales={sales ?? []} period={period} setPeriod={setPeriod} creators={data?.length ?? 0} />
+      <CreatorSalesDialog creator={detail} sales={sales ?? []} onClose={() => setDetail(null)} />
 
       <div className="mb-5 grid grid-cols-2 gap-3 lg:grid-cols-4">
         <Stat label="Owed to creators now" value={gbp(totals.owed)} cls="text-warning" />
@@ -91,6 +97,7 @@ export function AdminPayouts() {
           <th className="px-4 py-3">Owed</th>
           <th className="hidden px-4 py-3 md:table-cell">Earned / Paid</th>
           <th className="hidden px-4 py-3 lg:table-cell">Pay to</th>
+          <th className="hidden px-4 py-3 sm:table-cell">Sales ({period === "all" ? "all time" : `${period}d`})</th>
           <th className="px-4 py-3 text-right">Action</th>
         </>}>
           {rows.map((r) => (
@@ -115,8 +122,12 @@ export function AdminPayouts() {
                   </button>
                 ) : <span className="text-xs text-muted-foreground">Not added yet</span>}
               </td>
+              <td className="hidden px-4 py-3 text-sm sm:table-cell">
+                {(() => { const s = sumSales((sales ?? []).filter((x) => x.creator_id === r.creator_id && !x.is_test && inPeriod(x.created_at, period))); return <>{s.count} sale{s.count === 1 ? "" : "s"}<br /><span className="text-xs text-muted-foreground">{gbp(s.earned)} earned</span></>; })()}
+              </td>
               <td className="px-4 py-3">
                 <div className="flex justify-end gap-1.5">
+                  <Button size="sm" variant="outline" className="h-8" onClick={() => setDetail(r)} aria-label="Sales details"><BarChart3 className="h-4 w-4" /></Button>
                   <Button size="sm" variant="outline" className="h-8" onClick={() => setHistory(r)} aria-label="Payout history"><History className="h-4 w-4" /></Button>
                   <Button size="sm" className="h-8" disabled={r.owed_pence <= 0} onClick={() => setPaying(r)}><Wallet className="mr-1 h-4 w-4" />Pay</Button>
                 </div>
