@@ -54,7 +54,7 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Determine entitlement from the caller's JWT (optional).
+    // Sign-in is required so visitors can't spend AI credits anonymously.
     let userId: string | null = null;
     const authHeader = req.headers.get("Authorization");
     if (authHeader?.startsWith("Bearer ")) {
@@ -65,6 +65,11 @@ Deno.serve(async (req) => {
       );
       const { data } = await anon.auth.getClaims(authHeader.replace("Bearer ", ""));
       userId = (data?.claims?.sub as string) ?? null;
+    }
+    if (!userId) {
+      return new Response(JSON.stringify({ error: "Please sign in to try this prompt." }), {
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
 
     let entitled = !!prompt.is_free;
