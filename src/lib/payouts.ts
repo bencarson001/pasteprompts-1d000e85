@@ -57,3 +57,33 @@ export async function saveMyPayoutDetails(userId: string, d: PayoutDetails) {
     .upsert({ user_id: userId, method: d.method, details: d.details.trim(), updated_at: new Date().toISOString() } as never);
   if (error) throw new Error(error.message);
 }
+
+export type CreatorSale = {
+  id: string; created_at: string; amount_pence: number; platform_fee_pence: number; creator_earning_pence: number;
+  is_test: boolean; prompt_id: string; prompt_title: string; creator_id: string;
+};
+
+// All paid sales (live + test flagged), paginated past the 1000-row API cap.
+export async function fetchAllPaidSales(): Promise<CreatorSale[]> {
+  const out: CreatorSale[] = [];
+  for (let from = 0; ; from += 1000) {
+    const { data, error } = await supabase
+      .from("purchases")
+      .select("id, created_at, amount_pence, platform_fee_pence, creator_earning_pence, stripe_session_id, prompt_id, prompt:prompts(title, creator_id)")
+      .eq("is_free", false)
+      .order("created_at", { ascending: false })
+      .range(from, from + 999);
+    if (error) throw new Error(error.message);
+    for (const r of (data ?? []) as unknown as Array<Record<string, unknown> & { prompt: { title: string; creator_id: string } | null }>) {
+      out.push({
+        id: r.id as string, created_at: r.created_at as string,
+        amount_pence: (r.amount_pence as number) ?? 0, platform_fee_pence: (r.platform_fee_pence as number) ?? 0,
+        creator_earning_pence: (r.creator_earning_pence as number) ?? 0,
+        is_test: String(r.stripe_session_id ?? "").startsWith("cs_test_"),
+        prompt_id: r.prompt_id as string, prompt_title: r.prompt?.title ?? "Deleted prompt", creator_id: r.prompt?.creator_id ?? "",
+      });
+    }
+    if ((data ?? []).length < 1000) break;
+  }
+  return out;
+}
