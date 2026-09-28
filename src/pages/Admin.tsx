@@ -3,8 +3,9 @@ import { useQuery } from "@tanstack/react-query";
 import {
   Shield, LayoutDashboard, FileText, Users, ShoppingBag, Star, Tag,
   Megaphone, AlertTriangle, Flag, ToggleLeft, ScrollText, CreditCard,
-  Gift, Gauge, Share2, TrendingUp, BarChart3, Sparkles, Video, Inbox, Bell, Facebook, Mail,
+  Gift, Gauge, Share2, TrendingUp, BarChart3, Sparkles, Video, Inbox, Bell, Facebook, Mail, Wallet,
 } from "lucide-react";
+import { AdminPayouts } from "@/components/admin/AdminPayouts";
 import { fetchFeedbackUnreadCount, fetchAdminNotifications, getNotifSeenAt } from "@/lib/admin";
 import { AdminFeedback } from "@/components/admin/AdminFeedback";
 import { AdminNotifications } from "@/components/admin/AdminNotifications";
@@ -31,6 +32,7 @@ const NAV = [
   { id: "prompts", label: "Prompts", icon: FileText, render: () => <AdminPrompts /> },
   { id: "members", label: "Members", icon: Users, render: () => <AdminUsers /> },
   { id: "sales", label: "Sales", icon: ShoppingBag, render: () => <AdminSales /> },
+  { id: "payouts", label: "Creator payouts", icon: Wallet, render: () => <AdminPayouts /> },
   { id: "feedback", label: "Feedback inbox", icon: Inbox, render: () => <AdminFeedback /> },
   { id: "subscriptions", label: "Subscriptions", icon: CreditCard, render: () => <AdminSubscriptions /> },
   { id: "quotas", label: "Upload quotas", icon: Gauge, render: () => <AdminQuota /> },
@@ -56,6 +58,7 @@ function AdminTabContent({ active, onNavigate }: { active: string; onNavigate: (
     case "prompts": return <AdminPrompts />;
     case "members": return <AdminUsers />;
     case "sales": return <AdminSales />;
+    case "payouts": return <AdminPayouts />;
     case "feedback": return <AdminFeedback />;
     case "subscriptions": return <AdminSubscriptions />;
     case "quotas": return <AdminQuota />;
