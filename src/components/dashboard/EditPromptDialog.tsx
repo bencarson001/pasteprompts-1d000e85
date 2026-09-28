@@ -73,7 +73,7 @@ export function EditPromptDialog({ prompt, onClose }: { prompt: EditablePrompt |
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
         <DialogHeader>
           <DialogTitle>Edit prompt</DialogTitle>
-          <DialogDescription>Status, sales and views can't be changed here. Paid prompts are always £0.25.</DialogDescription>
+          <DialogDescription>Status, sales and views can't be changed here. Paid prompts are always £0.49.</DialogDescription>
         </DialogHeader>
         <div className="space-y-4">
           <div><Label htmlFor="e-t">Title</Label><Input id="e-t" maxLength={100} value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} className={field} /></div>
@@ -102,7 +102,7 @@ export function EditPromptDialog({ prompt, onClose }: { prompt: EditablePrompt |
           <div><Label htmlFor="e-x">Example output</Label><Textarea id="e-x" rows={4} value={form.example_output} onChange={(e) => setForm({ ...form, example_output: e.target.value })} className={field} /></div>
           <div><Label htmlFor="e-g">Tags (comma separated)</Label><Input id="e-g" value={form.tags} onChange={(e) => setForm({ ...form, tags: e.target.value })} className={field} /></div>
           <div className="flex items-center justify-between rounded-xl border border-white/5 p-3">
-            <div><p className="text-sm font-medium">Free (£0)</p><p className="text-xs text-muted-foreground">Off = sold at the fixed £0.25 price.</p></div>
+            <div><p className="text-sm font-medium">Free (£0)</p><p className="text-xs text-muted-foreground">Off = sold at the fixed £0.49 price.</p></div>
             <Switch checked={form.is_free} onCheckedChange={(v) => setForm({ ...form, is_free: v })} />
           </div>
           {errors.length > 0 && (

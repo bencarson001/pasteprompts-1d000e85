@@ -22,7 +22,7 @@ import { useAuth } from "@/contexts/AuthContext";
 
 const faqs = [
   { q: "Is Paste Prompts free to use?", a: "Yes. Creating an account is free, and free prompts can be copied without paying anything." },
-  { q: "How much do paid prompts cost?", a: "Paid prompts are 25p each, paid securely through Stripe checkout." },
+  { q: "How much do paid prompts cost?", a: "Paid prompts are 49p each, paid securely through Stripe checkout." },
   { q: "Which AI models do these prompts work with?", a: "Each listing shows the model it was written for, such as ChatGPT, Claude, Gemini, Midjourney or Flux." },
   { q: "Can I sell my own prompts?", a: "Yes. Create a free account, open the Sell page and upload your prompt. Listings are reviewed before they appear." },
 ];
@@ -130,7 +130,7 @@ export default function Index() {
     <Layout>
       <SEO
         title="Paste Prompts — Discover, buy & sell AI prompts"
-        description="Browse free and 25p AI prompts for ChatGPT, Claude, Gemini, Midjourney and Flux. Copy prompts instantly or sell your own on Paste Prompts."
+        description="Browse free and 49p AI prompts for ChatGPT, Claude, Gemini, Midjourney and Flux. Copy prompts instantly or sell your own on Paste Prompts."
         canonical="/"
         jsonLd={faqSchema}
       />
@@ -147,7 +147,7 @@ export default function Index() {
               Discover, buy &amp; sell <span className="text-primary-glow">AI prompts</span> that work.
             </h1>
             <p className="mt-4 max-w-xl text-base text-muted-foreground sm:text-lg">
-              Ready-to-paste prompts for ChatGPT, Claude, Gemini, Midjourney and more. Many are free, paid ones are just 25p.
+              Ready-to-paste prompts for ChatGPT, Claude, Gemini, Midjourney and more. Many are free, paid ones are just 49p.
             </p>
 
             <form onSubmit={handleSearch} role="search" className="mt-6 flex max-w-xl items-center gap-2 rounded-2xl border border-border bg-card p-1.5 shadow-lg focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20">

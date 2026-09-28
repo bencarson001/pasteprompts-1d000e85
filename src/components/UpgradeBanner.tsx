@@ -72,7 +72,7 @@ export function UpgradeBanner({ totalSales = 0, variant = "dashboard", className
   const sub =
     totalSales > 0 && variant === "dashboard"
       ? `At ${target.name}, your ${totalSales} sale${totalSales === 1 ? "" : "s"} would have paid ${formatPrice(perSaleDelta * totalSales + current.earningPence * totalSales)} instead of ${formatPrice(current.earningPence * totalSales)}.`
-      : `${target.name} creators keep ${formatPrice(target.earningPence)} per 25p sale (vs ${formatPrice(current.earningPence)} on ${current.name}) and can upload up to ${target.quota} prompts/month. Break-even at just ${monthlyBreakEven} extra sales.`;
+      : `${target.name} creators keep ${formatPrice(target.earningPence)} per 49p sale (vs ${formatPrice(current.earningPence)} on ${current.name}) and can upload up to ${target.quota} prompts/month. Break-even at just ${monthlyBreakEven} extra sales.`;
 
   return (
     <div

@@ -77,7 +77,7 @@ export default function Pro() {
     <Layout>
       <SEO
         title="Memberships — Upload & Sell AI Prompts"
-        description="Choose a Paste Prompts creator membership. Free, Pro (£9.99/mo) and Platinum (£15.99/mo). Every prompt sells for £0.25 — your tier sets how much you keep."
+        description="Choose a Paste Prompts creator membership. Free, Pro (£9.99/mo) and Platinum (£15.99/mo). Every prompt sells for £0.49 — your tier sets how much you keep."
         canonical="/pro"
         type="product"
         jsonLd={jsonLd}
@@ -87,7 +87,7 @@ export default function Pro() {
           <Badge className="mb-4 bg-gradient-primary text-primary-foreground"><Crown className="mr-1 h-3.5 w-3.5" /> Memberships</Badge>
           <h1 className="font-display text-4xl font-bold sm:text-5xl">Upload more. Earn more.</h1>
           <p className="mt-4 text-lg text-muted-foreground">
-            Every single prompt sells for a fixed <b className="text-foreground">£0.25</b>. Your membership decides how many you can upload each month and how much you keep per sale.
+            Every single prompt sells for a fixed <b className="text-foreground">£0.49</b>. Your membership decides how many you can upload each month and how much you keep per sale.
           </p>
         </div>
 
@@ -121,13 +121,13 @@ export default function Pro() {
                 <div className="mt-5 rounded-xl border border-white/5 bg-card/40 p-3 text-xs">
                   <div className="flex items-start gap-1.5 text-muted-foreground">
                     <Info className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary-glow" />
-                    <span>Prompts sell at <b className="text-foreground">£0.25</b> — you keep <b className="text-success">{formatPrice(t.earningPence)}</b>, platform fee {formatPrice(t.feePence)}.</span>
+                    <span>Prompts sell at <b className="text-foreground">£0.49</b> — you keep <b className="text-success">{formatPrice(t.earningPence)}</b>, platform fee {formatPrice(t.feePence)}.</span>
                   </div>
                 </div>
 
                 <ul className="mt-5 space-y-2 text-sm">
                   <Li>{t.quota} prompt uploads / month</Li>
-                  <Li>Keep {formatPrice(t.earningPence)} of every £0.25 sale</Li>
+                  <Li>Keep {formatPrice(t.earningPence)} of every £0.49 sale</Li>
                   <Li>AI quality review on every upload</Li>
                   {key !== "free" && <Li>Advertise your links on your profile</Li>}
                   {key !== "free" && <Li>Featured placement & Pro badge</Li>}

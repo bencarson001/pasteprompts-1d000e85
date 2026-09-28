@@ -82,7 +82,7 @@ function PriceStep() {
             <Sparkles className="h-7 w-7" />
           </div>
           <h2 className="font-display text-2xl font-bold">Paid prompts</h2>
-          <p className="mt-2 text-muted-foreground">Detailed prompts for 25p each — buy once and keep them in your library.</p>
+          <p className="mt-2 text-muted-foreground">Detailed prompts for 49p each — buy once and keep them in your library.</p>
           <span className="mt-4 inline-flex items-center text-sm font-semibold text-primary-glow">
             Choose paid <ArrowRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
           </span>

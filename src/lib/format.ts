@@ -47,26 +47,26 @@ export interface TierInfo {
   blurb: string;
 }
 
-// All single prompts sell for 25p. The creator's tier sets their cut.
+// All single prompts sell for 49p. The creator's tier sets their cut.
 export const TIERS: Record<TierKey, TierInfo> = {
   free: {
     key: "free", name: "Free", pricePounds: 0, monthlyPriceId: null, yearlyPriceId: null,
-    quota: 15, earningPence: 15, feePence: 10,
+    quota: 15, earningPence: 29, feePence: 20,
     blurb: "Start selling for free.",
   },
   pro: {
     key: "pro", name: "Pro", pricePounds: 9.99, monthlyPriceId: "pro_monthly", yearlyPriceId: "pro_yearly",
-    quota: 50, earningPence: 18, feePence: 7,
+    quota: 50, earningPence: 35, feePence: 14,
     blurb: "Upload more, earn more.",
   },
   platinum: {
     key: "platinum", name: "Platinum", pricePounds: 15.99, monthlyPriceId: "platinum_monthly", yearlyPriceId: "platinum_yearly",
-    quota: 200, earningPence: 22, feePence: 3,
+    quota: 200, earningPence: 43, feePence: 6,
     blurb: "Maximum reach and earnings.",
   },
 };
 
-export const SINGLE_PRICE_PENCE = 25;
+export const SINGLE_PRICE_PENCE = 49;
 
 export function timeAgo(date: string | Date): string {
   const d = typeof date === "string" ? new Date(date) : date;

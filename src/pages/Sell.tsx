@@ -123,7 +123,7 @@ export default function Sell() {
         model: form.model,
         category_id: form.category_id,
         tags,
-        price_pence: form.is_free ? 0 : 25,
+        price_pence: form.is_free ? 0 : 49,
         is_free: form.is_free,
         image_url: publicUrl,
       });
@@ -175,7 +175,7 @@ export default function Sell() {
           </span>
           <span className="ml-auto inline-flex items-center gap-1.5 text-muted-foreground">
             <Info className="h-3.5 w-3.5 text-primary-glow" />
-            Singles sell at <b className="text-foreground">£0.25</b> — you keep <b className="text-success">{formatPrice(tier.earningPence)}</b>, platform fee {formatPrice(tier.feePence)}
+            Singles sell at <b className="text-foreground">£0.49</b> — you keep <b className="text-success">{formatPrice(tier.earningPence)}</b>, platform fee {formatPrice(tier.feePence)}
           </span>
         </div>
 
@@ -271,7 +271,7 @@ export default function Sell() {
               <div className="flex items-center justify-between rounded-xl border border-white/5 p-4">
                 <div>
                   <p className="text-sm font-medium">Offer for free (£0)</p>
-                  <p className="text-xs text-muted-foreground">Anyone signed in can get it at no cost. You earn nothing per copy, but it helps build a following. Turn off to sell it for £0.25.</p>
+                  <p className="text-xs text-muted-foreground">Anyone signed in can get it at no cost. You earn nothing per copy, but it helps build a following. Turn off to sell it for £0.49.</p>
                 </div>
                 <Switch checked={form.is_free} onCheckedChange={(v) => set({ is_free: v })} />
               </div>
@@ -279,10 +279,10 @@ export default function Sell() {
                 <div className="rounded-xl border border-white/5 bg-card/40 p-4">
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-medium">Selling price</span>
-                    <span className="font-display text-2xl font-bold">£0.25</span>
+                    <span className="font-display text-2xl font-bold">£0.49</span>
                   </div>
                   <p className="mt-2 text-xs text-muted-foreground">
-                    All single prompts sell at a fixed <b>£0.25</b> and the price can't be changed. As a <b>{tier.name}</b> member you earn{" "}
+                    All single prompts sell at a fixed <b>£0.49</b> and the price can't be changed. As a <b>{tier.name}</b> member you earn{" "}
                     <b className="text-success">{formatPrice(tier.earningPence)}</b> per sale; the remaining {formatPrice(tier.feePence)} is the Paste Prompts platform fee.
                   </p>
                 </div>
@@ -296,7 +296,7 @@ export default function Sell() {
               <Row label="Title" value={form.title} />
               <Row label="Category" value={(categories ?? []).find((c) => c.id === form.category_id)?.name ?? "—"} />
               <Row label="Model" value={MODEL_LABELS[form.model]} />
-              <Row label="Price" value={form.is_free ? "Free" : "£0.25 (fixed)"} />
+              <Row label="Price" value={form.is_free ? "Free" : "£0.49 (fixed)"} />
               <Row label="You earn / sale" value={form.is_free ? "—" : formatPrice(tier.earningPence)} />
               <Row label="Tags" value={form.tags || "—"} />
               <p className="flex items-start gap-2 rounded-xl border border-white/5 bg-card/40 p-4 text-xs text-muted-foreground">
