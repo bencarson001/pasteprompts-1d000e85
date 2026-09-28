@@ -30,6 +30,43 @@ export function FacebookGroups() {
     return true;
   });
 
+  // Load the saved setting from the database and stay in sync with the schedule tab.
+  useEffect(() => {
+    (supabase as unknown as { from: (t: string) => { select: (c: string) => { eq: (c: string, v: number) => { maybeSingle: () => Promise<{ data: { share_to_groups?: boolean } | null }> } } } })
+      .from("fb_autopilot_schedule").select("share_to_groups").eq("id", 1).maybeSingle()
+      .then(({ data }) => {
+        if (typeof data?.share_to_groups === "boolean") {
+          setShareToGroups(data.share_to_groups);
+          localStorage.setItem("fb_autopilot_share_to_groups", String(data.share_to_groups));
+        }
+      });
+    const onChange = (e: Event) => setShareToGroups((e as CustomEvent<boolean>).detail);
+    window.addEventListener("fb-share-groups", onChange);
+    return () => window.removeEventListener("fb-share-groups", onChange);
+  }, []);
+
+  const [verifying, setVerifying] = useState(false);
+  const verifyGroups = async () => {
+    setVerifying(true);
+    try {
+      const { data: res, error } = await supabase.functions.invoke("facebook-token", { body: { action: "verify_groups" } });
+      if (error) throw error;
+      if (res?.error) throw new Error(res.error);
+      const results = (res?.results ?? []) as Array<{ ok: boolean }>;
+      const ok = results.filter((r) => r.ok).length;
+      toast({
+        title: `${ok} of ${results.length} group(s) reachable`,
+        description: ok === results.length ? "Every group ID was found by Facebook." : "Groups that failed show the reason in the Status column.",
+        variant: ok === results.length ? undefined : "destructive",
+      });
+      refresh();
+    } catch (e) {
+      toast({ title: "Check failed", description: (e as Error).message, variant: "destructive" });
+    } finally {
+      setVerifying(false);
+    }
+  };
+
   const [groupInput, setGroupInput] = useState("");
   const [name, setName] = useState("");
   const [adding, setAdding] = useState(false);
@@ -39,6 +76,7 @@ export function FacebookGroups() {
     setShareToGroups(val);
     if (typeof window !== "undefined") {
       localStorage.setItem("fb_autopilot_share_to_groups", String(val));
+      window.dispatchEvent(new CustomEvent("fb-share-groups", { detail: val }));
     }
     try {
       await (supabase as unknown as { from: (t: string) => { update: (r: unknown) => { eq: (c: string, v: number) => Promise<unknown> } } })
@@ -196,6 +234,10 @@ export function FacebookGroups() {
 
             {!!data?.length && (
               <div className="flex items-center gap-2">
+                <Button size="sm" variant="outline" className="h-7 text-xs" onClick={verifyGroups} disabled={verifying}>
+                  {verifying ? <Loader2 className="mr-1 h-3 w-3 animate-spin" /> : <CheckCircle2 className="mr-1 h-3 w-3" />}
+                  Check groups
+                </Button>
                 <Button size="sm" variant="ghost" className="h-7 text-xs text-primary" onClick={() => toggleAllGroups(true)}>
                   Select All
                 </Button>

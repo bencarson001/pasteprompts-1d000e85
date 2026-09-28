@@ -9,6 +9,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -289,8 +291,20 @@ function ScheduleCard() {
     setForm((prev) => (prev ? { ...prev, share_to_groups: val } : null));
     if (typeof window !== "undefined") {
       localStorage.setItem("fb_autopilot_share_to_groups", String(val));
+      window.dispatchEvent(new CustomEvent("fb-share-groups", { detail: val }));
     }
+    (supabase as unknown as { from: (t: string) => { update: (r: unknown) => { eq: (c: string, v: number) => Promise<unknown> } } })
+      .from("fb_autopilot_schedule").update({ share_to_groups: val }).eq("id", 1);
   };
+
+  useEffect(() => {
+    const onChange = (e: Event) => {
+      const v = (e as CustomEvent<boolean>).detail;
+      setForm((prev) => (prev ? { ...prev, share_to_groups: v } : prev));
+    };
+    window.addEventListener("fb-share-groups", onChange);
+    return () => window.removeEventListener("fb-share-groups", onChange);
+  }, []);
 
   const runDiagnosticNow = async () => {
     setCheckingDiag(true);
@@ -759,12 +773,27 @@ export function AdminFacebookAutopilot() {
     }
   };
 
-  const postOne = async (id: string) => {
-    const shareToGroups = typeof window !== "undefined" ? localStorage.getItem("fb_autopilot_share_to_groups") !== "false" : true;
-    const promptMsg = shareToGroups
-      ? "Publish this post to your Facebook Page and up to 9 random groups now?"
-      : "Publish this post directly to your Facebook Page now (group sharing is turned off)?";
-    if (!confirm(promptMsg)) return;
+  // Target picker dialog: null = closed, "" = random pool item, otherwise a post id.
+  const [postTarget, setPostTarget] = useState<string | null>(null);
+  const [postMode, setPostMode] = useState<"page" | "groups">("page");
+  const { data: groupList } = useQuery({ queryKey: ["admin-fb-groups"], queryFn: fetchFbGroups });
+  const selectedGroups = (groupList ?? []).filter((g) => g.active).length;
+
+  const openPostDialog = (id: string) => {
+    setPostMode("page");
+    setPostTarget(id);
+  };
+
+  const confirmPost = async () => {
+    const target = postTarget;
+    const shareToGroups = postMode === "groups";
+    setPostTarget(null);
+    if (target === null) return;
+    if (target === "") await postNow(shareToGroups);
+    else await postOne(target, shareToGroups);
+  };
+
+  const postOne = async (id: string, shareToGroups: boolean) => {
     setPostingId(id);
     try {
       const { data: res, error } = await supabase.functions.invoke("post-daily-fb", {
@@ -819,12 +848,7 @@ export function AdminFacebookAutopilot() {
     }
   };
 
-  const postNow = async () => {
-    const shareToGroups = typeof window !== "undefined" ? localStorage.getItem("fb_autopilot_share_to_groups") !== "false" : true;
-    const promptMsg = shareToGroups
-      ? "Publish one random unposted item from the pool to your Facebook Page and up to 9 random groups now?"
-      : "Publish one random unposted item from the pool directly to your Facebook Page now (group sharing is turned off)?";
-    if (!confirm(promptMsg)) return;
+  const postNow = async (shareToGroups: boolean) => {
 
     setPostLoading(true);
     try {
@@ -880,7 +904,7 @@ export function AdminFacebookAutopilot() {
         desc="A pool of 30 posts. One random unposted item publishes on each scheduled day and is ticked off; when the pool runs out the AI writes 30 brand-new posts. Click any post to expand it or publish it immediately."
         action={
           <div className="flex flex-wrap gap-2">
-            <Button variant="secondary" onClick={postNow} disabled={postLoading || !stats}>
+            <Button variant="secondary" onClick={() => openPostDialog("")} disabled={postLoading || !stats}>
               {postLoading ? <Loader2 className="mr-1 h-4 w-4 animate-spin" /> : <Send className="mr-1 h-4 w-4" />}Post one now
             </Button>
             <Button variant="secondary" onClick={generateAllImages} disabled={imagingAll || !stats}>
@@ -894,6 +918,39 @@ export function AdminFacebookAutopilot() {
           </div>
         }
       />
+
+      <Dialog open={postTarget !== null} onOpenChange={(o) => !o && setPostTarget(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Where should this post go?</DialogTitle>
+            <DialogDescription>
+              {postTarget === "" ? "One random unposted item from the pool will be published." : "This post will be published now."}
+            </DialogDescription>
+          </DialogHeader>
+          <RadioGroup value={postMode} onValueChange={(v) => setPostMode(v as "page" | "groups")} className="gap-3">
+            <label className="flex items-start gap-3 rounded-xl border border-white/10 p-3 cursor-pointer">
+              <RadioGroupItem value="page" id="pm-page" className="mt-0.5" />
+              <div>
+                <div className="text-sm font-medium">Profile / Page only</div>
+                <div className="text-xs text-muted-foreground">Publish to your Facebook Page only.</div>
+              </div>
+            </label>
+            <label className={`flex items-start gap-3 rounded-xl border border-white/10 p-3 ${selectedGroups ? "cursor-pointer" : "opacity-50"}`}>
+              <RadioGroupItem value="groups" id="pm-groups" className="mt-0.5" disabled={!selectedGroups} />
+              <div>
+                <div className="text-sm font-medium">Page + selected groups</div>
+                <div className="text-xs text-muted-foreground">
+                  {selectedGroups ? `Also share to your ${selectedGroups} ticked group(s).` : "No groups are ticked in the Groups tab."}
+                </div>
+              </div>
+            </label>
+          </RadioGroup>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setPostTarget(null)}>Cancel</Button>
+            <Button onClick={confirmPost}><Send className="mr-1 h-4 w-4" />Post</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <div className="mb-5">
         <CollapsibleFacebookConnection />
@@ -950,7 +1007,7 @@ export function AdminFacebookAutopilot() {
               expandedId={expandedId}
               onToggleExpand={(id) => setExpandedId((cur) => (cur === id ? null : id))}
               postingId={postingId}
-              onPostOne={postOne}
+              onPostOne={openPostDialog}
               imagingId={imagingId}
               onGenerateImage={generateImage}
             />

@@ -182,7 +182,7 @@ Deno.serve(async (req) => {
     supabase as never,
     pick.content,
     useImage ? pick.image_url : null,
-    { shareToGroups, groupCount: shareToGroups ? 9 : 0 },
+    { shareToGroups, groupCount: shareToGroups ? (forcedId || typeof body?.share_to_groups === "boolean" ? 200 : 9) : 0 },
   );
   const fbPostId = published.fbPostId;
   const groupsPosted = published.groups.filter((g) => g.ok).length;
