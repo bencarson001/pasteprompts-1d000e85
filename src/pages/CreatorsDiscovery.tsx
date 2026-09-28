@@ -118,6 +118,7 @@ export default function CreatorsDiscovery() {
         </div>
 
         {/* Creators Grid */}
+        <h2 className="sr-only">Prompt creators</h2>
         {isLoading ? (
           <div className="py-20 text-center">
             <div className="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-primary border-t-transparent mb-4" />
