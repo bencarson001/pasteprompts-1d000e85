@@ -180,6 +180,11 @@ Deno.serve(async (req) => {
       return json({ error: "You already own this prompt. Find it in your library." }, 409);
     }
 
+    // Stripe's minimum card charge in GBP is 30p; below that Stripe rejects the session.
+    if (prompt.price_pence < 30) {
+      return json({ error: "Card payments under £0.30 aren't supported by our payment provider yet. Please try again later." }, 400);
+    }
+
     const customerId = await resolveOrCreateCustomer(stripe, { email: customerEmail, userId });
 
     const session = await stripe.checkout.sessions.create({
