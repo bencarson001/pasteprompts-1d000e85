@@ -72,6 +72,7 @@ Deno.serve(async (req) => {
       .from("fb_post_pool")
       .select("posted_at")
       .not("posted_at", "is", null)
+      .eq("posted_by_schedule", true)
       .order("posted_at", { ascending: false })
       .limit(1)
       .maybeSingle();
@@ -181,6 +182,7 @@ Deno.serve(async (req) => {
       posted_at: new Date().toISOString(),
       fb_post_id: fbPostId,
       last_error: errorText,
+      posted_by_schedule: !!body?.scheduled,
     })
     .eq("id", pick.id);
 
