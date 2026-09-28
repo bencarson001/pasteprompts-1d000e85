@@ -34,17 +34,14 @@ async function startServer() {
   // Enforce HTTPS in production and set modern web security / HSTS headers
   app.use((req, res, next) => {
     const isHttps = req.secure || req.headers["x-forwarded-proto"] === "https";
-    const host = req.headers.host || "";
+    const host = (req.headers.host || "").toLowerCase();
+    // Only ever redirect to our own known domains, never to a caller-supplied Host.
+    const ALLOWED_HOSTS = new Set(["pasteprompts.co.uk", "www.pasteprompts.co.uk", "pasteprompts.lovable.app"]);
 
     // If HTTP in production environment, redirect 301 to HTTPS
-    if (
-      process.env.NODE_ENV === "production" &&
-      !isHttps &&
-      host &&
-      !host.includes("localhost") &&
-      !host.includes("127.0.0.1")
-    ) {
-      return res.redirect(301, `https://${host}${req.originalUrl || req.url}`);
+    if (process.env.NODE_ENV === "production" && !isHttps && ALLOWED_HOSTS.has(host)) {
+      const path = (req.originalUrl || req.url || "/").startsWith("/") ? (req.originalUrl || req.url || "/") : "/";
+      return res.redirect(301, `https://${host}${path.replace(/^\/{2,}/, "/")}`);
     }
 
     // Set HSTS and security headers

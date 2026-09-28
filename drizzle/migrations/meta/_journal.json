@@ -43,6 +43,13 @@
       "when": 1790552169687,
       "tag": "0005_fb_autopilot_post_minute",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1790555185653,
+      "tag": "0006_restrict_prompts_bucket_listing",
+      "breakpoints": true
     }
   ]
 }
