@@ -251,7 +251,7 @@ async function startServer() {
   if (process.env.NODE_ENV !== "production") {
     vite = await createViteServer({
       server: { middlewareMode: true },
-      appType: "spa",
+      appType: "custom",
     });
     app.use(vite.middlewares);
   } else {
@@ -287,13 +287,15 @@ async function startServer() {
         const slug = promptMatch[2];
         const { data: prompt } = await supabase
           .from("prompts")
-          .select("title, description, social_image_url")
+          .select("title, description, social_image_url, model, is_free, price_pence")
           .eq("slug", slug)
           .single();
 
         if (prompt) {
-          const title = `${prompt.title} — AI Prompt`;
-          const desc = prompt.description || `Get the ${prompt.title} prompt on Paste Prompts.`;
+          const modelLabel = prompt.model ? (prompt.model.charAt(0).toUpperCase() + prompt.model.slice(1)) : "AI";
+          const priceStr = prompt.is_free ? "Free" : "49p";
+          const title = `${prompt.title} — ${modelLabel} Prompt (${priceStr})`;
+          const desc = prompt.description || `Copy and use the ${prompt.title} prompt for ${modelLabel} on Paste Prompts. Compatible with popular AI tools.`;
           const image = prompt.social_image_url || "https://storage.googleapis.com/gpt-engineer-file-uploads/gVA6LFVAv1NR5HdixPMdl8cXxqp2/social-images/social-1781312540994-4621.webp";
           pageMeta = { title, description: desc, canonicalPath: `/prompt/${slug}` };
           template = template

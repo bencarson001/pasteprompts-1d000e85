@@ -13,9 +13,12 @@
 export const ADSENSE_CLIENT = "ca-pub-3809061959162534";
 
 export const AD_SLOTS = {
-  inFeed: "0000000000",
-  inArticle: "1111111111",
-  sidebar: "2222222222",
+  inFeed: (typeof import.meta !== "undefined" && import.meta.env?.VITE_ADSENSE_IN_FEED_SLOT) || "0000000000",
+  inArticle: (typeof import.meta !== "undefined" && import.meta.env?.VITE_ADSENSE_IN_ARTICLE_SLOT) || "1111111111",
+  sidebar: (typeof import.meta !== "undefined" && import.meta.env?.VITE_ADSENSE_SIDEBAR_SLOT) || "2222222222",
 } as const;
 
-export const adsEnabled = () => ADSENSE_CLIENT.startsWith("ca-pub-");
+export const isRealAdSlot = (slot: string) => Boolean(slot && !["0000000000", "1111111111", "2222222222"].includes(slot));
+
+export const adsEnabled = () => ADSENSE_CLIENT.startsWith("ca-pub-") && ADSENSE_CLIENT.length > 10;
+

@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { ADSENSE_CLIENT, adsEnabled } from "@/lib/ads";
+import { ADSENSE_CLIENT, adsEnabled, isRealAdSlot } from "@/lib/ads";
 
 interface AdSlotProps {
   slot: string;
@@ -12,23 +12,25 @@ interface AdSlotProps {
 
 /**
  * Renders a responsive Google AdSense unit. Renders nothing until a real
- * publisher ID is configured in src/lib/ads.ts, so there is zero impact on
- * the live site before AdSense approval.
+ * publisher ID and valid ad slot are configured in src/lib/ads.ts, so there is
+ * zero impact or console errors on the live site.
  */
 export function AdSlot({ slot, format = "auto", layout, className, label = true }: AdSlotProps) {
   const ref = useRef<HTMLModElement>(null);
 
+  const shouldRender = adsEnabled() && isRealAdSlot(slot);
+
   useEffect(() => {
-    if (!adsEnabled()) return;
+    if (!shouldRender) return;
     try {
       // @ts-expect-error adsbygoogle is injected by the AdSense script
       (window.adsbygoogle = window.adsbygoogle || []).push({});
     } catch {
       /* no-op: ad blocker or script not yet loaded */
     }
-  }, []);
+  }, [shouldRender]);
 
-  if (!adsEnabled()) return null;
+  if (!shouldRender) return null;
 
   return (
     <div className={className} aria-hidden="true">

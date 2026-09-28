@@ -163,8 +163,11 @@ export default function Contact() {
             Real humans, real answers. Whether you're a buyer, a creator, or reporting a problem,
             reach the right team below. We aim to reply within one business day.
           </p>
-          <p className="mt-3 flex items-center gap-2 text-sm text-muted-foreground">
-            <Clock className="h-4 w-4 text-primary-glow" /> Support hours: Mon–Fri, 9am–6pm UK time.
+          <p className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
+            <span className="flex items-center gap-2">
+              <Clock className="h-4 w-4 text-primary-glow" /> Support hours: Mon–Fri, 9am–6pm UK time.
+            </span>
+            <span>Average response time: under 24 business hours.</span>
           </p>
         </motion.div>
 
