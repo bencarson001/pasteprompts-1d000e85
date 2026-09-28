@@ -55,11 +55,11 @@ async function recordPurchase(session: {
     .eq("id", promptId)
     .maybeSingle();
 
-  // Tier-based economics: every single prompt sells for 25p. The creator's
-  // membership tier decides their cut (free 15p / pro 18p / platinum 22p);
+  // Tier-based economics: every single prompt sells for 49p. The creator's
+  // membership tier decides their cut (free 29p / pro 35p / platinum 43p);
   // the remainder is the platform fee.
-  const TIER_EARNING: Record<string, number> = { free: 15, pro: 18, platinum: 22 };
-  let creatorEarning = 15;
+  const TIER_EARNING: Record<string, number> = { free: 29, pro: 35, platinum: 43 };
+  let creatorEarning = 29;
   if (prompt?.creator_id) {
     const { data: creator } = await supabase
       .from("profiles")
@@ -67,7 +67,7 @@ async function recordPurchase(session: {
       .eq("id", prompt.creator_id as string)
       .maybeSingle();
     const tier = (creator?.membership_tier as string | undefined) ?? "free";
-    creatorEarning = TIER_EARNING[tier] ?? 15;
+    creatorEarning = TIER_EARNING[tier] ?? 29;
   }
   const platformFee = Math.max(0, amount - creatorEarning);
 

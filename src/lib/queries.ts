@@ -475,7 +475,7 @@ export interface VetResult {
 }
 
 // Submits a prompt: runs AI auto-vetting first, then inserts with the
-// resulting status (approved or rejected). All paid singles are locked to 25p
+// resulting status (approved or rejected). All paid singles are locked to 49p
 // by a database trigger regardless of the value sent.
 export async function createPrompt(
   creatorId: string,
@@ -505,7 +505,7 @@ export async function createPrompt(
       creator_id: creatorId,
       slug,
       ...input,
-      price_pence: input.is_free ? 0 : 25,
+      price_pence: input.is_free ? 0 : 49,
       model: input.model as never,
     })
     .select("id, slug, status")
@@ -528,7 +528,7 @@ export interface PromptEditInput {
 // Creator edits their own prompt. RLS limits this to the owner and a DB trigger
 // ignores protected fields (status, stats, owner, price).
 export async function updateMyPrompt(promptId: string, input: PromptEditInput) {
-  const patch: Record<string, unknown> = { ...input, model: input.model, price_pence: input.is_free ? 0 : 25 };
+  const patch: Record<string, unknown> = { ...input, model: input.model, price_pence: input.is_free ? 0 : 49 };
   if (!input.body) delete patch.body;
   const { data, error } = await supabase.from("prompts").update(patch as never).eq("id", promptId).select("id");
   if (error) throw error;
