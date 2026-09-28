@@ -2,7 +2,7 @@
 
 > A marketplace where people discover, buy and instantly use high-performing AI prompts for ChatGPT, Claude, Gemini, Midjourney and more — copy and paste in seconds.
 
-Paste Prompts is a curated marketplace of vetted, parameterised AI prompts. Buyers find prompts that actually work and use them instantly; creators upload prompts and earn from every sale. Individual prompts are priced at £0.25.
+Paste Prompts is a curated marketplace of vetted, parameterised AI prompts. Buyers find prompts that actually work and use them instantly; creators upload prompts and earn from every sale. Individual prompts are priced at £0.49.
 
 ## Pages
 

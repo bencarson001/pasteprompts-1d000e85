@@ -69,7 +69,7 @@ export function AdminOverview() {
     { label: "Pending review", value: formatCount(data.pending), icon: Clock, tone: "text-warning" },
     { label: "Rejected", value: formatCount(data.rejected), icon: XCircle, tone: "text-destructive" },
     { label: "Live free prompts", value: formatCount(data.approvedFree), icon: Gift },
-    { label: "Live paid prompts (£0.25)", value: formatCount(data.approvedPaid), icon: Tag },
+    { label: "Live paid prompts (£0.49)", value: formatCount(data.approvedPaid), icon: Tag },
     { label: "All prompts (any status)", value: formatCount(data.prompts), icon: FileText },
   ];
   const money = [
