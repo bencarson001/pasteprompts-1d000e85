@@ -589,6 +589,7 @@ export type Database = {
           image_url: string | null
           last_error: string | null
           posted_at: string | null
+          posted_by_schedule: boolean
         }
         Insert: {
           content: string
@@ -602,6 +603,7 @@ export type Database = {
           image_url?: string | null
           last_error?: string | null
           posted_at?: string | null
+          posted_by_schedule?: boolean
         }
         Update: {
           content?: string
@@ -615,6 +617,7 @@ export type Database = {
           image_url?: string | null
           last_error?: string | null
           posted_at?: string | null
+          posted_by_schedule?: boolean
         }
         Relationships: []
       }
