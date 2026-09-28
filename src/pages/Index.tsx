@@ -190,7 +190,7 @@ export default function Index() {
                     className={`group flex items-center gap-4 rounded-2xl border border-border bg-card/80 p-3 backdrop-blur transition-all hover:-translate-y-0.5 hover:border-primary/40 ${i === 1 ? "lg:ml-8" : ""}`}
                   >
                     {p.image_url ? (
-                      <img src={p.image_url} alt={p.title} referrerPolicy="no-referrer" className="h-20 w-20 shrink-0 rounded-xl object-cover" />
+                      <img src={p.image_url} alt={`${p.title} AI prompt preview`} referrerPolicy="no-referrer" className="h-20 w-20 shrink-0 rounded-xl object-cover" />
                     ) : (
                       <span className="flex h-20 w-20 shrink-0 items-center justify-center rounded-xl bg-muted/40 text-primary-glow"><FileText className="h-7 w-7" /></span>
                     )}
@@ -304,7 +304,7 @@ export default function Index() {
                 return (
                   <Link key={c.id} to={`/creators/${c.handle}`} className="group flex flex-col items-center rounded-2xl border border-border bg-card p-4 text-center transition-all hover:border-primary/40">
                     {c.avatar_url ? (
-                      <img src={c.avatar_url} alt={name ?? "Creator"} loading="lazy" referrerPolicy="no-referrer" className="h-16 w-16 rounded-full object-cover" />
+                      <img src={c.avatar_url} alt={`${name ?? "Paste Prompts creator"} profile picture`} loading="lazy" referrerPolicy="no-referrer" className="h-16 w-16 rounded-full object-cover" />
                     ) : (
                       <span className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/15 font-display text-xl font-bold text-primary-glow">{(name ?? "?").slice(0, 1).toUpperCase()}</span>
                     )}

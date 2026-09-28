@@ -198,9 +198,10 @@ export default function Sell() {
           ))}
         </div>
 
-        <div className="space-y-5 rounded-3xl glass-strong p-7">
+        <section aria-label="Prompt submission form" className="space-y-5 rounded-3xl glass-strong p-7">
           {step === 0 && (
             <>
+              <h2 className="font-display text-xl font-semibold">Step 1: Prompt basics</h2>
               <div>
                 <Label htmlFor="t">Title</Label>
                 <Input id="t" maxLength={100} value={form.title} onChange={(e) => set({ title: e.target.value })} placeholder="e.g. Viral Twitter Thread Engine" className="mt-1 bg-card/60 border-white/10" />
@@ -249,6 +250,7 @@ export default function Sell() {
 
           {step === 1 && (
             <>
+              <h2 className="font-display text-xl font-semibold">Step 2: Prompt content</h2>
               <div>
                 <Label htmlFor="body">The prompt</Label>
                 <Textarea id="body" value={form.body} onChange={(e) => set({ body: e.target.value })} rows={10} placeholder="Paste the full prompt buyers will receive. Use [PLACEHOLDERS] for inputs." className="mt-1 bg-card/60 border-white/10 font-mono text-sm" />
@@ -265,6 +267,7 @@ export default function Sell() {
 
           {step === 2 && (
             <>
+              <h2 className="font-display text-xl font-semibold">Step 3: Pricing and image</h2>
               <div className="flex items-center justify-between rounded-xl border border-white/5 p-4">
                 <div>
                   <p className="text-sm font-medium">Offer for free (£0)</p>
@@ -289,6 +292,7 @@ export default function Sell() {
 
           {step === 3 && (
             <div className="space-y-3 text-sm">
+              <h2 className="font-display text-xl font-semibold">Step 4: Review and submit</h2>
               <Row label="Title" value={form.title} />
               <Row label="Category" value={(categories ?? []).find((c) => c.id === form.category_id)?.name ?? "—"} />
               <Row label="Model" value={MODEL_LABELS[form.model]} />
