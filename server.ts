@@ -267,6 +267,7 @@ async function startServer() {
     try {
       let template = "";
       if (process.env.NODE_ENV !== "production") {
+        if (!vite) throw new Error("Development server is unavailable");
         template = await fs.readFile(path.resolve(process.cwd(), "index.html"), "utf-8");
         template = await vite.transformIndexHtml(req.originalUrl, template);
       } else {
