@@ -490,11 +490,30 @@ export async function setAdminRole(userId: string, makeAdmin: boolean) {
 export async function fetchAdminSales() {
   const { data, error } = await supabase
     .from("purchases")
-    .select("id, amount_pence, platform_fee_pence, creator_earning_pence, is_free, created_at, prompt:prompts(title)")
+    .select("id, amount_pence, platform_fee_pence, creator_earning_pence, is_free, stripe_session_id, created_at, prompt:prompts(title)")
     .order("created_at", { ascending: false })
     .limit(300);
   if (error) throw error;
   return data ?? [];
+}
+
+export async function voidSaleAdmin(id: string) {
+  const { data: current } = await supabase.from("purchases").select("stripe_session_id").eq("id", id).maybeSingle();
+  const sessionStr = (current as { stripe_session_id?: string | null })?.stripe_session_id ?? "";
+  const newSessionId = sessionStr.includes("[VOIDED]") ? sessionStr : `${sessionStr} [VOIDED]`.trim();
+
+  const { error } = await supabase
+    .from("purchases")
+    .update({
+      amount_pence: 0,
+      platform_fee_pence: 0,
+      creator_earning_pence: 0,
+      stripe_session_id: newSessionId,
+    })
+    .eq("id", id);
+
+  if (error) throw error;
+  await logAdminAction("sale.void", "purchase", id);
 }
 
 /* ---------------- Reviews ---------------- */

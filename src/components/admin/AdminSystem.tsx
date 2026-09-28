@@ -369,8 +369,6 @@ const AI_PROCESSES = [
   { key: "ai_try_sandbox", label: "Try it live (prompt preview)", description: "Let visitors run prompts live with AI on the prompt page. Uses AI credits — keep off to save credits." },
   { key: "ai_moderation", label: "Auto-moderation", description: "AI reviews & approves/rejects pending prompts during maintenance. Uses AI credits." },
   { key: "ai_vetting", label: "Upload vetting", description: "AI quality check when creators submit a prompt to sell. Uses AI credits. (When off, a 200-character length check is still enforced.)" },
-  { key: "ai_social_captions", label: "Social caption AI", description: "Generate social captions in the AI scheduler. Uses AI credits." },
-  { key: "social_posting", label: "Scheduled auto-posting", description: "Publish due scheduled posts to connected platforms." },
 ];
 
 export function AdminAI() {
