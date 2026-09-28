@@ -332,7 +332,7 @@ export default function Sell() {
               </Button>
             )}
           </div>
-        </div>
+        </section>
       </div>
     </Layout>
   );
