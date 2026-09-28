@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { formatPrice, formatCount, timeAgo } from "@/lib/format";
 import { UpgradeBanner } from "@/components/UpgradeBanner";
+import { PayoutPanel } from "@/components/dashboard/PayoutPanel";
 
 const statusStyles: Record<string, string> = {
   approved: "bg-success/15 text-success",
@@ -79,7 +80,7 @@ export default function Dashboard() {
     { label: "Total views", value: formatCount(totalViews), icon: Eye },
     { label: "Sales", value: formatCount(totalSales), icon: ShoppingBag },
     { label: "Copies", value: formatCount(totalCopies), icon: Copy },
-    { label: "Earned (not yet paid out)", value: formatPrice(earnings, false), icon: Coins },
+    { label: "Earned (all time)", value: formatPrice(earnings, false), icon: Coins },
   ];
 
   return (
@@ -134,10 +135,12 @@ export default function Dashboard() {
           ))}
         </div>
 
-        <p className="mb-10 flex items-start gap-2 rounded-xl border border-white/5 bg-card/40 p-3 text-xs text-muted-foreground">
+        <p className="mb-6 flex items-start gap-2 rounded-xl border border-white/5 bg-card/40 p-3 text-xs text-muted-foreground">
           <Info className="mt-0.5 h-4 w-4 shrink-0 text-primary-glow" aria-hidden />
-          <span><b className="text-foreground">Sales</b> counts paid purchases of your prompts. <b className="text-foreground">Earned</b> is your share of those sales as recorded by Paste Prompts. Payouts are not yet available, so no money has been paid out to you.</span>
+          <span><b className="text-foreground">Sales</b> counts paid purchases of your prompts. <b className="text-foreground">Earned</b> is your share of those sales. See below for what's been paid to you and what you're still owed.</span>
         </p>
+
+        {user?.id && <PayoutPanel userId={user.id} />}
 
         <h2 className="mb-4 font-display text-xl font-bold">Your prompts</h2>
         {isLoading ? (
