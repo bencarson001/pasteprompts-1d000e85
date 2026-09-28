@@ -178,7 +178,7 @@ async function runPostingDiagnostic(shareToGroups: boolean): Promise<PostingChec
         issues.push("Share to groups is ON, but you have 0 active groups configured. Posts will publish to your Page only until you add active groups in the Groups tab.");
       }
     } else {
-      successDetails.push("Group sharing is OFF: Posts will publish directly and cleanly to your Facebook Page only.");
+      successDetails.push("Posts will publish to your Facebook Page.");
     }
   } catch (err) {
     if (shareToGroups) {
