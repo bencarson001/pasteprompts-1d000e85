@@ -153,7 +153,7 @@ export default function EditorialStandards() {
                 All prompt reviews, sales statistics, and copy counters on Paste Prompts reflect actual verified platform transactions. We do not manufacture mock reviews or artificially inflate creator metrics.
               </p>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                If you encounter any prompt that does not perform as advertised, you are protected by our 14-day digital satisfaction warranty. In addition, you can report infringing or defective content directly via our{" "}
+                If you encounter any prompt that does not perform as advertised or has formatting defects, you can contact our support team for assistance or report defective content directly via our{" "}
                 <Link to="/dmca" className="text-primary-glow underline">Takedown &amp; Copyright Notice</Link> or{" "}
                 <Link to="/contact" className="text-primary-glow underline">Support Desk</Link>.
               </p>

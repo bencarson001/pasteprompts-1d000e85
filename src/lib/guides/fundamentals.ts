@@ -5,13 +5,13 @@ export const FUNDAMENTAL_GUIDES: Guide[] = [
     slug: "how-to-write-effective-ai-prompts",
     title: "How to Write Effective AI Prompts: The Definitive Practitioner Blueprint",
     description:
-      "A complete, empirical guide to prompt engineering. Learn the 5-part anatomical framework, context calibration, delimiter syntax, and iterative debugging techniques tested across 1,000+ real queries.",
+      "A complete, empirical guide to prompt engineering. Learn the 5-part anatomical framework, context calibration, delimiter syntax, and iterative debugging techniques tested across real AI model queries.",
     category: "Fundamentals",
     readMinutes: 14,
     updated: "2026-06-25",
     emoji: "✍️",
     intro:
-      "In our prompt engineering lab, we routinely test thousands of AI prompts across OpenAI's GPT-4o, Anthropic's Claude 3.7 Sonnet, and Google's Gemini 2.5. Over the course of running more than 10,000 prompt variations, one foundational truth has emerged: large language models rarely fail because of inherent lack of intelligence; they fail because of ambiguity in human instruction. When you treat prompt creation as precision software specification rather than casual conversation, your success rate climbs from a coin toss to deterministic reliability.",
+      "In our prompt engineering research, we test AI prompts across OpenAI's GPT-4o, Anthropic's Claude 3.7 Sonnet, and Google's Gemini 2.5. Over the course of running extensive prompt variations, one foundational truth has emerged: large language models rarely fail because of inherent lack of intelligence; they fail because of ambiguity in human instruction. When you treat prompt creation as precision software specification rather than casual conversation, your success rate climbs dramatically.",
     blocks: [
       {
         type: "stats_grid",
@@ -219,7 +219,7 @@ Draft the email update using the variables above.`,
     updated: "2026-06-21",
     emoji: "⚠️",
     intro:
-      "Across our team's reviews of over 5,000 community prompt submissions, we consistently observe the exact same set of fatal flaws that sabotage LLM performance. These anti-patterns lead directly to hallucinated facts, robotic phrasing, format breakage, and wasted token costs. In this field guide, we analyze the 10 most damaging mistakes and demonstrate their exact, verified corrections.",
+      "Across our team's reviews of community prompt submissions, we consistently observe the exact same set of fatal flaws that sabotage LLM performance. These anti-patterns lead directly to hallucinated facts, robotic phrasing, format breakage, and wasted token costs. In this field guide, we analyze the 10 most damaging mistakes and demonstrate their exact, verified corrections.",
     blocks: [
       {
         type: "callout",

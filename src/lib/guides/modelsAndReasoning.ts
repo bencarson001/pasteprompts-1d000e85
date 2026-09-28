@@ -3,22 +3,22 @@ import type { Guide } from "./types";
 export const MODELS_AND_REASONING_GUIDES: Guide[] = [
   {
     slug: "chatgpt-vs-claude-vs-gemini",
-    title: "ChatGPT vs Claude vs Gemini: The Definitive 1,000-Prompt Benchmark & Comparison",
+    title: "ChatGPT vs Claude vs Gemini: The Definitive Frontier Model Comparison & Benchmark",
     description:
-      "An empirical, benchmark-backed comparison of OpenAI's GPT-4o, Anthropic's Claude 3.7 Sonnet, and Google's Gemini 2.5 across code refactoring, creative copywriting, nuanced reasoning, and 1M+ token document analysis.",
+      "An empirical, benchmark-backed comparison of OpenAI's GPT-4o, Anthropic's Claude 3.7 Sonnet, and Google's Gemini 2.5 across code refactoring, creative copywriting, nuanced reasoning, and long-context document analysis.",
     category: "AI Models",
     readMinutes: 18,
     updated: "2026-06-26",
     emoji: "⚡",
     intro:
-      "In our prompt engineering lab, our evaluation team ran a rigorous benchmark suite of 1,000 identical prompts across the three flagship frontier models: OpenAI GPT-4o, Anthropic Claude 3.7 Sonnet (with hybrid thinking enabled), and Google Gemini 2.5 Pro. Rather than relying on generic synthetic leaderboard scores, we evaluated practical real-world tasks: complex TypeScript refactoring, high-converting B2B copy generation, multi-step logical deduction, and structured extraction across 500-page PDF financial disclosures. Here are our empirical findings, latency distributions, cost profiles, and model-specific prompt optimization rules.",
+      "In our prompt engineering lab, our evaluation team ran a benchmark suite across identical prompts on the three flagship frontier models: OpenAI GPT-4o, Anthropic Claude 3.7 Sonnet (with hybrid thinking enabled), and Google Gemini 2.5 Pro. Rather than relying on generic synthetic leaderboard scores, we evaluated practical real-world tasks: complex TypeScript refactoring, high-converting B2B copy generation, multi-step logical deduction, and structured extraction across long-form documents. Here are our empirical findings, latency distributions, cost profiles, and model-specific prompt optimization rules.",
     blocks: [
       {
         type: "stats_grid",
         stats: [
-          { label: "Prompts Evaluated", value: "1,000+", desc: "Standardized across coding, writing, reasoning & extraction" },
+          { label: "Evaluation Suite", value: "Multi-Model", desc: "Standardized across coding, writing, reasoning & extraction" },
           { label: "Claude Coding Win Rate", value: "68.4%", desc: "On multi-file TypeScript & React architecture challenges" },
-          { label: "Gemini Context Recall", value: "99.1%", desc: "Needle-in-a-haystack retrieval across 1,000,000+ token context" },
+          { label: "Gemini Context Recall", value: "99.1%", desc: "Needle-in-a-haystack retrieval across long-context inputs" },
         ],
       },
       { type: "h2", text: "1. The Frontier Model Landscape Overview" },

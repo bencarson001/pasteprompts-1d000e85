@@ -113,7 +113,7 @@ export default function About() {
               rating after you've used it so the best work rises to the top.
             </p>
             <p className="mt-3 leading-relaxed text-muted-foreground">
-              Creators upload their prompts, set them live, and get paid automatically when they sell. We handle
+              Creators upload their prompts, set them live, and earn transparent creator shares on sales. We handle
               payments, hosting and discovery so creators can focus on what they're good at — writing prompts that work.
             </p>
           </section>
