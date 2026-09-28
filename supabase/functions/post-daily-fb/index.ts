@@ -159,23 +159,8 @@ Deno.serve(async (req) => {
   const useImage = attachMedia && !!pick.image_url;
 
   // Determine whether to share to groups (defaults to true unless explicitly toggled off in schedule or request)
-  let shareToGroups = true;
-  if (typeof body?.share_to_groups === "boolean") {
-    shareToGroups = body.share_to_groups;
-  } else {
-    try {
-      const { data: schedRow } = await supabase
-        .from("fb_autopilot_schedule")
-        .select("share_to_groups")
-        .eq("id", 1)
-        .maybeSingle();
-      if (schedRow && typeof (schedRow as { share_to_groups?: boolean }).share_to_groups === "boolean") {
-        shareToGroups = !!(schedRow as { share_to_groups?: boolean }).share_to_groups;
-      }
-    } catch {
-      // If column doesn't exist yet, default to true
-    }
-  }
+  // Facebook no longer allows apps to post into groups, so posts go to the Page only.
+  const shareToGroups = false;
 
   // Publish to the Page, then optionally share to 9 random active groups if enabled.
   const published = await publishToFacebook(

@@ -10,14 +10,12 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { SectionHeader, TableShell, Empty } from "./shared";
 import { timeAgo } from "@/lib/format";
 import { fetchFbGroups } from "@/lib/admin";
-import { FacebookGroups } from "./FacebookGroups";
 import { FacebookConnection } from "./FacebookConnection";
 
 
@@ -180,7 +178,7 @@ async function runPostingDiagnostic(shareToGroups: boolean): Promise<PostingChec
         issues.push("Share to groups is ON, but you have 0 active groups configured. Posts will publish to your Page only until you add active groups in the Groups tab.");
       }
     } else {
-      successDetails.push("Group sharing is OFF: Posts will publish directly and cleanly to your Facebook Page only.");
+      successDetails.push("Posts will publish to your Facebook Page.");
     }
   } catch (err) {
     if (shareToGroups) {
@@ -309,7 +307,7 @@ function ScheduleCard() {
   const runDiagnosticNow = async () => {
     setCheckingDiag(true);
     try {
-      const diag = await runPostingDiagnostic(form.share_to_groups ?? true);
+      const diag = await runPostingDiagnostic(false);
       setDiagnostic(diag);
       if (diag.status === "error") {
         toast({ title: "Posting error detected", description: diag.issues[0], variant: "destructive" });
@@ -368,7 +366,7 @@ function ScheduleCard() {
     }
 
     // Run automated posting error check immediately on save
-    const diag = await runPostingDiagnostic(form.share_to_groups ?? true);
+    const diag = await runPostingDiagnostic(false);
     setDiagnostic(diag);
     setSaving(false);
 
@@ -393,7 +391,7 @@ function ScheduleCard() {
     } else {
       toast({
         title: "Schedule saved & verified",
-        description: `Autopilot scheduled for ${timeStr} (Europe/London). ${form.share_to_groups ? `Publishing to ${diag.pageName || "Page"} + ${diag.activeGroupsCount} groups.` : `Publishing to ${diag.pageName || "Page"} only (no groups).`}`,
+        description: `Autopilot scheduled for ${timeStr} (Europe/London). Publishing to ${diag.pageName || "Page"}.`,
       });
     }
   };
@@ -539,38 +537,11 @@ function ScheduleCard() {
         </div>
       </div>
 
-      {/* Share to Groups Toggle Section */}
-      <div className="rounded-xl border border-white/10 bg-card/40 p-3.5 sm:p-4">
-        <div className="flex items-center justify-between gap-3">
-          <div className="flex items-start gap-2.5">
-            <Users className="mt-0.5 h-4 w-4 text-primary shrink-0" />
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="text-xs sm:text-sm font-semibold text-foreground">Share to Facebook Groups</span>
-                <Badge variant={form.share_to_groups ? "default" : "secondary"} className="text-[10px] py-0 px-1.5">
-                  {form.share_to_groups ? "Group Sharing ON" : "Page Only"}
-                </Badge>
-              </div>
-              <p className="mt-0.5 text-xs text-muted-foreground">
-                {form.share_to_groups
-                  ? "When enabled, scheduled posts publish to your Facebook Page and automatically share to your active Facebook groups."
-                  : "When turned off, posts publish directly to your Facebook Page only."}
-              </p>
-            </div>
-          </div>
-          <Switch
-            checked={form.share_to_groups ?? true}
-            onCheckedChange={toggleShareToGroups}
-            aria-label="Toggle share to Facebook groups"
-          />
-        </div>
-      </div>
-
       {/* Summary Footer & Action Buttons */}
       <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
         <p className="text-xs text-muted-foreground">
           📅 Active cadence: <strong className="text-foreground">{activeDaysCount} day{activeDaysCount === 1 ? "" : "s"}/week</strong> at <strong className="text-foreground">{timeStr} London time</strong> ·{" "}
-          <strong className="text-foreground">{form.share_to_groups ? "Page + Group Sharing" : "Page Only"}</strong>
+          <strong className="text-foreground">Page only</strong>
         </p>
 
         <div className="flex items-center gap-2">
@@ -775,18 +746,14 @@ export function AdminFacebookAutopilot() {
 
   // Target picker dialog: null = closed, "" = random pool item, otherwise a post id.
   const [postTarget, setPostTarget] = useState<string | null>(null);
-  const [postMode, setPostMode] = useState<"page" | "groups">("page");
-  const { data: groupList } = useQuery({ queryKey: ["admin-fb-groups"], queryFn: fetchFbGroups });
-  const selectedGroups = (groupList ?? []).filter((g) => g.active).length;
 
   const openPostDialog = (id: string) => {
-    setPostMode("page");
     setPostTarget(id);
   };
 
   const confirmPost = async () => {
     const target = postTarget;
-    const shareToGroups = postMode === "groups";
+    const shareToGroups = false;
     setPostTarget(null);
     if (target === null) return;
     if (target === "") await postNow(shareToGroups);
@@ -804,7 +771,7 @@ export function AdminFacebookAutopilot() {
       if (!r.ok) throw new Error(r.error ?? "Post failed");
       toast({
         title: "Posted to Facebook",
-        description: `${r.with_image ? "Photo post" : "Text post"} · ${shareToGroups ? `${r.groups_posted ?? 0} group(s)` : "Page only (groups off)"}`,
+        description: `${r.with_image ? "Photo post" : "Text post"}`,
       });
       refresh();
     } catch (e) {
@@ -860,7 +827,7 @@ export function AdminFacebookAutopilot() {
       if (!r.ok) throw new Error(r.error ?? "Post failed");
       toast({
         title: "Posted to Facebook",
-        description: `${r.with_image ? "Photo post" : "Text post"} — ${shareToGroups ? `${r.groups_posted ?? 0} group(s)` : "Page only (groups off)"} — ${r.fb_post_id ?? "Done."}`,
+        description: `${r.with_image ? "Photo post" : "Text post"} — ${r.fb_post_id ?? "Done."}`,
       });
       refresh();
     } catch (e) {
@@ -922,29 +889,12 @@ export function AdminFacebookAutopilot() {
       <Dialog open={postTarget !== null} onOpenChange={(o) => !o && setPostTarget(null)}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Where should this post go?</DialogTitle>
+            <DialogTitle>Post to your Facebook Page?</DialogTitle>
             <DialogDescription>
               {postTarget === "" ? "One random unposted item from the pool will be published." : "This post will be published now."}
             </DialogDescription>
           </DialogHeader>
-          <RadioGroup value={postMode} onValueChange={(v) => setPostMode(v as "page" | "groups")} className="gap-3">
-            <label className="flex items-start gap-3 rounded-xl border border-white/10 p-3 cursor-pointer">
-              <RadioGroupItem value="page" id="pm-page" className="mt-0.5" />
-              <div>
-                <div className="text-sm font-medium">Profile / Page only</div>
-                <div className="text-xs text-muted-foreground">Publish to your Facebook Page only.</div>
-              </div>
-            </label>
-            <label className={`flex items-start gap-3 rounded-xl border border-white/10 p-3 ${selectedGroups ? "cursor-pointer" : "opacity-50"}`}>
-              <RadioGroupItem value="groups" id="pm-groups" className="mt-0.5" disabled={!selectedGroups} />
-              <div>
-                <div className="text-sm font-medium">Page + selected groups</div>
-                <div className="text-xs text-muted-foreground">
-                  {selectedGroups ? `Also share to your ${selectedGroups} ticked group(s).` : "No groups are ticked in the Groups tab."}
-                </div>
-              </div>
-            </label>
-          </RadioGroup>
+          <p className="text-sm text-muted-foreground">It will be published to your Facebook Page.</p>
           <DialogFooter>
             <Button variant="ghost" onClick={() => setPostTarget(null)}>Cancel</Button>
             <Button onClick={confirmPost}><Send className="mr-1 h-4 w-4" />Post</Button>
@@ -986,7 +936,6 @@ export function AdminFacebookAutopilot() {
         <TabsList className="mb-4">
           <TabsTrigger value="current">Current cycle</TabsTrigger>
           <TabsTrigger value="history"><History className="mr-1 h-4 w-4" />Posting history</TabsTrigger>
-          <TabsTrigger value="groups"><Users className="mr-1 h-4 w-4" />Groups</TabsTrigger>
         </TabsList>
 
         <TabsContent value="current">
@@ -1024,9 +973,6 @@ export function AdminFacebookAutopilot() {
           )}
         </TabsContent>
 
-        <TabsContent value="groups">
-          <FacebookGroups />
-        </TabsContent>
       </Tabs>
 
       <p className="mt-4 flex items-center gap-2 text-xs text-muted-foreground">
