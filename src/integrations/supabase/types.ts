@@ -283,6 +283,47 @@ export type Database = {
           },
         ]
       }
+      creator_payouts: {
+        Row: {
+          amount_pence: number
+          creator_id: string
+          id: string
+          method: string
+          note: string | null
+          paid_at: string
+          paid_by: string | null
+          reference: string | null
+        }
+        Insert: {
+          amount_pence: number
+          creator_id: string
+          id?: string
+          method?: string
+          note?: string | null
+          paid_at?: string
+          paid_by?: string | null
+          reference?: string | null
+        }
+        Update: {
+          amount_pence?: number
+          creator_id?: string
+          id?: string
+          method?: string
+          note?: string | null
+          paid_at?: string
+          paid_by?: string | null
+          reference?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "creator_payouts_creator_id_fkey"
+            columns: ["creator_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       email_send_log: {
         Row: {
           created_at: string
@@ -760,6 +801,35 @@ export type Database = {
             columns: ["prompt_id"]
             isOneToOne: false
             referencedRelation: "prompts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      payout_details: {
+        Row: {
+          details: string
+          method: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          details: string
+          method?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          details?: string
+          method?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payout_details_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -1523,6 +1593,24 @@ export type Database = {
     }
     Functions: {
       admin_analytics: { Args: { _days?: number }; Returns: Json }
+      admin_creator_balances: {
+        Args: never
+        Returns: {
+          avatar_url: string
+          creator_id: string
+          display_name: string
+          earned_pence: number
+          email: string
+          handle: string
+          last_paid_at: string
+          membership_tier: Database["public"]["Enums"]["membership_tier"]
+          owed_pence: number
+          paid_pence: number
+          paid_sales: number
+          payout_details: string
+          payout_method: string
+        }[]
+      }
       admin_early_bird_recipients: {
         Args: never
         Returns: {
@@ -1561,6 +1649,16 @@ export type Database = {
           total_sales: number
         }[]
       }
+      admin_record_payout: {
+        Args: {
+          _amount_pence: number
+          _creator_id: string
+          _method: string
+          _note: string
+          _reference: string
+        }
+        Returns: string
+      }
       admin_set_user_creator: {
         Args: { _is_creator: boolean; _user_id: string }
         Returns: undefined
@@ -1573,6 +1671,7 @@ export type Database = {
         Returns: undefined
       }
       cleanup_stale_creator_prompts: { Args: never; Returns: number }
+      creator_earned_pence: { Args: { _creator: string }; Returns: number }
       creator_follower_count: { Args: { _creator_id: string }; Returns: number }
       default_admin_id: { Args: never; Returns: string }
       delete_email: {
@@ -1595,6 +1694,16 @@ export type Database = {
           stripe_account_id: string
           total_earnings_pence: number
           total_sales: number
+        }[]
+      }
+      get_my_payout_summary: {
+        Args: never
+        Returns: {
+          earned_pence: number
+          last_paid_at: string
+          owed_pence: number
+          paid_pence: number
+          paid_sales: number
         }[]
       }
       get_my_sales: {
