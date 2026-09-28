@@ -40,6 +40,7 @@ export function PromptCard({ prompt, index = 0 }: { prompt: PromptCardData; inde
               src={prompt.image_url}
               alt={prompt.title}
               loading="lazy"
+              decoding="async"
               referrerPolicy="no-referrer"
               className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
             />

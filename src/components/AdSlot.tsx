@@ -33,7 +33,7 @@ export function AdSlot({ slot, format = "auto", layout, className, label = true 
   if (!shouldRender) return null;
 
   return (
-    <div className={className} aria-hidden="true">
+    <div className={`min-h-[90px] w-full transition-all duration-300 ${className ?? ""}`} aria-hidden="true">
       {label && (
         <p className="mb-1 text-center text-[10px] uppercase tracking-widest text-muted-foreground/60">
           Advertisement

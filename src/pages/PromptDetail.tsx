@@ -569,6 +569,26 @@ INPUTS (fill these in):
           </aside>
         </div>
 
+        {/* Recommended engineering guides */}
+        <section className="mt-14 rounded-2xl border border-white/10 bg-card/40 p-6">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div>
+              <h2 className="font-display text-lg font-bold flex items-center gap-2 text-foreground">
+                <Sparkles className="h-4 w-4 text-primary-glow" /> Master AI Prompt Engineering
+              </h2>
+              <p className="mt-1 text-xs text-muted-foreground">
+                Read our in-depth practitioner guides to learn context calibration, delimiter syntax, and prompt optimization.
+              </p>
+            </div>
+            <Link
+              to="/guides"
+              className="inline-flex items-center gap-1.5 rounded-xl border border-white/15 px-4 py-2 text-xs font-semibold hover:bg-card transition-colors text-primary-glow"
+            >
+              Browse all guides <ExternalLink className="h-3 w-3" />
+            </Link>
+          </div>
+        </section>
+
         {!!related?.length && (
           <section className="mt-16">
             <div className="mb-6 flex items-end justify-between gap-4">

@@ -117,6 +117,13 @@ export default function Category() {
               <Link to="/browse" className="text-primary-glow hover:underline">All categories</Link>
             </p>
           )}
+          <div className="mt-4 flex flex-wrap items-center gap-2 text-xs">
+            <span className="text-muted-foreground">Quick filter by model:</span>
+            <Link to="/prompts/chatgpt-prompts" className="rounded-lg border border-white/10 bg-card/60 px-2.5 py-1 text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground">ChatGPT</Link>
+            <Link to="/prompts/claude-prompts" className="rounded-lg border border-white/10 bg-card/60 px-2.5 py-1 text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground">Claude</Link>
+            <Link to="/prompts/gemini-prompts" className="rounded-lg border border-white/10 bg-card/60 px-2.5 py-1 text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground">Gemini</Link>
+            <Link to="/prompts/midjourney-prompts" className="rounded-lg border border-white/10 bg-card/60 px-2.5 py-1 text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground">Midjourney</Link>
+          </div>
         </header>
 
         <PromptGrid prompts={promptList as never} loading={isLoading} emptyMessage="No prompts in this category yet." />
