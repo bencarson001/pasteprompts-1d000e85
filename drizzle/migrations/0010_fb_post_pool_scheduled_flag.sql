@@ -1,0 +1,1 @@
+ALTER TABLE public.fb_post_pool ADD COLUMN IF NOT EXISTS posted_by_schedule boolean NOT NULL DEFAULT false;
