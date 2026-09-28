@@ -11,7 +11,7 @@ const shell = `<!doctype html><html><head>
 <meta property="og:url" content="https://pasteprompts.co.uk/" />
 <meta name="twitter:title" content="Fallback" />
 <meta name="twitter:description" content="Fallback" />
-</head></html>`;
+</head><body><div id="root"><div id="static-fallback"><h1>Homepage fallback</h1></div></div><script type="module" src="/src/main.tsx"></script></body></html>`;
 
 describe("server SEO metadata", () => {
   it("creates distinct browse metadata from the selected filters", () => {
