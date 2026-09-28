@@ -49,15 +49,15 @@ export const LANDING_PAGES: Record<string, LandingContent> = {
     slug: "chatgpt-prompts",
     title: "ChatGPT Prompts",
     heading: "ChatGPT prompts that actually work",
-    metaDescription: `Hundreds of tested ChatGPT prompts for writing, marketing, business and productivity. Free & premium — copy, paste and run in seconds (${YEAR}).`,
-    lead: "A curated, tested library of ChatGPT prompts for real work — copywriting, marketing, business, coding and productivity. Copy, paste and run.",
+    metaDescription: `Browse ChatGPT prompts for writing, marketing, business and productivity. Free and 49p listings — copy, paste and run (${YEAR}).`,
+    lead: "A searchable library of ChatGPT prompts for real work — copywriting, marketing, business, coding and productivity. Copy, paste and run.",
     filters: { model: "chatgpt", sort: "trending", limit: 48 },
     sections: [
       {
         h2: `The best ChatGPT prompts for ${YEAR}`,
         paragraphs: [
           "ChatGPT is only as good as the prompt you give it. Type a vague question and you get a vague, average answer; give it a clear role, context and format and it produces work you can actually ship. Every prompt in this collection is engineered that way — with the role, constraints and output format built in, so you get professional results on the first try.",
-          "Instead of hunting through Reddit threads and screenshots, you get a searchable, tested library. Filter by free or premium, grab the one you need, swap in your details and run it. No sign-up required to browse, and hundreds are completely free.",
+          "Instead of hunting through Reddit threads and screenshots, you get a searchable library. Filter by free or paid, choose the one you need, swap in your details and run it. No sign-up is required to browse.",
         ],
       },
       {
@@ -69,7 +69,7 @@ export const LANDING_PAGES: Record<string, LandingContent> = {
       },
     ],
     faqs: [
-      { q: "Are these ChatGPT prompts free?", a: "Hundreds are completely free to copy and use — no account needed. Premium prompts go deeper with advanced, multi-step frameworks. Use the free filter to see them all." },
+      { q: "Are these ChatGPT prompts free?", a: "Some are completely free to copy and use. Paid prompts cost 49p. Use the free filter to see the currently available free listings." },
       { q: "Do the prompts work with GPT-4o and the latest ChatGPT?", a: "Yes. The prompts are model-agnostic in structure, so they work across every recent ChatGPT version, and most also work in Claude and Gemini." },
       { q: "How do I use a ChatGPT prompt?", a: "Copy the prompt, open a new ChatGPT chat, paste it, then replace the [PLACEHOLDERS] with your own product, audience or goal and hit send." },
     ],
@@ -79,7 +79,7 @@ export const LANDING_PAGES: Record<string, LandingContent> = {
     slug: "claude-prompts",
     title: "Claude AI Prompts",
     heading: "Claude prompts for serious work",
-    metaDescription: `Tested Claude AI prompts for long-form writing, analysis, research and coding. Free & premium prompts built for Anthropic's Claude — copy and paste.`,
+    metaDescription: `Browse Claude AI prompts for long-form writing, analysis, research and coding. Free and 49p listings for Anthropic's Claude.`,
     lead: "Prompts tuned to Claude's strengths — long-context writing, careful reasoning, analysis and structured output. Copy, paste and run.",
     filters: { model: "claude", sort: "trending", limit: 48 },
     sections: [
@@ -109,7 +109,7 @@ export const LANDING_PAGES: Record<string, LandingContent> = {
     slug: "gemini-prompts",
     title: "Google Gemini Prompts",
     heading: "Gemini prompts for research & productivity",
-    metaDescription: `Tested Google Gemini prompts for research, summarising, planning and everyday work. Free & premium prompts — copy, paste and run in seconds.`,
+    metaDescription: `Browse Google Gemini prompts for research, summarising, planning and everyday work. Free and 49p listings ready to copy and adapt.`,
     lead: "Prompts that get the most out of Google Gemini — research, summarising, planning and multimodal tasks. Copy, paste and run.",
     filters: { model: "gemini", sort: "trending", limit: 48 },
     sections: [
@@ -169,7 +169,7 @@ export const LANDING_PAGES: Record<string, LandingContent> = {
     slug: "dalle-prompts",
     title: "DALL-E 3 Prompts",
     heading: "DALL-E 3 prompts for beautiful illustration & design",
-    metaDescription: `Tested, copy-ready DALL-E 3 prompts for flat vectors, logo designs, isometric graphics and digital art. Copy and run in ChatGPT or Bing (${YEAR}).`,
+    metaDescription: `Browse DALL-E 3 prompts for flat vectors, logo designs, isometric graphics and digital art. Copy and run in ChatGPT or Bing (${YEAR}).`,
     lead: "Image prompts engineered for DALL-E 3. Leverage its unmatched text rendering and exact spatial composition. Copy, paste and generate.",
     filters: { model: "dalle", sort: "trending", limit: 48 },
     sections: [
@@ -183,7 +183,7 @@ export const LANDING_PAGES: Record<string, LandingContent> = {
       {
         h2: "Create flat vectors, logos, and UI assets",
         paragraphs: [
-          "This collection spans various design disciplines: flat 2D vector graphics, clean brand logos, detailed isometric illustrations, 3D claymation styles, and high-fidelity UI mockups. With the styling parameters pre-tested, you spend less time guessing keywords and more time generating assets.",
+          "This collection spans various design disciplines: flat 2D vector graphics, clean brand logos, detailed isometric illustrations, 3D claymation styles, and high-fidelity UI mockups. Detailed styling parameters help you spend less time guessing keywords and more time generating assets.",
           "Many of these prompts also produce interesting results in Midjourney and Stable Diffusion, giving you multi-platform versatility.",
         ],
       },
@@ -199,7 +199,7 @@ export const LANDING_PAGES: Record<string, LandingContent> = {
     slug: "sora-prompts",
     title: "Sora AI Video Prompts",
     heading: "Sora AI prompts for stunning cinematic videos",
-    metaDescription: `Tested Sora video prompts for cinematic visual generation, drone flyovers, and detailed 3D animations. Copy, paste and generate videos (${YEAR}).`,
+    metaDescription: `Browse Sora video prompts for cinematic scenes, drone flyovers and detailed 3D animations. Copy, adapt and generate videos (${YEAR}).`,
     lead: "Open the door to next-generation video generation with Sora prompts featuring cinematic camera direction, realistic physics, and precise lighting.",
     filters: { model: "sora", sort: "trending", limit: 48 },
     sections: [
@@ -229,14 +229,14 @@ export const LANDING_PAGES: Record<string, LandingContent> = {
     slug: "free-ai-prompts",
     title: "Free AI Prompts",
     heading: "Free AI prompts you can use right now",
-    metaDescription: `Hundreds of free AI prompts for ChatGPT, Claude, Gemini & Midjourney. No sign-up to browse — copy, paste and run in seconds (${YEAR}).`,
-    lead: "Hundreds of genuinely free, tested prompts for ChatGPT, Claude, Gemini and Midjourney. No sign-up to browse — copy and go.",
+    metaDescription: `Browse free AI prompts for ChatGPT, Claude, Gemini and Midjourney. No sign-up to browse — copy, adapt and run (${YEAR}).`,
+    lead: "Browse the free prompts currently listed for ChatGPT, Claude, Gemini and Midjourney. No sign-up to browse — copy and go.",
     filters: { price: "free", sort: "trending", limit: 48 },
     sections: [
       {
         h2: "Free prompts, no strings attached",
         paragraphs: [
-          "Plenty of sites promise free AI prompts and then hide them behind a sign-up wall. These are genuinely free — browse and copy without an account. Every one is tested and parameterised, so you get real results, not filler.",
+          "Plenty of sites promise free AI prompts and then hide them behind a sign-up wall. These listings are genuinely free to browse and copy without an account, with reusable fields you can replace with your own details.",
           "Create a free account only when you want to save prompts to your own library, get notified about new drops, and keep your favourites in one place. Browsing and copying stays free.",
         ],
       },

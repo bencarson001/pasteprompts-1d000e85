@@ -68,7 +68,7 @@ function PromptRow({ items, loading }: { items?: Card[]; loading: boolean }) {
   );
 }
 
-const hrefFor = (p: Card) => (p.category ? `/prompt/${p.category.slug}/${p.slug}` : `/prompt/${p.slug}`);
+const hrefFor = (p: Card) => `/prompt/${p.slug}`;
 
 export default function Index() {
   const { user } = useAuth();

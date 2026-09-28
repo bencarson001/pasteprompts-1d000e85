@@ -5,6 +5,10 @@ import { fileURLToPath } from "url";
 import { createServer as createViteServer } from "vite";
 import { createClient } from "@supabase/supabase-js";
 import dotenv from "dotenv";
+import { applyMetaToHtml, escapeHtml, resolveStaticMeta, type PageMeta } from "./seo-meta";
+import { LANDING_PAGES } from "./src/lib/landingContent";
+import { CATEGORY_CONTENT } from "./src/lib/categoryContent";
+import { GUIDES } from "./src/lib/guides";
 
 dotenv.config();
 
@@ -263,15 +267,21 @@ async function startServer() {
     try {
       let template = "";
       if (process.env.NODE_ENV !== "production") {
+        if (!vite) throw new Error("Development server is unavailable");
         template = await fs.readFile(path.resolve(process.cwd(), "index.html"), "utf-8");
         template = await vite.transformIndexHtml(req.originalUrl, template);
       } else {
         template = await fs.readFile(path.resolve(process.cwd(), "dist/index.html"), "utf-8");
       }
 
-      // Check if it's a prompt route (either /prompt/:slug or /prompt/:category/:slug)
+      // Resolve metadata before returning the SPA shell so non-JavaScript crawlers
+      // receive the same unique title, description and canonical as React users.
       const promptMatch = req.path.match(/^\/prompt\/(?:([^/]+)\/)?([^/]+)\/?$/);
       const profileMatch = req.path.match(/^\/(?:profile|creators)\/([^/]+)\/?$/);
+      const categoryMatch = req.path.match(/^\/category\/([^/]+)\/?$/);
+      const landingMatch = req.path.match(/^\/prompts\/([^/]+)\/?$/);
+      const guideMatch = req.path.match(/^\/guides\/([^/]+)\/?$/);
+      let pageMeta: PageMeta | undefined;
       
       if (promptMatch && supabase) {
         const slug = promptMatch[2];
@@ -282,19 +292,13 @@ async function startServer() {
           .single();
 
         if (prompt) {
-          const title = `${prompt.title} | Paste Prompts`;
+          const title = `${prompt.title} — AI Prompt`;
           const desc = prompt.description || `Get the ${prompt.title} prompt on Paste Prompts.`;
           const image = prompt.social_image_url || "https://storage.googleapis.com/gpt-engineer-file-uploads/gVA6LFVAv1NR5HdixPMdl8cXxqp2/social-images/social-1781312540994-4621.webp";
-          
+          pageMeta = { title, description: desc, canonicalPath: `/prompt/${slug}` };
           template = template
-            .replace(/<title>.*?<\/title>/, `<title>${title}</title>`)
-            .replace(/<meta name="description" content="[^"]*"/, `<meta name="description" content="${desc}"`)
-            .replace(/<meta property="og:title" content="[^"]*"/, `<meta property="og:title" content="${title}"`)
-            .replace(/<meta property="og:description" content="[^"]*"/, `<meta property="og:description" content="${desc}"`)
-            .replace(/<meta property="og:image" content="[^"]*"/, `<meta property="og:image" content="${image}"`)
-            .replace(/<meta name="twitter:title" content="[^"]*"/, `<meta name="twitter:title" content="${title}"`)
-            .replace(/<meta name="twitter:description" content="[^"]*"/, `<meta name="twitter:description" content="${desc}"`)
-            .replace(/<meta name="twitter:image" content="[^"]*"/, `<meta name="twitter:image" content="${image}"`);
+            .replace(/<meta property="og:image" content="[^"]*"/i, `<meta property="og:image" content="${escapeHtml(image)}"`)
+            .replace(/<meta name="twitter:image" content="[^"]*"/i, `<meta name="twitter:image" content="${escapeHtml(image)}"`);
         }
       } else if (profileMatch && supabase) {
         const handle = profileMatch[1];
@@ -306,21 +310,35 @@ async function startServer() {
 
         if (profile) {
           const displayName = profile.display_name || `@${profile.handle}`;
-          const title = `${displayName} — AI Prompt Creator | Paste Prompts`;
+          const title = `${displayName} — AI Prompt Creator`;
           const desc = profile.bio || `Explore top engineered AI prompts by ${displayName} on Paste Prompts.`;
           const image = profile.avatar_url || "https://storage.googleapis.com/gpt-engineer-file-uploads/gVA6LFVAv1NR5HdixPMdl8cXxqp2/social-images/social-1781312540994-4621.webp";
-
+          pageMeta = { title, description: desc, canonicalPath: `/creators/${profile.handle}` };
           template = template
-            .replace(/<title>.*?<\/title>/, `<title>${title}</title>`)
-            .replace(/<meta name="description" content="[^"]*"/, `<meta name="description" content="${desc}"`)
-            .replace(/<meta property="og:title" content="[^"]*"/, `<meta property="og:title" content="${title}"`)
-            .replace(/<meta property="og:description" content="[^"]*"/, `<meta property="og:description" content="${desc}"`)
-            .replace(/<meta property="og:image" content="[^"]*"/, `<meta property="og:image" content="${image}"`)
-            .replace(/<meta name="twitter:title" content="[^"]*"/, `<meta name="twitter:title" content="${title}"`)
-            .replace(/<meta name="twitter:description" content="[^"]*"/, `<meta name="twitter:description" content="${desc}"`)
-            .replace(/<meta name="twitter:image" content="[^"]*"/, `<meta name="twitter:image" content="${image}"`);
+            .replace(/<meta property="og:image" content="[^"]*"/i, `<meta property="og:image" content="${escapeHtml(image)}"`)
+            .replace(/<meta name="twitter:image" content="[^"]*"/i, `<meta name="twitter:image" content="${escapeHtml(image)}"`);
         }
+      } else if (categoryMatch && supabase) {
+        const slug = categoryMatch[1];
+        const { data: category } = await supabase.from("categories").select("name, description").eq("slug", slug).maybeSingle();
+        if (category) {
+          const curated = CATEGORY_CONTENT[slug];
+          pageMeta = {
+            title: curated?.title ?? `${category.name} AI Prompts`,
+            description: curated?.metaDescription ?? category.description ?? `Browse ${category.name.toLowerCase()} AI prompts available on Paste Prompts, with free and 49p listings for popular AI tools.`,
+            canonicalPath: `/category/${slug}`,
+          };
+        }
+      } else if (landingMatch) {
+        const content = LANDING_PAGES[landingMatch[1]];
+        if (content) pageMeta = { title: content.title, description: content.metaDescription, canonicalPath: `/prompts/${content.slug}` };
+      } else if (guideMatch) {
+        const guide = GUIDES.find((item) => item.slug === guideMatch[1]);
+        if (guide) pageMeta = { title: guide.title, description: guide.description, canonicalPath: `/guides/${guide.slug}` };
       }
+
+      pageMeta ??= resolveStaticMeta(req.path, req.url.includes("?") ? req.url.slice(req.url.indexOf("?")) : "");
+      if (pageMeta) template = applyMetaToHtml(template, pageMeta);
 
       res.status(200).set({ "Content-Type": "text/html" }).end(template);
     } catch (e) {

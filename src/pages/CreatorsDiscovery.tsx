@@ -183,7 +183,7 @@ export default function CreatorsDiscovery() {
                       variant="ghost"
                       className="h-8 text-xs font-semibold text-primary-glow hover:text-foreground p-0 hover:bg-transparent"
                     >
-                      <Link to={`/profile/${creator.handle}`}>
+                      <Link to={`/creators/${creator.handle}`}>
                         View Profile <ArrowRight className="ml-1 h-3 w-3" />
                       </Link>
                     </Button>

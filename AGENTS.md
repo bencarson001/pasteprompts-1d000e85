@@ -19,3 +19,6 @@
 - Do NOT alter or rewrite Google login into hybrid/custom auth flows.
 - Auth: Lovable Cloud (Supabase) only; admin status only from user_roles via has_role RPC — no client-side/email-based admin checks (prevents admin bypass).
 - Prompt stats/status/price/owner and profile money/tier/promo fields are guarded by BEFORE UPDATE triggers; private profile columns are not SELECT-granted to authenticated — read them only via get_my_* / admin_* RPCs. Why: stops self-approval, fake stats, self-upgrades and earnings leaks.
+
+## 4. Search metadata
+- Keep crawler-visible initial HTML metadata in `seo-meta.ts` aligned with each page's React `<SEO>` values; the server applies it before returning the SPA shell so non-JavaScript crawlers do not see duplicate homepage metadata.
