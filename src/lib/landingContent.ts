@@ -255,6 +255,124 @@ export const LANDING_PAGES: Record<string, LandingContent> = {
     ],
     related: ["chatgpt-prompts", "claude-prompts", "gemini-prompts", "midjourney-prompts"],
   },
+  "coding-prompts": {
+    slug: "coding-prompts",
+    title: "AI Coding Prompts",
+    heading: "AI coding prompts for developers & software engineers",
+    metaDescription: `Browse AI coding prompts for React, Python, SQL, TypeScript, and refactoring. Free and 49p prompts for ChatGPT, Claude, and Cursor (${YEAR}).`,
+    lead: "Developer prompts for React, Python, SQL, architecture design, and automated testing. Copy, paste, and ship faster code.",
+    filters: { category: "coding-troubleshooting", sort: "trending", limit: 48 },
+    sections: [
+      {
+        h2: "Code faster with battle-tested LLM prompts",
+        paragraphs: [
+          "AI coding assistants like Claude 3.7 Sonnet, ChatGPT GPT-4o, and Cursor are only as effective as the architectural context and constraints you feed them. A vague prompt returns buggy, unoptimised code. An engineered developer prompt establishes strict type definitions, error boundaries, test requirements, and framework conventions up front.",
+          "This collection covers full-stack web development, algorithmic optimization, unit testing, database schema design, and complex bug troubleshooting across modern languages.",
+        ],
+      },
+      {
+        h2: "From architecture design to automated refactoring",
+        paragraphs: [
+          "Each prompt in this section is parameterised: replace code snippets, target framework versions, or data schemas in bracketed placeholders while preserving the structural constraints that prevent hallucinated APIs and outdated syntax.",
+          "Use these prompts in ChatGPT, Claude Sonnet, Cursor, or Copilot to generate production-ready code with minimal revision.",
+        ],
+      },
+    ],
+    faqs: [
+      { q: "Do these coding prompts work with Claude 3.7 Sonnet and Cursor?", a: "Yes. They are specifically structured with technical constraints that work exceptionally well across Claude 3.7 Sonnet, GPT-4o, DeepSeek R1, and Cursor." },
+      { q: "Can I use these developer prompts for commercial client projects?", a: "Yes. All code generated using these prompts is yours to use in proprietary, client, or open-source software without restriction." },
+      { q: "Are there free coding prompts available?", a: "Yes. Multiple coding prompts are 100% free to copy instantly. Filter by free to view them." },
+    ],
+    related: ["chatgpt-prompts", "claude-prompts", "free-ai-prompts"],
+  },
+  "copywriting-prompts": {
+    slug: "copywriting-prompts",
+    title: "AI Copywriting Prompts",
+    heading: "High-converting AI copywriting prompts & templates",
+    metaDescription: `Browse AI copywriting prompts for sales pages, email sequences, ad copy, and VSLs. Free and 49p templates for ChatGPT and Claude (${YEAR}).`,
+    lead: "Copywriting frameworks (AIDA, PAS, 4 Ps) baked into copy-and-paste AI prompts. Generate sales pages, cold emails, and ad copy.",
+    filters: { category: "copywriting", sort: "trending", limit: 48 },
+    sections: [
+      {
+        h2: "Copywriting prompts that sound like human copywriters",
+        paragraphs: [
+          "Most AI copy sounds robotic, generic, and unconvincing because it lacks conversion principles. These prompts embed proven direct-response frameworks directly into system instructions, forcing the AI to focus on customer pain points, hooks, social proof, and compelling calls-to-action.",
+          "Whether you are writing sales letters, 5-part email launch sequences, high-ROAS Meta and Google ad variations, or landing page headlines, these parameterised templates give you agency-grade copy in seconds.",
+        ],
+      },
+      {
+        h2: "Reusable marketing copy formulas",
+        paragraphs: [
+          "Swap in your product features, target audience avatar, and unique value proposition into bracketed placeholders. The prompt handles tone calibration, rhythm, and conversion mechanics automatically.",
+          "Works seamlessly in ChatGPT, Claude, and Gemini.",
+        ],
+      },
+    ],
+    faqs: [
+      { q: "Do these prompts include copywriting frameworks like PAS or AIDA?", a: "Yes. Prompts specify proven direct-response frameworks (AIDA, PAS, Before-After-Bridge) so the generated copy is structured to convert." },
+      { q: "Can I use the copy generated for client work?", a: "Yes. All generated copy can be published on client websites, ad accounts, and email broadcasts without royalty fees." },
+      { q: "Are there free copywriting prompts?", a: "Yes. Filter by free to access free copywriting prompts ready to copy without an account." },
+    ],
+    related: ["chatgpt-prompts", "claude-prompts", "free-ai-prompts"],
+  },
+  "business-prompts": {
+    slug: "business-prompts",
+    title: "AI Business Prompts",
+    heading: "AI business prompts for strategy, planning & growth",
+    metaDescription: `Browse AI business prompts for business plans, market research, pitch decks, and financial modeling. Free and 49p templates (${YEAR}).`,
+    lead: "Strategic business frameworks, competitor intelligence matrices, and pitch deck blueprints parameterised for founders and executives.",
+    filters: { category: "business-marketing", sort: "trending", limit: 48 },
+    sections: [
+      {
+        h2: "Accelerate business strategy and planning with AI",
+        paragraphs: [
+          "Building a business requires deep market analysis, financial modeling, positioning strategy, and operational planning. These AI prompts convert vague strategic goals into structured frameworks: SWOT matrices, TAM/SAM market sizing, investor pitch deck slides, and customer acquisition playbooks.",
+          "Instead of starting from a blank page, use battle-tested executive templates to analyze opportunities, identify market gaps, and streamline business operations.",
+        ],
+      },
+      {
+        h2: "Designed for founders, consultants, and operators",
+        paragraphs: [
+          "Every business prompt includes explicit variable inputs for target industries, pricing tiers, and competitor benchmarks. Use them in ChatGPT or Claude to draft comprehensive business documentation in minutes.",
+        ],
+      },
+    ],
+    faqs: [
+      { q: "Can AI prompts help create business plans or pitch decks?", a: "Yes. These prompts provide the exact structural prompts used by venture-backed startups and management consultants." },
+      { q: "Which AI models are best for business strategy?", a: "Claude 3.7 Sonnet and ChatGPT (GPT-4o) excel at strategic reasoning and long-context business analysis." },
+      { q: "Are free business prompts available?", a: "Yes. Toggle the free filter to browse business strategy prompts instantly." },
+    ],
+    related: ["chatgpt-prompts", "claude-prompts", "copywriting-prompts"],
+  },
+  "flux-prompts": {
+    slug: "flux-prompts",
+    title: "FLUX.1 AI Prompts",
+    heading: "FLUX.1 prompts for photorealistic AI image generation",
+    metaDescription: `Copy-ready FLUX.1 prompts for photorealism, typography, product photography, and 3D renders. Free and 49p formulas (${YEAR}).`,
+    lead: "Image prompts engineered for FLUX.1 Schnell & Dev models. Master lighting, photorealism, camera lenses, and crisp text rendering.",
+    filters: { model: "flux", sort: "trending", limit: 48 },
+    sections: [
+      {
+        h2: "Unlock the full power of FLUX.1 image generation",
+        paragraphs: [
+          "FLUX.1 by Black Forest Labs has redefined open-weights image generation with incredible prompt adherence, natural photorealism, and clean text rendering. However, achieving studio-grade imagery requires precise descriptive cues, camera parameters, and lighting descriptors.",
+          "These prompts are parameterised formulas for hyper-realistic portraits, editorial product photography, cinematic film stills, and graphic typography.",
+        ],
+      },
+      {
+        h2: "Consistent photorealism across FLUX.1 Dev & Schnell",
+        paragraphs: [
+          "Simply swap the main subject inside bracketed placeholders while maintaining proven photographic styling parameters. Use these prompts in Fal.ai, Replicate, HuggingFace, or local ComfyUI workflows.",
+        ],
+      },
+    ],
+    faqs: [
+      { q: "Do these prompts work on both FLUX.1 Dev and Schnell?", a: "Yes. They are engineered to produce exceptional photorealism and crisp typography across all FLUX.1 model variants." },
+      { q: "Can I use FLUX.1 generated images commercially?", a: "Commercial usage depends on the specific FLUX license model used, but prompt parameters are 100% free for open use." },
+      { q: "Are free FLUX prompts included?", a: "Yes. Browse free FLUX image prompts ready to copy with a single click." },
+    ],
+    related: ["midjourney-prompts", "dalle-prompts", "free-ai-prompts"],
+  },
 };
 
 export function getLandingContent(slug: string): LandingContent | undefined {

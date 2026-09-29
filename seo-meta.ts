@@ -64,6 +64,50 @@ const STATIC_META: Record<string, Omit<PageMeta, "canonicalPath">> = {
     title: "DMCA & Copyright Takedown Requests",
     description: "Learn how to report copyright infringement or submit a takedown request for content published on Paste Prompts.",
   },
+  "/prompts/chatgpt-prompts": {
+    title: "ChatGPT Prompts",
+    description: "Browse ChatGPT prompts for writing, marketing, business and productivity. Free and 49p listings — copy, paste and run.",
+  },
+  "/prompts/claude-prompts": {
+    title: "Claude AI Prompts",
+    description: "Browse Claude AI prompts for long-form writing, analysis, research and coding. Free and 49p listings for Anthropic's Claude.",
+  },
+  "/prompts/gemini-prompts": {
+    title: "Google Gemini Prompts",
+    description: "Browse Google Gemini prompts for research, summarising, planning and everyday work. Free and 49p listings ready to copy and adapt.",
+  },
+  "/prompts/midjourney-prompts": {
+    title: "Midjourney Prompts",
+    description: "Copy-ready Midjourney prompts for logos, art, photography and design. Free & premium image prompts with parameters baked in.",
+  },
+  "/prompts/dalle-prompts": {
+    title: "DALL-E 3 Prompts",
+    description: "Browse DALL-E 3 prompts for flat vectors, logo designs, isometric graphics and digital art. Copy and run in ChatGPT or Bing.",
+  },
+  "/prompts/sora-prompts": {
+    title: "Sora AI Video Prompts",
+    description: "Browse Sora video prompts for cinematic scenes, drone flyovers and detailed 3D animations. Copy, adapt and generate videos.",
+  },
+  "/prompts/flux-prompts": {
+    title: "FLUX.1 AI Prompts",
+    description: "Copy-ready FLUX.1 prompts for photorealism, typography, product photography, and 3D renders. Free and 49p formulas.",
+  },
+  "/prompts/coding-prompts": {
+    title: "AI Coding Prompts",
+    description: "Browse AI coding prompts for React, Python, SQL, TypeScript, and refactoring. Free and 49p prompts for ChatGPT, Claude, and Cursor.",
+  },
+  "/prompts/copywriting-prompts": {
+    title: "AI Copywriting Prompts",
+    description: "Browse AI copywriting prompts for sales pages, email sequences, ad copy, and VSLs. Free and 49p templates for ChatGPT and Claude.",
+  },
+  "/prompts/business-prompts": {
+    title: "AI Business Prompts",
+    description: "Browse AI business prompts for business plans, market research, pitch decks, and financial modeling. Free and 49p templates.",
+  },
+  "/prompts/free-ai-prompts": {
+    title: "Free AI Prompts",
+    description: "Browse free AI prompts for ChatGPT, Claude, Gemini and Midjourney. No sign-up to browse — copy, adapt and run.",
+  },
 };
 
 const LEGAL_META: Record<string, Omit<PageMeta, "canonicalPath">> = {
