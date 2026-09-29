@@ -126,13 +126,28 @@ export default function Index() {
     navigate(q ? `/browse?q=${encodeURIComponent(q)}` : "/browse");
   };
 
+  const websiteSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Paste Prompts",
+    "url": "https://pasteprompts.co.uk",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": {
+        "@type": "EntryPoint",
+        "urlTemplate": "https://pasteprompts.co.uk/browse?q={search_term_string}",
+      },
+      "query-input": "required name=search_term_string",
+    },
+  };
+
   return (
     <Layout>
       <SEO
-        title="Paste Prompts — Discover, buy & sell AI prompts"
-        description="Browse free and 49p AI prompts for ChatGPT, Claude, Gemini, Midjourney and Flux. Copy prompts instantly or sell your own on Paste Prompts."
+        title="AI Prompts & ChatGPT Prompts Marketplace | Paste Prompts"
+        description="Discover top AI prompts & ChatGPT prompts. Copy and paste free & 49p prompts for ChatGPT, Claude, Gemini, Midjourney & Flux. Buy or sell prompts on Paste Prompts."
         canonical="/"
-        jsonLd={faqSchema}
+        jsonLd={[faqSchema, websiteSchema]}
       />
 
       {/* Hero */}
@@ -144,10 +159,10 @@ export default function Index() {
               <Sparkles className="h-3.5 w-3.5" /> The AI prompt marketplace
             </p>
             <h1 className="font-display text-4xl font-bold leading-[1.08] tracking-tight text-foreground sm:text-5xl lg:text-6xl">
-              Discover, buy &amp; sell <span className="text-primary-glow">AI prompts</span> that work.
+              Free &amp; 49p <span className="text-primary-glow">AI Prompts</span> for ChatGPT, Claude &amp; Gemini.
             </h1>
             <p className="mt-4 max-w-xl text-base text-muted-foreground sm:text-lg">
-              Ready-to-paste prompts for ChatGPT, Claude, Gemini, Midjourney and more. Many are free, paid ones are just 49p.
+              Copy and paste high-performing AI prompts &amp; ChatGPT prompts for copywriting, coding, marketing, and business. Free or just 49p.
             </p>
 
             <form onSubmit={handleSearch} role="search" className="mt-6 flex max-w-xl items-center gap-2 rounded-2xl border border-border bg-card p-1.5 shadow-lg focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20">
@@ -326,6 +341,36 @@ export default function Index() {
           <Button asChild size="lg" className="h-12 rounded-xl px-6 font-semibold">
             <Link to="/sell">Start selling <ArrowRight className="ml-1 h-4 w-4" /></Link>
           </Button>
+        </div>
+      </section>
+
+      {/* Semantic Keyword SEO Block */}
+      <section className="container-wide border-t border-border/50 py-12">
+        <div className="mx-auto max-w-4xl space-y-6 text-left">
+          <h2 className="font-display text-2xl font-bold text-foreground sm:text-3xl">
+            Copy and Paste AI Prompts That Work
+          </h2>
+          <p className="text-sm leading-relaxed text-muted-foreground">
+            Paste Prompts is the dedicated marketplace for high-performance <strong className="text-foreground">AI prompts</strong> and <strong className="text-foreground">ChatGPT prompts</strong>. Whether you need copywriting frameworks, coding helpers, business strategy blueprints, or image generation formulas for Midjourney and Flux, our prompt library delivers copy-and-paste ready instructions tested for immediate execution.
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-2">
+            <div className="rounded-2xl border border-white/10 bg-card/40 p-5">
+              <h3 className="font-display font-bold text-foreground text-base mb-2">
+                ChatGPT &amp; Claude Prompts
+              </h3>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                Explore thousands of parameterised <Link to="/prompts/chatgpt-prompts" className="text-primary-glow hover:underline">ChatGPT prompts</Link> and <Link to="/prompts/claude-prompts" className="text-primary-glow hover:underline">Claude AI prompts</Link> built with explicit variable brackets. Eliminate conversational fluff and unlock deterministic output across GPT-4o, Claude 3.7 Sonnet, and Gemini 2.5.
+              </p>
+            </div>
+            <div className="rounded-2xl border border-white/10 bg-card/40 p-5">
+              <h3 className="font-display font-bold text-foreground text-base mb-2">
+                Free &amp; 49p Marketplace
+              </h3>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                Access hundreds of <Link to="/prompts/free-ai-prompts" className="text-primary-glow hover:underline">free AI prompts</Link> or premium 49p prompt packs created by verified prompt engineers. Save your favourite prompts into your personal library or <Link to="/sell" className="text-primary-glow hover:underline">sell your own prompts</Link> on our open creator platform.
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 

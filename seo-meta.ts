@@ -9,8 +9,8 @@ const SITE_NAME = "Paste Prompts";
 
 const STATIC_META: Record<string, Omit<PageMeta, "canonicalPath">> = {
   "/": {
-    title: "Paste Prompts — Discover, buy & sell AI prompts",
-    description: "Browse free and 49p AI prompts for ChatGPT, Claude, Gemini, Midjourney and Flux. Copy prompts instantly or sell your own on Paste Prompts.",
+    title: "AI Prompts & ChatGPT Prompts Marketplace | Paste Prompts",
+    description: "Discover top AI prompts & ChatGPT prompts. Copy and paste free & 49p prompts for ChatGPT, Claude, Gemini, Midjourney & Flux. Buy or sell prompts on Paste Prompts.",
   },
   "/browse": {
     title: "Browse AI Prompts — Free & 49p Prompt Library",
