@@ -66,10 +66,13 @@ export type CreatorSale = {
 // All paid sales (live + test flagged), paginated past the 1000-row API cap.
 export async function fetchAllPaidSales(): Promise<CreatorSale[]> {
   const out: CreatorSale[] = [];
+  const { data: testIds, error: tErr } = await sb.rpc("admin_test_purchase_ids");
+  if (tErr) throw new Error(tErr.message);
+  const testSet = new Set((testIds as string[] | null) ?? []);
   for (let from = 0; ; from += 1000) {
     const { data, error } = await supabase
       .from("purchases")
-      .select("id, created_at, amount_pence, platform_fee_pence, creator_earning_pence, stripe_session_id, prompt_id, prompt:prompts(title, creator_id)")
+      .select("id, created_at, amount_pence, platform_fee_pence, creator_earning_pence, prompt_id, prompt:prompts(title, creator_id)")
       .eq("is_free", false)
       .order("created_at", { ascending: false })
       .range(from, from + 999);
@@ -79,7 +82,7 @@ export async function fetchAllPaidSales(): Promise<CreatorSale[]> {
         id: r.id as string, created_at: r.created_at as string,
         amount_pence: (r.amount_pence as number) ?? 0, platform_fee_pence: (r.platform_fee_pence as number) ?? 0,
         creator_earning_pence: (r.creator_earning_pence as number) ?? 0,
-        is_test: String(r.stripe_session_id ?? "").startsWith("cs_test_"),
+        is_test: testSet.has(r.id as string),
         prompt_id: r.prompt_id as string, prompt_title: r.prompt?.title ?? "Deleted prompt", creator_id: r.prompt?.creator_id ?? "",
       });
     }

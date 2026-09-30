@@ -26,17 +26,12 @@ export default function CheckoutReturn() {
     let tries = 0;
     const check = async () => {
       tries++;
-      const { data } = await supabase
-        .from("purchases")
-        .select("id, prompt:prompts(title, slug)")
-        .eq("stripe_session_id", sessionId)
-        .eq("buyer_id", user.id)
-        .maybeSingle();
+      const { data } = await supabase.rpc("get_my_purchase_by_session", { _session_id: sessionId });
       if (cancelled) return;
-      if (data) {
-        const p = data.prompt as { title?: string; slug?: string } | null;
-        setTitle(p?.title ?? null);
-        setSlug(p?.slug ?? null);
+      const row = (data as { title: string | null; slug: string | null }[] | null)?.[0];
+      if (row) {
+        setTitle(row.title ?? null);
+        setSlug(row.slug ?? null);
         setState("confirmed");
       } else if (tries < 10) {
         setTimeout(check, 2000);

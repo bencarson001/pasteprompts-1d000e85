@@ -257,7 +257,7 @@ Deno.serve(async (req) => {
             sender_domain: payload.sender_domain,
             subject: payload.subject,
             html: payload.html,
-            text: payload.text,
+            text: payload.text || String(payload.html ?? '').replace(/<style[\s\S]*?<\/style>/gi, '').replace(/<br\s*\/?>/gi, '\n').replace(/<\/p>/gi, '\n\n').replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').trim() || String(payload.subject ?? ''),
             purpose: payload.purpose,
             label: payload.label,
             idempotency_key: payload.idempotency_key,
