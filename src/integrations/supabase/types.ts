@@ -1673,6 +1673,7 @@ export type Database = {
         }
         Returns: undefined
       }
+      admin_test_purchase_ids: { Args: never; Returns: string[] }
       cleanup_stale_creator_prompts: { Args: never; Returns: number }
       creator_earned_pence: { Args: { _creator: string }; Returns: number }
       creator_follower_count: { Args: { _creator_id: string }; Returns: number }
@@ -1707,6 +1708,14 @@ export type Database = {
           owed_pence: number
           paid_pence: number
           paid_sales: number
+        }[]
+      }
+      get_my_purchase_by_session: {
+        Args: { _session_id: string }
+        Returns: {
+          id: string
+          slug: string
+          title: string
         }[]
       }
       get_my_sales: {
