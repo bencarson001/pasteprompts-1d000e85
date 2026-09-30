@@ -261,7 +261,7 @@ export const LANDING_PAGES: Record<string, LandingContent> = {
     heading: "AI coding prompts for developers & software engineers",
     metaDescription: `Browse AI coding prompts for React, Python, SQL, TypeScript, and refactoring. Free and 49p prompts for ChatGPT, Claude, and Cursor (${YEAR}).`,
     lead: "Developer prompts for React, Python, SQL, architecture design, and automated testing. Copy, paste, and ship faster code.",
-    filters: { category: "coding-troubleshooting", sort: "trending", limit: 48 },
+    filters: { categorySlug: "coding-troubleshooting", sort: "trending", limit: 48 },
     sections: [
       {
         h2: "Code faster with battle-tested LLM prompts",
@@ -291,7 +291,7 @@ export const LANDING_PAGES: Record<string, LandingContent> = {
     heading: "High-converting AI copywriting prompts & templates",
     metaDescription: `Browse AI copywriting prompts for sales pages, email sequences, ad copy, and VSLs. Free and 49p templates for ChatGPT and Claude (${YEAR}).`,
     lead: "Copywriting frameworks (AIDA, PAS, 4 Ps) baked into copy-and-paste AI prompts. Generate sales pages, cold emails, and ad copy.",
-    filters: { category: "copywriting", sort: "trending", limit: 48 },
+    filters: { categorySlug: "copywriting", sort: "trending", limit: 48 },
     sections: [
       {
         h2: "Copywriting prompts that sound like human copywriters",
@@ -321,7 +321,7 @@ export const LANDING_PAGES: Record<string, LandingContent> = {
     heading: "AI business prompts for strategy, planning & growth",
     metaDescription: `Browse AI business prompts for business plans, market research, pitch decks, and financial modeling. Free and 49p templates (${YEAR}).`,
     lead: "Strategic business frameworks, competitor intelligence matrices, and pitch deck blueprints parameterised for founders and executives.",
-    filters: { category: "business-marketing", sort: "trending", limit: 48 },
+    filters: { categorySlug: "business-marketing", sort: "trending", limit: 48 },
     sections: [
       {
         h2: "Accelerate business strategy and planning with AI",
