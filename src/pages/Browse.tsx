@@ -35,7 +35,7 @@ import { MODELS, MODEL_LABELS } from "@/lib/format";
 
 const PAGE_SIZE = 24;
 
-function Breadcrumb({ price, model, category }: { price?: string; model?: string; category?: string }) {
+function Breadcrumb({ price, model, category }: { price?: string | undefined; model?: string | undefined; category?: string | undefined }) {
   const crumbs: { label: string; to: string }[] = [{ label: "Browse", to: "/browse" }];
   if (price) crumbs.push({ label: PRICE_LABELS[price as keyof typeof PRICE_LABELS] ?? price, to: browsePath(price) });
   if (price && model)
@@ -184,9 +184,9 @@ function ResultsView({
   model,
   category,
 }: {
-  price?: string;
-  model?: string;
-  category?: string;
+  price?: string | undefined;
+  model?: string | undefined;
+  category?: string | undefined;
 }) {
   const [params, setParams] = useSearchParams();
   const [q, setQ] = useState(params.get("q") ?? "");

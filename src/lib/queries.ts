@@ -8,13 +8,13 @@ export const PROMPT_CARD_SELECT =
   "id, slug, title, description, image_url, model, price_pence, is_free, rating_avg, rating_count, sales_count, copies_count, featured, category:categories(slug, name), creator:profiles!prompts_creator_id_fkey(handle, display_name)";
 
 export interface BrowseFilters {
-  q?: string;
-  categorySlug?: string;
-  model?: string;
-  price?: "free" | "paid" | "under5" | "5to15" | "over15";
-  sort?: "trending" | "newest" | "rated" | "popular";
-  limit?: number;
-  offset?: number;
+  q?: string | undefined;
+  categorySlug?: string | undefined;
+  model?: string | undefined;
+  price?: "free" | "paid" | "under5" | "5to15" | "over15" | undefined;
+  sort?: "trending" | "newest" | "rated" | "popular" | undefined;
+  limit?: number | undefined;
+  offset?: number | undefined;
 }
 
 /**
