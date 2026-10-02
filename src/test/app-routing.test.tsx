@@ -30,7 +30,7 @@ afterEach(() => {
 // routes are rewritten as the app is built and this must keep passing.
 describe("App routing", () => {
   it("renders the index route", async () => {
-    const router = renderAt("/");
+    const router = await renderAt("/");
 
     await waitFor(() => expect(router.state.status).toBe("idle"));
     expect(router.state.matches.some((m) => m.routeId === "/")).toBe(true);
@@ -40,7 +40,7 @@ describe("App routing", () => {
   it("renders the not-found route", async () => {
     vi.spyOn(console, "warn").mockImplementation(() => undefined);
 
-    const router = renderAt("/this-route-does-not-exist");
+    const router = await renderAt("/this-route-does-not-exist");
 
     await waitFor(() => expect(router.state.status).toBe("idle"));
     await waitFor(() => expect(document.body.textContent).not.toBe(""));
