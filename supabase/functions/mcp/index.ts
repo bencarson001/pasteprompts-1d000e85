@@ -395,6 +395,9 @@ var mcp_default = defineMcp({
     issuer: `https://${projectRef}.supabase.co/auth/v1`,
     acceptedAudiences: "authenticated"
   }),
+  // Cast: @lovable.dev/mcp-js's AnyToolDefinition types outputSchema as required,
+  // which rejects tools without one under exactOptionalPropertyTypes. Runtime
+  // accepts tools with no outputSchema; this is an upstream type limitation.
   tools: [
     search_prompts_default,
     get_prompt_default,

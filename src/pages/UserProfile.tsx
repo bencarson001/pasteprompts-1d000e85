@@ -282,7 +282,7 @@ export default function UserProfile() {
                     user
                       ? {
                           id: user.id,
-                          email: user.email,
+                          ...(user.email ? { email: user.email } : {}),
                           tier: viewerTier,
                         }
                       : null

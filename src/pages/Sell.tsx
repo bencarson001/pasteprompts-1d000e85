@@ -295,7 +295,7 @@ export default function Sell() {
               <h2 className="font-display text-xl font-semibold">Step 4: Review and submit</h2>
               <Row label="Title" value={form.title} />
               <Row label="Category" value={(categories ?? []).find((c) => c.id === form.category_id)?.name ?? "—"} />
-              <Row label="Model" value={MODEL_LABELS[form.model]} />
+              <Row label="Model" value={MODEL_LABELS[form.model] ?? form.model} />
               <Row label="Price" value={form.is_free ? "Free" : "£0.49 (fixed)"} />
               <Row label="You earn / sale" value={form.is_free ? "—" : formatPrice(tier.earningPence)} />
               <Row label="Tags" value={form.tags || "—"} />
