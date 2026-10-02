@@ -8,7 +8,6 @@ import {
   Scripts,
   useRouter,
 } from "@tanstack/react-router";
-import { HelmetProvider } from "react-helmet-async";
 import { ThemeProvider } from "next-themes";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
@@ -174,23 +173,21 @@ function RootComponent() {
   }, []);
 
   return (
-    <HelmetProvider>
-      <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
-        <QueryClientProvider client={queryClient}>
-          <TooltipProvider>
-            <Toaster />
-            <Sonner />
-            <AuthProvider>
-              <AnalyticsTracker />
-              <AdsManager />
-              <ErrorBoundary>
-                <Outlet />
-              </ErrorBoundary>
-            </AuthProvider>
-          </TooltipProvider>
-        </QueryClientProvider>
-      </ThemeProvider>
-    </HelmetProvider>
+    <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <AuthProvider>
+            <AnalyticsTracker />
+            <AdsManager />
+            <ErrorBoundary>
+              <Outlet />
+            </ErrorBoundary>
+          </AuthProvider>
+        </TooltipProvider>
+      </QueryClientProvider>
+    </ThemeProvider>
   );
 }
 
