@@ -28,21 +28,21 @@ export default defineTool({
 
     const p = data as Record<string, unknown>;
     const detail = {
-      slug: p.slug,
-      title: p.title,
-      description: p.description,
-      example_output: p.example_output,
-      model: p.model,
-      price: p.is_free ? "Free" : `£${(((p.price_pence as number) ?? 0) / 100).toFixed(2)}`,
-      rating: p.rating_avg,
-      rating_count: p.rating_count,
-      sales: p.sales_count,
-      views: p.views,
-      tags: p.tags,
-      category: (p.category as { name?: string } | null)?.name ?? null,
-      creator: (p.creator as { display_name?: string } | null)?.display_name ?? null,
-      created_at: p.created_at,
-      url: promptUrl(p.slug as string),
+      slug: p["slug"],
+      title: p["title"],
+      description: p["description"],
+      example_output: p["example_output"],
+      model: p["model"],
+      price: p["is_free"] ? "Free" : `£${(((p["price_pence"] as number) ?? 0) / 100).toFixed(2)}`,
+      rating: p["rating_avg"],
+      rating_count: p["rating_count"],
+      sales: p["sales_count"],
+      views: p["views"],
+      tags: p["tags"],
+      category: (p["category"] as { name?: string } | null)?.name ?? null,
+      creator: (p["creator"] as { display_name?: string } | null)?.display_name ?? null,
+      created_at: p["created_at"],
+      url: promptUrl(p["slug"] as string),
     };
 
     return {

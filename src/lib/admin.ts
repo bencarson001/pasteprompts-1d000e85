@@ -188,10 +188,10 @@ export async function fetchAdminAnalytics(days = 30): Promise<AdminAnalytics> {
       if (seenVisitor.has(e.visitor_id)) continue;
       seenVisitor.add(e.visitor_id);
       const r = (e.referrer || "").toLowerCase();
-      if (!r || r.includes("pasteprompts")) srcCounts.Direct++;
-      else if (/google|bing|duckduckgo|yahoo|ecosia/.test(r)) srcCounts.Organic++;
-      else if (/facebook|instagram|tiktok|twitter|t\.co|x\.com|reddit|youtube|linkedin|pinterest/.test(r)) srcCounts.Social++;
-      else srcCounts.Referral++;
+      if (!r || r.includes("pasteprompts")) srcCounts["Direct"]++;
+      else if (/google|bing|duckduckgo|yahoo|ecosia/.test(r)) srcCounts["Organic"]++;
+      else if (/facebook|instagram|tiktok|twitter|t\.co|x\.com|reddit|youtube|linkedin|pinterest/.test(r)) srcCounts["Social"]++;
+      else srcCounts["Referral"]++;
     }
     const srcTotal = Object.values(srcCounts).reduce((a, b) => a + b, 0);
     const srcColors: Record<string, string> = { Direct: "#8B5CF6", Organic: "#06B6D4", Social: "#F59E0B", Referral: "#3B82F6" };
@@ -567,11 +567,11 @@ export async function fetchErrorLogs(level?: string) {
   }
 
   let merged = Array.from(map.values()).sort(
-    (a, b) => new Date(b.created_at as string).getTime() - new Date(a.created_at as string).getTime()
+    (a, b) => new Date(b["created_at"] as string).getTime() - new Date(a["created_at"] as string).getTime()
   );
 
   if (level && level !== "all") {
-    merged = merged.filter((item) => (item.level as string) === level);
+    merged = merged.filter((item) => (item["level"] as string) === level);
   }
 
   return merged;

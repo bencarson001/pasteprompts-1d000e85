@@ -72,10 +72,10 @@ async function call(action: string, extra: Record<string, unknown> = {}) {
   }
 
   if (action === "connect") {
-    const token = String(extra.short_token ?? "").trim();
+    const token = String(extra["short_token"] ?? "").trim();
     if (token.length < 20) throw new Error("Please enter a valid Facebook access token.");
 
-    const requestedPage = extra.page_id ? String(extra.page_id).trim() : null;
+    const requestedPage = extra["page_id"] ? String(extra["page_id"]).trim() : null;
     let pageId = "";
     let pageName = "";
     let pageToken = token;

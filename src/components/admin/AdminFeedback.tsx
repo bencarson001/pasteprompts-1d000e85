@@ -46,7 +46,7 @@ function FeedbackRow({ m }: { m: FeedbackMessage }) {
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
             <span className="font-semibold">{m.name}</span>
-            <Badge className={`${statusStyles[m.status] ?? statusStyles.read} capitalize`}>{m.status}</Badge>
+            <Badge className={`${statusStyles[m.status] ?? statusStyles["read"]} capitalize`}>{m.status}</Badge>
             <Badge variant="outline" className="capitalize border-white/15">{m.category}</Badge>
           </div>
           <a href={`mailto:${m.email}`} className="mt-1 inline-flex items-center gap-1.5 text-sm text-primary-glow hover:underline">

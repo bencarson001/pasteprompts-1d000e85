@@ -11,7 +11,7 @@ import listArticles from "./tools/list-articles";
 // The OAuth issuer must be the direct Supabase host, built from the project ref
 // (Vite inlines VITE_SUPABASE_PROJECT_ID as a literal at build time, so this stays
 // import-safe). The fallback keeps the issuer well-formed during manifest extract.
-const projectRef = import.meta.env.VITE_SUPABASE_PROJECT_ID ?? "project-ref-unset";
+const projectRef = import.meta.env["VITE_SUPABASE_PROJECT_ID"] ?? "project-ref-unset";
 
 export default defineMcp({
   name: "pasteprompts-mcp",

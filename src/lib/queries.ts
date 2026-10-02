@@ -529,7 +529,7 @@ export interface PromptEditInput {
 // ignores protected fields (status, stats, owner, price).
 export async function updateMyPrompt(promptId: string, input: PromptEditInput) {
   const patch: Record<string, unknown> = { ...input, model: input.model, price_pence: input.is_free ? 0 : 49 };
-  if (!input.body) delete patch.body;
+  if (!input.body) delete patch["body"];
   const { data, error } = await supabase.from("prompts").update(patch as never).eq("id", promptId).select("id");
   if (error) throw error;
   if (!data?.length) throw new Error("You can only edit your own prompts.");

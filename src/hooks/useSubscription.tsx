@@ -11,7 +11,7 @@ export interface SubscriptionRow {
 }
 
 function currentEnvironment(): "sandbox" | "live" {
-  const token = import.meta.env.VITE_PAYMENTS_CLIENT_TOKEN as string | undefined;
+  const token = import.meta.env["VITE_PAYMENTS_CLIENT_TOKEN"] as string | undefined;
   return token?.startsWith("pk_live_") ? "live" : "sandbox";
 }
 

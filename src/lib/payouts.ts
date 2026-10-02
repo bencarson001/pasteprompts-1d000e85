@@ -79,11 +79,11 @@ export async function fetchAllPaidSales(): Promise<CreatorSale[]> {
     if (error) throw new Error(error.message);
     for (const r of (data ?? []) as unknown as Array<Record<string, unknown> & { prompt: { title: string; creator_id: string } | null }>) {
       out.push({
-        id: r.id as string, created_at: r.created_at as string,
-        amount_pence: (r.amount_pence as number) ?? 0, platform_fee_pence: (r.platform_fee_pence as number) ?? 0,
-        creator_earning_pence: (r.creator_earning_pence as number) ?? 0,
-        is_test: testSet.has(r.id as string),
-        prompt_id: r.prompt_id as string, prompt_title: r.prompt?.title ?? "Deleted prompt", creator_id: r.prompt?.creator_id ?? "",
+        id: r["id"] as string, created_at: r["created_at"] as string,
+        amount_pence: (r["amount_pence"] as number) ?? 0, platform_fee_pence: (r["platform_fee_pence"] as number) ?? 0,
+        creator_earning_pence: (r["creator_earning_pence"] as number) ?? 0,
+        is_test: testSet.has(r["id"] as string),
+        prompt_id: r["prompt_id"] as string, prompt_title: r.prompt?.title ?? "Deleted prompt", creator_id: r.prompt?.creator_id ?? "",
       });
     }
     if ((data ?? []).length < 1000) break;

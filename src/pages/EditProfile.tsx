@@ -165,9 +165,9 @@ export default function EditProfile() {
       setBio(profile.bio || "");
       setAvatarUrl(profile.avatar_url || "");
       const raw = profile as unknown as Record<string, string | null>;
-      setBannerUrl(raw.banner_url || "");
-      setWebsiteUrl(raw.website_url || "");
-      setTwitterHandle(raw.twitter_handle || "");
+      setBannerUrl(raw["banner_url"] || "");
+      setWebsiteUrl(raw["website_url"] || "");
+      setTwitterHandle(raw["twitter_handle"] || "");
     }
   }, [profile]);
 
@@ -388,13 +388,13 @@ export default function EditProfile() {
       };
 
       if (canEditProfileField(tier, "banner_url")) {
-        payload.banner_url = bannerUrl.trim() || null;
+        payload["banner_url"] = bannerUrl.trim() || null;
       }
       if (canEditProfileField(tier, "website_url")) {
-        payload.website_url = websiteUrl.trim() || null;
+        payload["website_url"] = websiteUrl.trim() || null;
       }
       if (canEditProfileField(tier, "twitter_handle")) {
-        payload.twitter_handle = twitterHandle.trim().replace("@", "") || null;
+        payload["twitter_handle"] = twitterHandle.trim().replace("@", "") || null;
       }
 
       await updateMyProfile(user.id, payload);

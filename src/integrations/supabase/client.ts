@@ -3,10 +3,10 @@ import { createClient } from '@supabase/supabase-js';
 import type { Database } from './types';
 import { brokeredPreviewStorage } from './previewAuthStorage';
 
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || "https://iwmljuoplkqyhdygajpi.supabase.co";
+const SUPABASE_URL = import.meta.env["VITE_SUPABASE_URL"] || "https://iwmljuoplkqyhdygajpi.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY =
-  import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ||
-  import.meta.env.VITE_SUPABASE_ANON_KEY ||
+  import.meta.env["VITE_SUPABASE_PUBLISHABLE_KEY"] ||
+  import.meta.env["VITE_SUPABASE_ANON_KEY"] ||
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml3bWxqdW9wbGtxeWhkeWdhanBpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDA5ODg3NTMsImV4cCI6MjA1NjU2NDc1M30.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml3bWxqdW9wbGtxeWhkeWdhanBpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDA5ODg3NTMsImV4cCI6MjA1NjU2NDc1M30";
 
 export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
