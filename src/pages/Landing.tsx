@@ -82,6 +82,7 @@ export default function Landing() {
         description={content.metaDescription}
         canonical={`/prompts/${slug}`}
         jsonLd={jsonLd}
+        noindex={content.noindex}
       />
       <div className="container-wide py-10">
         <nav className="mb-4 text-sm text-muted-foreground">
@@ -110,6 +111,26 @@ export default function Landing() {
           ))}
 
           <div className="flex flex-wrap gap-3 pt-2">
+            {content.categoryPath && (
+              <Link
+                to={content.categoryPath}
+                className="rounded-xl border border-white/15 px-5 py-2.5 text-sm font-semibold hover:bg-card"
+              >
+                View the full category
+              </Link>
+            )}
+            <Link
+              to="/browse"
+              className="rounded-xl border border-white/15 px-5 py-2.5 text-sm font-semibold hover:bg-card"
+            >
+              Browse all prompts
+            </Link>
+            <Link
+              to="/creators"
+              className="rounded-xl border border-white/15 px-5 py-2.5 text-sm font-semibold hover:bg-card"
+            >
+              Find prompt creators
+            </Link>
             <Link
               to="/browse?price=free"
               className="rounded-xl bg-gradient-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground btn-glow"

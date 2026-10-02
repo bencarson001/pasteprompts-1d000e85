@@ -46,6 +46,10 @@ export function SEO({ title, description, canonical, type = "website", image, no
   useEffect(() => {
     document.head.querySelector('link[data-static-canonical]')?.remove();
   }, []);
+  // Drop the static index,follow robots tag on noindex pages so only one robots tag remains.
+  useEffect(() => {
+    if (noindex) document.head.querySelectorAll('meta[name="robots"]:not([data-rh])').forEach((m) => m.remove());
+  }, [noindex]);
 
   // Keep titles under ~60 chars: only append the site name when it fits.
 

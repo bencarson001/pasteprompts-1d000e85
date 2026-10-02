@@ -82,27 +82,31 @@ const STATIC_META: Record<string, Omit<PageMeta, "canonicalPath">> = {
   },
   "/prompts/dalle-prompts": {
     title: "DALL-E 3 Prompts",
-    description: "Browse DALL-E 3 prompts for flat vectors, logo designs, isometric graphics and digital art. Copy and run in ChatGPT or Bing.",
+    description: "DALL-E 3 image prompts on Paste Prompts. See the current listings, how to adapt them in ChatGPT, and related Midjourney and image collections.",
+    noindex: true,
   },
   "/prompts/sora-prompts": {
     title: "Sora AI Video Prompts",
-    description: "Browse Sora video prompts for cinematic scenes, drone flyovers and detailed 3D animations. Copy, adapt and generate videos.",
+    description: "Sora text-to-video prompts on Paste Prompts. See the current listings, what a video prompt should describe, and related image prompt collections.",
+    noindex: true,
   },
   "/prompts/flux-prompts": {
     title: "FLUX.1 AI Prompts",
-    description: "Copy-ready FLUX.1 prompts for photorealism, typography, product photography, and 3D renders. Free and 49p formulas.",
+    description: "FLUX.1 image prompts on Paste Prompts. No FLUX prompts are listed yet; see related Midjourney and DALL-E image prompt collections.",
+    noindex: true,
   },
   "/prompts/coding-prompts": {
     title: "AI Coding Prompts",
-    description: "Browse AI coding prompts for React, Python, SQL, TypeScript, and refactoring. Free and 49p prompts for ChatGPT, Claude, and Cursor.",
+    description: "AI coding prompts on Paste Prompts for code review, SQL queries and pair programming with ChatGPT or Claude. See the current listings and related collections.",
+    noindex: true,
   },
   "/prompts/copywriting-prompts": {
     title: "AI Copywriting Prompts",
-    description: "Browse AI copywriting prompts for sales pages, email sequences, ad copy, and VSLs. Free and 49p templates for ChatGPT and Claude.",
+    description: "AI copywriting prompts for sales pages, emails, ads and headlines. Free and 49p prompts for ChatGPT and Claude on Paste Prompts.",
   },
   "/prompts/business-prompts": {
     title: "AI Business Prompts",
-    description: "Browse AI business prompts for business plans, market research, pitch decks, and financial modeling. Free and 49p templates.",
+    description: "AI business prompts for planning, market research, marketing strategy and everyday operations. Free and 49p prompts for ChatGPT, Claude and Gemini.",
   },
   "/prompts/free-ai-prompts": {
     title: "Free AI Prompts",
