@@ -139,8 +139,8 @@ export const LANDING_PAGES: Record<string, LandingContent> = {
     slug: "midjourney-prompts",
     title: "Midjourney Prompts",
     heading: "Midjourney prompts for stunning images",
-    metaDescription: `Copy-ready Midjourney prompts for logos, art, photography and design. Free & premium image prompts with the right parameters baked in.`,
-    lead: "Image prompts engineered for Midjourney — styles, lighting, camera and aspect-ratio parameters baked in. Copy, paste and generate.",
+    metaDescription: `Copy-ready Midjourney prompts for logos, art, photography and design. Free and 49p image prompts with suggested parameters included.`,
+    lead: "Image prompts engineered for Midjourney — with suggested style, lighting, camera and aspect-ratio parameters. Copy, paste and generate.",
     filters: { model: "midjourney", sort: "trending", limit: 48 },
     sections: [
       {
