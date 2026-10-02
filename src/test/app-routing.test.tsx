@@ -8,13 +8,14 @@ import { routeTree } from "@/routeTree.gen";
 // The root route renders a full document (<html>/<head>/<body>); React 19
 // places that content into the real document singletons, so the render
 // container stays empty. Assert via router state and document.body instead.
-function renderAt(path: string) {
+async function renderAt(path: string) {
   const queryClient = new QueryClient();
   const router = createRouter({
     routeTree,
     context: { queryClient },
     history: createMemoryHistory({ initialEntries: [path] }),
   });
+  await router.load();
   render(<RouterProvider router={router} />);
   return router;
 }
