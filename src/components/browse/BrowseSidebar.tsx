@@ -7,10 +7,10 @@ import { MODELS, MODEL_LABELS } from "@/lib/format";
 import { browsePath, categoryIcon, modelIcon, PRICE_LABELS, type PriceBand } from "./browse-utils";
 
 interface BrowseSidebarProps {
-  price?: string;
-  model?: string;
-  category?: string;
-  onNavigate?: () => void;
+  price?: string | undefined;
+  model?: string | undefined;
+  category?: string | undefined;
+  onNavigate?: (() => void) | undefined;
 }
 
 const PRICE_BANDS: PriceBand[] = ["free", "paid", "all"];
@@ -95,7 +95,7 @@ export function BrowseSidebar({ price, model, category, onNavigate }: BrowseSide
               to={browsePath(price ?? "all", m, category ?? "all")}
               active={model === m}
               icon={modelIcon(m)}
-              label={MODEL_LABELS[m]}
+              label={MODEL_LABELS[m] ?? m}
             />
           ))}
         </div>

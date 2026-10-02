@@ -5,16 +5,16 @@
  */
 
 const DATA_API_URL =
-  (typeof import.meta !== "undefined" && import.meta.env?.VITE_DATA_API_URL) ||
-  (typeof process !== "undefined" && process.env?.DATA_API_URL) ||
+  (typeof import.meta !== "undefined" && import.meta.env?.["VITE_DATA_API_URL"]) ||
+  (typeof process !== "undefined" && process.env?.["DATA_API_URL"]) ||
   "https://iwmljuoplkqyhdygajpi.supabase.co/functions/v1/data-api";
 
 function getApiKey(): string {
-  if (typeof process !== "undefined" && process.env?.AGENT_API_KEY) {
-    return process.env.AGENT_API_KEY;
+  if (typeof process !== "undefined" && process.env?.["AGENT_API_KEY"]) {
+    return process.env["AGENT_API_KEY"];
   }
-  if (typeof import.meta !== "undefined" && import.meta.env?.VITE_AGENT_API_KEY) {
-    return import.meta.env.VITE_AGENT_API_KEY;
+  if (typeof import.meta !== "undefined" && import.meta.env?.["VITE_AGENT_API_KEY"]) {
+    return import.meta.env["VITE_AGENT_API_KEY"];
   }
   return "";
 }

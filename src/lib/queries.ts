@@ -8,13 +8,13 @@ export const PROMPT_CARD_SELECT =
   "id, slug, title, description, image_url, model, price_pence, is_free, rating_avg, rating_count, sales_count, copies_count, featured, category:categories(slug, name), creator:profiles!prompts_creator_id_fkey(handle, display_name)";
 
 export interface BrowseFilters {
-  q?: string;
-  categorySlug?: string;
-  model?: string;
-  price?: "free" | "paid" | "under5" | "5to15" | "over15";
-  sort?: "trending" | "newest" | "rated" | "popular";
-  limit?: number;
-  offset?: number;
+  q?: string | undefined;
+  categorySlug?: string | undefined;
+  model?: string | undefined;
+  price?: "free" | "paid" | "under5" | "5to15" | "over15" | undefined;
+  sort?: "trending" | "newest" | "rated" | "popular" | undefined;
+  limit?: number | undefined;
+  offset?: number | undefined;
 }
 
 /**
@@ -171,7 +171,7 @@ export async function fetchFreePromptsByCategory(perCategory = 4) {
       index[cat.slug] = groups.length;
       groups.push({ name: cat.name, slug: cat.slug, prompts: [] });
     }
-    const group = groups[index[cat.slug]];
+    const group = groups[index[cat.slug]!]!;
     if (group.prompts.length < perCategory) group.prompts.push(p);
   }
   return groups;
@@ -347,7 +347,7 @@ export async function checkHandleAvailability(
   // Security check: Reserved words (admin, mod, moderator)
   const reservedCheck = checkReservedName(clean, userEmail, isAdmin);
   if (reservedCheck.isReserved) {
-    return { available: false, error: reservedCheck.reason };
+    return { available: false, error: reservedCheck.reason ?? "This name is reserved." };
   }
 
   let q = supabase.from("profiles").select("id").eq("handle", clean);
@@ -387,7 +387,7 @@ export async function checkDisplayNameAvailability(
   // Security check: Reserved words (admin, mod, moderator)
   const reservedCheck = checkReservedName(clean, userEmail, isAdmin);
   if (reservedCheck.isReserved) {
-    return { available: false, error: reservedCheck.reason };
+    return { available: false, error: reservedCheck.reason ?? "This name is reserved." };
   }
 
   let q = supabase.from("profiles").select("id").ilike("display_name", clean);
@@ -529,7 +529,7 @@ export interface PromptEditInput {
 // ignores protected fields (status, stats, owner, price).
 export async function updateMyPrompt(promptId: string, input: PromptEditInput) {
   const patch: Record<string, unknown> = { ...input, model: input.model, price_pence: input.is_free ? 0 : 49 };
-  if (!input.body) delete patch.body;
+  if (!input.body) delete patch["body"];
   const { data, error } = await supabase.from("prompts").update(patch as never).eq("id", promptId).select("id");
   if (error) throw error;
   if (!data?.length) throw new Error("You can only edit your own prompts.");

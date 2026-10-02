@@ -35,7 +35,7 @@ import { MODELS, MODEL_LABELS } from "@/lib/format";
 
 const PAGE_SIZE = 24;
 
-function Breadcrumb({ price, model, category }: { price?: string; model?: string; category?: string }) {
+function Breadcrumb({ price, model, category }: { price?: string | undefined; model?: string | undefined; category?: string | undefined }) {
   const crumbs: { label: string; to: string }[] = [{ label: "Browse", to: "/browse" }];
   if (price) crumbs.push({ label: PRICE_LABELS[price as keyof typeof PRICE_LABELS] ?? price, to: browsePath(price) });
   if (price && model)
@@ -184,9 +184,9 @@ function ResultsView({
   model,
   category,
 }: {
-  price?: string;
-  model?: string;
-  category?: string;
+  price?: string | undefined;
+  model?: string | undefined;
+  category?: string | undefined;
 }) {
   const [params, setParams] = useSearchParams();
   const [q, setQ] = useState(params.get("q") ?? "");
@@ -420,7 +420,9 @@ export default function Browse() {
   // collide with the root /browse in Google's index. Search queries (?q=) and
   // intermediate step pages are noindexed — they're navigation, not content.
   const canonicalPath = price ? browsePath(price, model, category) : "/browse";
-  const isStepPage = !hasSearch && (!price || !model || !category);
+  // Bare /browse is a core indexable landing page; only intermediate wizard
+  // steps (price chosen but model/category not yet) are kept out of the index.
+  const isStepPage = !hasSearch && Boolean(price) && (!model || !category);
   const priceLabel = price && price !== "all" ? (price === "paid" ? "49p" : "Free") : "";
   const modelLabel = model && model !== "all" ? (MODEL_LABELS[model] ?? model) : "";
   const categoryLabel = category && category !== "all"

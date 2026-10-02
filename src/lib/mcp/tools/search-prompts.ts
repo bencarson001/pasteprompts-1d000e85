@@ -62,16 +62,16 @@ export default defineTool({
     if (error) return { content: [{ type: "text", text: error.message }], isError: true };
 
     const results = (data ?? []).map((p: Record<string, unknown>) => ({
-      slug: p.slug,
-      title: p.title,
-      description: p.description,
-      model: p.model,
-      price: p.is_free ? "Free" : `£${(((p.price_pence as number) ?? 0) / 100).toFixed(2)}`,
-      rating: p.rating_avg,
-      sales: p.sales_count,
-      category: (p.category as { name?: string } | null)?.name ?? null,
-      creator: (p.creator as { display_name?: string } | null)?.display_name ?? null,
-      url: promptUrl(p.slug as string),
+      slug: p["slug"],
+      title: p["title"],
+      description: p["description"],
+      model: p["model"],
+      price: p["is_free"] ? "Free" : `£${(((p["price_pence"] as number) ?? 0) / 100).toFixed(2)}`,
+      rating: p["rating_avg"],
+      sales: p["sales_count"],
+      category: (p["category"] as { name?: string } | null)?.name ?? null,
+      creator: (p["creator"] as { display_name?: string } | null)?.display_name ?? null,
+      url: promptUrl(p["slug"] as string),
     }));
 
     return {

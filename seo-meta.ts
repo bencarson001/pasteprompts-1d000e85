@@ -161,14 +161,14 @@ export function resolveStaticMeta(pathname: string, search = ""): PageMeta | und
 
   const legalMatch = path.match(/^\/legal\/([^/]+)$/);
   if (legalMatch) {
-    const key = legalMatch[1];
+    const key = legalMatch[1] ?? "";
     const legal = LEGAL_META[key];
     if (legal) return { ...legal, canonicalPath: `/legal/${key}` };
   }
 
   const browseMatch = path.match(/^\/browse\/([^/]+)\/([^/]+)\/([^/]+)$/);
   if (browseMatch) {
-    const [, price, model, category] = browseMatch;
+    const [, price = "", model = "", category = ""] = browseMatch;
     const parts = [price === "all" ? "" : price === "paid" ? "49p" : "Free", category === "all" ? "" : words(category), model === "all" ? "" : words(model)].filter(Boolean);
     const subject = parts.length ? `${parts.join(" ")} AI prompts` : "All AI prompts";
     return {

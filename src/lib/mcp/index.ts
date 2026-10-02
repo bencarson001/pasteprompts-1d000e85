@@ -11,7 +11,7 @@ import listArticles from "./tools/list-articles";
 // The OAuth issuer must be the direct Supabase host, built from the project ref
 // (Vite inlines VITE_SUPABASE_PROJECT_ID as a literal at build time, so this stays
 // import-safe). The fallback keeps the issuer well-formed during manifest extract.
-const projectRef = import.meta.env.VITE_SUPABASE_PROJECT_ID ?? "project-ref-unset";
+const projectRef = import.meta.env["VITE_SUPABASE_PROJECT_ID"] ?? "project-ref-unset";
 
 export default defineMcp({
   name: "pasteprompts-mcp",
@@ -24,6 +24,9 @@ export default defineMcp({
     issuer: `https://${projectRef}.supabase.co/auth/v1`,
     acceptedAudiences: "authenticated",
   }),
+  // Cast: @lovable.dev/mcp-js's AnyToolDefinition types outputSchema as required,
+  // which rejects tools without one under exactOptionalPropertyTypes. Runtime
+  // accepts tools with no outputSchema; this is an upstream type limitation.
   tools: [
     searchPrompts,
     getPrompt,
@@ -32,6 +35,6 @@ export default defineMcp({
     listArticles,
     publishArticle,
     updateArticle,
-  ],
+  ] as unknown as Parameters<typeof defineMcp>[0]["tools"],
 
 });

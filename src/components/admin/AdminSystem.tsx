@@ -90,8 +90,8 @@ export function AdminErrorLogs() {
 
   const filteredLogs = (data ?? []).filter((e) => {
     if (selectedScope === "all") return true;
-    const msg = String(e.message || "").toLowerCase();
-    const detailsObj = e.details as { scope?: string } | undefined;
+    const msg = String(e["message"] || "").toLowerCase();
+    const detailsObj = e["details"] as { scope?: string } | undefined;
     const scopeVal = detailsObj?.scope?.toLowerCase() || "";
     return scopeVal === selectedScope || msg.includes(`[${selectedScope}]`);
   });
@@ -178,20 +178,20 @@ export function AdminErrorLogs() {
           }
         >
           {filteredLogs.map((e) => {
-            const rawMsg = (e.message as string) || "";
-            const detailsObj = (e.details as { scope?: string; path?: string; details?: unknown; stack?: string }) || {};
+            const rawMsg = (e["message"] as string) || "";
+            const detailsObj = (e["details"] as { scope?: string; path?: string; details?: unknown; stack?: string }) || {};
             const parsedScope = detailsObj.scope || (rawMsg.match(/^\[(.*?)\]/)?.[1]?.toLowerCase() ?? "system");
             const cleanMsg = rawMsg.replace(/^\[.*?\]\s*/, "");
 
             return (
-              <tr key={e.id as string} className="border-b border-white/5 last:border-0 hover:bg-card/40 transition-colors">
+              <tr key={e["id"] as string} className="border-b border-white/5 last:border-0 hover:bg-card/40 transition-colors">
                 <td className="px-4 py-3">
-                  <Badge variant="outline" className={`${levelStyles[(e.level as string)] ?? ""} capitalize font-semibold`}>
-                    {e.level as string}
+                  <Badge variant="outline" className={`${levelStyles[(e["level"] as string)] ?? ""} capitalize font-semibold`}>
+                    {e["level"] as string}
                   </Badge>
                 </td>
                 <td className="px-4 py-3">
-                  <Badge variant="outline" className={`${scopeStyles[parsedScope] ?? scopeStyles.system} uppercase text-[10px] tracking-wider font-bold`}>
+                  <Badge variant="outline" className={`${scopeStyles[parsedScope] ?? scopeStyles["system"]} uppercase text-[10px] tracking-wider font-bold`}>
                     {parsedScope}
                   </Badge>
                 </td>
@@ -200,7 +200,7 @@ export function AdminErrorLogs() {
                   <span className="text-foreground font-medium">{cleanMsg}</span>
                 </td>
                 <td className="px-4 py-3 text-right text-xs text-muted-foreground whitespace-nowrap">
-                  {timeAgo(e.created_at as string)}
+                  {timeAgo(e["created_at"] as string)}
                 </td>
                 <td className="px-4 py-3 text-center">
                   <Button
@@ -227,30 +227,30 @@ export function AdminErrorLogs() {
               Error Details & Stack Trace
             </DialogTitle>
             <DialogDescription className="text-xs text-muted-foreground">
-              Captured at {inspectItem?.created_at ? new Date(inspectItem.created_at as string).toLocaleString() : "—"}
+              Captured at {inspectItem?.["created_at"] ? new Date(inspectItem["created_at"] as string).toLocaleString() : "—"}
             </DialogDescription>
           </DialogHeader>
 
           {inspectItem && (
             <div className="mt-3 space-y-4 text-xs">
               <div className="flex gap-2">
-                <Badge variant="outline" className={`${levelStyles[(inspectItem.level as string)] ?? ""} capitalize font-bold`}>
-                  {inspectItem.level as string}
+                <Badge variant="outline" className={`${levelStyles[(inspectItem["level"] as string)] ?? ""} capitalize font-bold`}>
+                  {inspectItem["level"] as string}
                 </Badge>
               </div>
 
               <div>
                 <label className="text-[11px] font-semibold text-muted-foreground uppercase">Message</label>
                 <div className="mt-1 rounded-xl border border-white/10 bg-black/50 p-3 font-mono text-xs text-destructive-foreground font-medium leading-relaxed">
-                  {inspectItem.message as string}
+                  {inspectItem["message"] as string}
                 </div>
               </div>
 
-              {inspectItem.details && (
+              {inspectItem["details"] != null && (
                 <div>
                   <label className="text-[11px] font-semibold text-muted-foreground uppercase">Details & Context</label>
                   <pre className="mt-1 max-h-60 overflow-auto rounded-xl border border-white/10 bg-black/60 p-3 font-mono text-[11px] text-amber-200/90 whitespace-pre-wrap">
-                    {JSON.stringify(inspectItem.details, null, 2)}
+                    {JSON.stringify(inspectItem["details"], null, 2)}
                   </pre>
                 </div>
               )}

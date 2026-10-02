@@ -40,7 +40,7 @@ export default function Pro() {
     if (!priceId) return;
     openCheckout({
       priceId,
-      customerEmail: user.email ?? undefined,
+      ...(user.email ? { customerEmail: user.email } : {}),
       userId: user.id,
       returnUrl: `${window.location.origin}/dashboard?subscribed=1&session_id={CHECKOUT_SESSION_ID}`,
     });

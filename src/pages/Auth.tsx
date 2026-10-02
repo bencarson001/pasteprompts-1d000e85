@@ -31,7 +31,7 @@ export default function Auth() {
     setLoading(true);
 
     if (mode === "signup") {
-      const res = await signUp(email, password, displayName || email.split("@")[0]);
+      const res = await signUp(email, password, displayName || (email.split("@")[0] ?? ""));
       setLoading(false);
       if (res.error) {
         toast({ title: "Authentication failed", description: res.error, variant: "destructive" });

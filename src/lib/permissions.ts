@@ -130,20 +130,20 @@ export function sanitizeProfileForViewer(
 ): Record<string, unknown> | null {
   if (!profile) return null;
 
-  const targetTier: MembershipTier = (profile.membership_tier as MembershipTier) || "free";
+  const targetTier: MembershipTier = (profile["membership_tier"] as MembershipTier) || "free";
 
   if (viewerTier === "guest") {
     return {
-      id: profile.id,
-      handle: profile.handle,
-      display_name: profile.display_name,
-      avatar_url: profile.avatar_url,
-      bio: typeof profile.bio === "string" ? profile.bio.slice(0, 100) + "..." : null,
+      id: profile["id"],
+      handle: profile["handle"],
+      display_name: profile["display_name"],
+      avatar_url: profile["avatar_url"],
+      bio: typeof profile["bio"] === "string" ? profile["bio"].slice(0, 100) + "..." : null,
       membership_tier: targetTier,
-      is_creator: profile.is_creator,
-      created_at: profile.created_at,
-      prompts_count: profile.prompts_count || 0,
-      followers_count: profile.followers_count || 0,
+      is_creator: profile["is_creator"],
+      created_at: profile["created_at"],
+      prompts_count: profile["prompts_count"] || 0,
+      followers_count: profile["followers_count"] || 0,
       is_restricted: true,
     };
   }
@@ -152,7 +152,7 @@ export function sanitizeProfileForViewer(
   if (viewerTier === "free") {
     return {
       ...profile,
-      banner_url: hasEntitlement(targetTier, "canCustomBanner") ? profile.banner_url : null,
+      banner_url: hasEntitlement(targetTier, "canCustomBanner") ? profile["banner_url"] : null,
       sales_metrics: null,
       detailed_analytics: null,
       is_restricted: false,

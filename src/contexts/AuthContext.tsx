@@ -36,16 +36,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const { data: existing, error } = await supabase.from("profiles").select("id").eq("id", u.id).maybeSingle();
       if (!error && existing) return;
-      const rawHandle = u.email.split("@")[0].toLowerCase().replace(/[^a-z0-9]/g, "");
+      const rawHandle = (u.email.split("@")[0] ?? "").toLowerCase().replace(/[^a-z0-9]/g, "");
       const handle = checkReservedName(rawHandle, u.email).isReserved
         ? `user_${u.id.replace(/-/g, "").slice(0, 8)}`
         : rawHandle;
-      let displayName = u.user_metadata?.full_name || u.user_metadata?.display_name || handle;
+      let displayName = u.user_metadata?.["full_name"] || u.user_metadata?.["display_name"] || handle;
       if (checkReservedName(displayName, u.email).isReserved) {
         displayName = `User ${u.id.replace(/-/g, "").slice(0, 6)}`;
       }
       await supabase.from("profiles").upsert(
-        { id: u.id, handle, display_name: displayName, avatar_url: u.user_metadata?.avatar_url || "", updated_at: new Date().toISOString() },
+        { id: u.id, handle, display_name: displayName, avatar_url: u.user_metadata?.["avatar_url"] || "", updated_at: new Date().toISOString() },
         { onConflict: "id" },
       );
     } catch (e) {

@@ -26,9 +26,9 @@ export function ScrollToTop() {
         }
       }, 50);
       return () => clearTimeout(timeoutId);
-    } else {
-      window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
     }
+    window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
+    return undefined;
   }, [location.pathname, location.hash]);
 
   useEffect(() => {

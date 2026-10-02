@@ -53,7 +53,8 @@ export function EditPromptDialog({ prompt, onClose }: { prompt: EditablePrompt |
     setSaving(true);
     try {
       await updateMyPrompt(prompt.id, {
-        title: form.title.trim(), description: form.description.trim(), body: form.body.trim() || undefined,
+        title: form.title.trim(), description: form.description.trim(),
+        ...(form.body.trim() ? { body: form.body.trim() } : {}),
         example_output: form.example_output.trim(), model: form.model, category_id: form.category_id, is_free: form.is_free,
         tags: form.tags.split(",").map((t) => t.trim().toLowerCase()).filter(Boolean).slice(0, 8),
       });

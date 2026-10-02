@@ -91,14 +91,14 @@ function SvgDailyViewsChart({ data }: { data: DailyPoint[] }) {
   // Build smooth cubic bezier curve
   function buildSpline(points: { x: number; y: number }[]) {
     if (points.length === 0) return "";
-    if (points.length === 1) return `M ${points[0].x},${points[0].y}`;
+    if (points.length === 1) return `M ${points[0]!.x},${points[0]!.y}`;
 
-    let path = `M ${points[0].x},${points[0].y}`;
+    let path = `M ${points[0]!.x},${points[0]!.y}`;
     for (let i = 0; i < points.length - 1; i++) {
-      const p0 = points[Math.max(0, i - 1)];
-      const p1 = points[i];
-      const p2 = points[i + 1];
-      const p3 = points[Math.min(points.length - 1, i + 2)];
+      const p0 = points[Math.max(0, i - 1)]!;
+      const p1 = points[i]!;
+      const p2 = points[i + 1]!;
+      const p3 = points[Math.min(points.length - 1, i + 2)]!;
 
       const cp1x = p1.x + (p2.x - p0.x) / 6;
       const cp1y = p1.y + (p2.y - p0.y) / 6;
@@ -117,8 +117,8 @@ function SvgDailyViewsChart({ data }: { data: DailyPoint[] }) {
   const promptSpline = buildSpline(promptPoints);
 
   const baselineY = padTop + chartH;
-  const pageArea = `${pageSpline} L ${pagePoints[pagePoints.length - 1].x},${baselineY} L ${pagePoints[0].x},${baselineY} Z`;
-  const promptArea = `${promptSpline} L ${promptPoints[promptPoints.length - 1].x},${baselineY} L ${promptPoints[0].x},${baselineY} Z`;
+  const pageArea = `${pageSpline} L ${pagePoints[pagePoints.length - 1]!.x},${baselineY} L ${pagePoints[0]!.x},${baselineY} Z`;
+  const promptArea = `${promptSpline} L ${promptPoints[promptPoints.length - 1]!.x},${baselineY} L ${promptPoints[0]!.x},${baselineY} Z`;
 
   // Grid line ticks (4 horizontal lines)
   const yTicks = [0, 0.33, 0.66, 1].map((pct) => ({

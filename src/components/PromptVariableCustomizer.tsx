@@ -26,7 +26,7 @@ export function PromptVariableCustomizer({ promptBody, model, onCopySuccess, onB
     const found = new Set<string>();
     let match;
     while ((match = regex.exec(promptBody)) !== null) {
-      const varName = match[1].trim();
+      const varName = (match[1] ?? "").trim();
       // Skip if it looks like markdown or citation
       if (varName && !varName.startsWith("http")) {
         found.add(varName);

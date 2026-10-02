@@ -24,12 +24,12 @@ export async function fetchEarlyBirdStats(): Promise<EarlyBirdStats> {
     }
 
     const recipients = ((data as Array<Record<string, unknown>> | null) ?? []).map((r) => ({
-      id: String(r.id),
-      handle: (r.handle as string) ?? null,
-      display_name: (r.display_name as string) ?? null,
-      avatar_url: (r.avatar_url as string) ?? null,
-      subscription_period_end: (r.promo_expires_at as string) ?? null,
-      created_at: (r.granted_at as string) ?? "",
+      id: String(r["id"]),
+      handle: (r["handle"] as string) ?? null,
+      display_name: (r["display_name"] as string) ?? null,
+      avatar_url: (r["avatar_url"] as string) ?? null,
+      subscription_period_end: (r["promo_expires_at"] as string) ?? null,
+      created_at: (r["granted_at"] as string) ?? "",
     }));
 
     return {

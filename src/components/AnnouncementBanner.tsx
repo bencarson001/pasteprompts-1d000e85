@@ -64,7 +64,7 @@ export function AnnouncementBanner() {
   };
 
   return (
-    <div className={`relative ${toneStyles[active.level ?? "info"] ?? toneStyles.info}`}>
+    <div className={`relative ${toneStyles[active.level ?? "info"] ?? toneStyles["info"]}`}>
       <div className="container-wide flex items-center justify-center gap-1.5 px-6 py-0.5 text-center text-[10px] font-semibold leading-normal sm:gap-2 sm:px-8 sm:py-1 sm:text-xs">
         <Megaphone className="h-3 w-3 shrink-0 opacity-90 sm:h-3.5 sm:w-3.5" />
         <span className="truncate sm:overflow-visible sm:whitespace-normal">
