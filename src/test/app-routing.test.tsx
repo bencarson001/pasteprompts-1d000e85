@@ -38,7 +38,7 @@ describe("App routing", () => {
     expect(router.state.matches.some((m) => m.routeId === "/")).toBe(true);
     await waitFor(() => expect(document.body.textContent).not.toBe(""));
 
-    await router.navigate({ to: "/this-route-does-not-exist" });
+    await router.navigate({ to: "/this-route-does-not-exist" as "/" });
     await waitFor(() => expect(router.state.status).toBe("idle"));
     expect(router.state.location.pathname).toBe("/this-route-does-not-exist");
     await waitFor(() => expect(document.body.textContent).not.toBe(""));
