@@ -152,7 +152,7 @@ async function runPostingDiagnostic(shareToGroups: boolean): Promise<PostingChec
 
       const postedRows = rows.filter((r) => r.posted_at);
       if (postedRows.length > 0) {
-        const last = postedRows[0];
+        const last = postedRows[0]!;
         if (last.last_error && !last.last_error.startsWith("dry-run")) {
           recentLastError = last.last_error;
           issues.push(`Recent posting error: ${last.last_error.slice(0, 150)}`);
@@ -233,7 +233,7 @@ function ScheduleCard() {
     enabled: true,
     days_of_week: [0, 1, 2, 3, 4, 5, 6],
     post_hour: 18,
-    start_date: new Date().toISOString().split("T")[0],
+    start_date: new Date().toISOString().split("T")[0]!,
     weeks: 4,
     share_to_groups: true,
   });
@@ -263,7 +263,7 @@ function ScheduleCard() {
 
   const handleTimeChange = (newVal: string) => {
     // Posting checks every 5 minutes, so snap to the nearest 5-minute mark.
-    const [hs, ms] = newVal.split(":");
+    const [hs = "", ms = ""] = newVal.split(":");
     const h = Math.min(23, Math.max(0, parseInt(hs, 10) || 0));
     let m = Math.round((parseInt(ms, 10) || 0) / 5) * 5;
     if (m > 55) m = 55;
@@ -286,7 +286,7 @@ function ScheduleCard() {
   };
 
   const toggleShareToGroups = (val: boolean) => {
-    setForm((prev) => (prev ? { ...prev, share_to_groups: val } : null));
+    setForm((prev) => (prev ? { ...prev, share_to_groups: val } : prev));
     if (typeof window !== "undefined") {
       localStorage.setItem("fb_autopilot_share_to_groups", String(val));
       window.dispatchEvent(new CustomEvent("fb-share-groups", { detail: val }));
@@ -330,10 +330,10 @@ function ScheduleCard() {
       localStorage.setItem("fb_autopilot_post_time", timeStr);
       localStorage.setItem("fb_autopilot_share_to_groups", String(form.share_to_groups ?? true));
     }
-    const [h] = timeStr.split(":");
+    const [h = ""] = timeStr.split(":");
     const hourNum = parseInt(h, 10);
     const validHour = !isNaN(hourNum) ? Math.min(23, Math.max(0, hourNum)) : form.post_hour;
-    const minNum = parseInt(timeStr.split(":")[1], 10);
+    const minNum = parseInt(timeStr.split(":")[1] ?? "", 10);
     const validMinute = !isNaN(minNum) ? Math.min(55, Math.max(0, Math.round(minNum / 5) * 5)) : 0;
 
     // Attempt upserting with share_to_groups; fallback gracefully if column is missing
