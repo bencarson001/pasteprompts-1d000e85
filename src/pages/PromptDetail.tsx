@@ -145,7 +145,7 @@ export default function PromptDetail() {
     }
     openCheckout({
       promptId: prompt.id,
-      customerEmail: user.email ?? undefined,
+      ...(user.email ? { customerEmail: user.email } : {}),
       userId: user.id,
       returnUrl: `${window.location.origin}/checkout/return?session_id={CHECKOUT_SESSION_ID}`,
     });
@@ -771,7 +771,7 @@ function ReviewsSection({ promptId, owned, reviews }: { promptId: string; owned:
       {reviews.length === 0 ? (
         <p className="rounded-2xl glass p-8 text-center text-muted-foreground">No reviews yet.</p>
       ) : (
-        reviews.map((r: never) => {
+        reviews.map((r: unknown) => {
           const rev = r as { id: string; rating: number; body?: string; created_at: string; buyer?: { display_name: string; avatar_url?: string } };
           return (
             <div key={rev.id} className="rounded-2xl glass p-5">
