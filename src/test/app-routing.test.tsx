@@ -7,42 +7,40 @@ import { routeTree } from "@/routeTree.gen";
 
 // The root route renders a full document (<html>/<head>/<body>); React 19
 // places that content into the real document singletons, so the render
-// container stays empty. Assert via router state and document.body instead.
-async function renderAt(path: string) {
+// container stays empty and only ONE router can be mounted per test file
+// run (two mounts fight over the document singletons in jsdom). Assert via
+// router state and document.body, and cover both routes in one mount.
+function makeRouter(path: string) {
   const queryClient = new QueryClient();
-  const router = createRouter({
+  return createRouter({
     routeTree,
     context: { queryClient },
     history: createMemoryHistory({ initialEntries: [path] }),
   });
-  await router.load();
-  render(<RouterProvider router={router} />);
-  return router;
 }
 
 afterEach(() => {
   cleanup();
-  document.body.innerHTML = "";
   vi.restoreAllMocks();
 });
 
 // Assert only that the router mounts and paints, never page content:
 // routes are rewritten as the app is built and this must keep passing.
 describe("App routing", () => {
-  it("renders the index route", async () => {
-    const router = renderAt("/");
+  it("renders the index route, then the not-found route", async () => {
+    vi.spyOn(console, "warn").mockImplementation(() => undefined);
+
+    const router = makeRouter("/");
+    await router.load();
+    render(<RouterProvider router={router} />);
 
     await waitFor(() => expect(router.state.status).toBe("idle"));
     expect(router.state.matches.some((m) => m.routeId === "/")).toBe(true);
     await waitFor(() => expect(document.body.textContent).not.toBe(""));
-  });
 
-  it("renders the not-found route", async () => {
-    vi.spyOn(console, "warn").mockImplementation(() => undefined);
-
-    const router = renderAt("/this-route-does-not-exist");
-
+    await router.navigate({ to: "/this-route-does-not-exist" as "/" });
     await waitFor(() => expect(router.state.status).toBe("idle"));
+    expect(router.state.location.pathname).toBe("/this-route-does-not-exist");
     await waitFor(() => expect(document.body.textContent).not.toBe(""));
   });
 });

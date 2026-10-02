@@ -1,5 +1,3 @@
-import { useEffect } from "react";
-import { Helmet } from "react-helmet-async";
 
 type JsonLd = Record<string, unknown>;
 
@@ -40,16 +38,8 @@ function absolutize(input: string): string {
 }
 
 export function SEO({ title, description, canonical, type = "website", image, noindex, keywords, jsonLd }: SEOProps) {
-  // The static index.html ships a fallback canonical for non-JS crawlers.
-  // Once React is running, per-route canonicals are authoritative — drop it so
-  // no page ever serves two canonical links.
-  useEffect(() => {
-    document.head.querySelector('link[data-static-canonical]')?.remove();
-  }, []);
-  // Drop the static index,follow robots tag on noindex pages so only one robots tag remains.
-  useEffect(() => {
-    if (noindex) document.head.querySelectorAll('meta[name="robots"]:not([data-rh])').forEach((m) => m.remove());
-  }, [noindex]);
+  // Head tags below are React-19-managed (hoisted). Never remove head nodes
+  // imperatively here — deleting React-owned nodes crashes later unmounts.
 
   // Keep titles under ~60 chars: only append the site name when it fits.
 
@@ -67,8 +57,11 @@ export function SEO({ title, description, canonical, type = "website", image, no
   const schemas = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
   const canonicalUrl = canonical ? absolutize(canonical) : undefined;
 
+  // React 19 hoists <title>/<meta>/<link> to <head> natively, so these render
+  // as plain tags (no Helmet — its imperative head mutation conflicts with
+  // React-managed head nodes and crashes unmounts during client navigation).
   return (
-    <Helmet>
+    <>
       <title>{fullTitle}</title>
       <meta name="description" content={safeDescription} />
       <meta name="keywords" content={keywords ?? DEFAULT_KEYWORDS} />
@@ -81,7 +74,6 @@ export function SEO({ title, description, canonical, type = "website", image, no
       {canonicalUrl && <meta property="og:url" content={canonicalUrl} />}
       {image && <meta property="og:image" content={image} />}
 
-
       <meta name="twitter:card" content={image ? "summary_large_image" : "summary"} />
       <meta name="twitter:title" content={fullTitle} />
       <meta name="twitter:description" content={safeDescription} />
@@ -92,7 +84,7 @@ export function SEO({ title, description, canonical, type = "website", image, no
           {JSON.stringify(s)}
         </script>
       ))}
-    </Helmet>
+    </>
   );
 }
 
