@@ -39,16 +39,8 @@ function absolutize(input: string): string {
 }
 
 export function SEO({ title, description, canonical, type = "website", image, noindex, keywords, jsonLd }: SEOProps) {
-  // The static index.html ships a fallback canonical for non-JS crawlers.
-  // Once React is running, per-route canonicals are authoritative — drop it so
-  // no page ever serves two canonical links.
-  useEffect(() => {
-    document.head.querySelector('link[data-static-canonical]')?.remove();
-  }, []);
-  // Drop the static index,follow robots tag on noindex pages so only one robots tag remains.
-  useEffect(() => {
-    if (noindex) document.head.querySelectorAll('meta[name="robots"]:not([data-rh])').forEach((m) => m.remove());
-  }, [noindex]);
+  // Head tags below are React-19-managed (hoisted). Never remove head nodes
+  // imperatively here — deleting React-owned nodes crashes later unmounts.
 
   // Keep titles under ~60 chars: only append the site name when it fits.
 
