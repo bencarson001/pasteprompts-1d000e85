@@ -44,10 +44,6 @@ const landingSlugs = [
   "gemini-prompts",
   "midjourney-prompts",
   "free-ai-prompts",
-  "dalle-prompts",
-  "sora-prompts",
-  "flux-prompts",
-  "coding-prompts",
   "copywriting-prompts",
   "business-prompts",
 ];
