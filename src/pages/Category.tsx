@@ -123,6 +123,9 @@ export default function Category() {
             <Link to="/prompts/claude-prompts" className="rounded-lg border border-white/10 bg-card/60 px-2.5 py-1 text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground">Claude</Link>
             <Link to="/prompts/gemini-prompts" className="rounded-lg border border-white/10 bg-card/60 px-2.5 py-1 text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground">Gemini</Link>
             <Link to="/prompts/midjourney-prompts" className="rounded-lg border border-white/10 bg-card/60 px-2.5 py-1 text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground">Midjourney</Link>
+            <Link to="/prompts/coding-prompts" className="rounded-lg border border-white/10 bg-card/60 px-2.5 py-1 text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground">Coding</Link>
+            <Link to="/prompts/copywriting-prompts" className="rounded-lg border border-white/10 bg-card/60 px-2.5 py-1 text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground">Copywriting</Link>
+            <Link to="/prompts/business-prompts" className="rounded-lg border border-white/10 bg-card/60 px-2.5 py-1 text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground">Business</Link>
           </div>
         </header>
 

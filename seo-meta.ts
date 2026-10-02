@@ -10,7 +10,7 @@ const SITE_NAME = "Paste Prompts";
 const STATIC_META: Record<string, Omit<PageMeta, "canonicalPath">> = {
   "/": {
     title: "AI Prompts & ChatGPT Prompts Marketplace | Paste Prompts",
-    description: "Discover top AI prompts & ChatGPT prompts. Copy and paste free & 49p prompts for ChatGPT, Claude, Gemini, Midjourney & Flux. Buy or sell prompts on Paste Prompts.",
+    description: "Discover AI prompts & ChatGPT prompts. Copy and paste free & 49p prompts for ChatGPT, Claude, Gemini, Midjourney & Flux. Buy or sell prompts on Paste Prompts.",
   },
   "/browse": {
     title: "Browse AI Prompts — Free & 49p Prompt Library",
@@ -78,7 +78,7 @@ const STATIC_META: Record<string, Omit<PageMeta, "canonicalPath">> = {
   },
   "/prompts/midjourney-prompts": {
     title: "Midjourney Prompts",
-    description: "Copy-ready Midjourney prompts for logos, art, photography and design. Free & premium image prompts with parameters baked in.",
+    description: "Copy-ready Midjourney prompts for logos, art, photography and design. Free and 49p image prompts with suggested parameters included.",
   },
   "/prompts/dalle-prompts": {
     title: "DALL-E 3 Prompts",

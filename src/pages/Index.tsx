@@ -145,7 +145,7 @@ export default function Index() {
     <Layout>
       <SEO
         title="AI Prompts & ChatGPT Prompts Marketplace | Paste Prompts"
-        description="Discover top AI prompts & ChatGPT prompts. Copy and paste free & 49p prompts for ChatGPT, Claude, Gemini, Midjourney & Flux. Buy or sell prompts on Paste Prompts."
+        description="Discover AI prompts & ChatGPT prompts. Copy and paste free & 49p prompts for ChatGPT, Claude, Gemini, Midjourney & Flux. Buy or sell prompts on Paste Prompts."
         canonical="/"
         jsonLd={[faqSchema, websiteSchema]}
       />

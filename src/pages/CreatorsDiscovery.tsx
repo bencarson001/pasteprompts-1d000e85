@@ -5,9 +5,6 @@ import {
   Search,
   Users,
   Sparkles,
-  Crown,
-  ShieldCheck,
-  Star,
   Grid,
   TrendingUp,
   ArrowRight,
@@ -46,11 +43,7 @@ export default function CreatorsDiscovery() {
       c.handle?.toLowerCase().includes(term) ||
       c.bio?.toLowerCase().includes(term);
 
-    const isPlat = (c.total_sales ?? 0) >= 50;
-    const isPro = (c.total_sales ?? 0) >= 5;
-
-    if (tierFilter === "platinum") return matchesSearch && isPlat;
-    if (tierFilter === "pro") return matchesSearch && isPro;
+    if (tierFilter === "selling") return matchesSearch && (c.total_sales ?? 0) > 0;
     return matchesSearch;
   });
 
@@ -58,7 +51,7 @@ export default function CreatorsDiscovery() {
     <Layout>
       <SEO
         title="Discover AI Prompt Creators | Paste Prompts"
-        description="Explore top verified AI prompt creators, prompt engineers, and workflow architects on Paste Prompts."
+        description="Browse AI prompt creators on Paste Prompts, explore their published prompts and follow the people whose work you like."
         canonical="https://pasteprompts.co.uk/creators"
       />
 
@@ -70,10 +63,10 @@ export default function CreatorsDiscovery() {
           </div>
 
           <h1 className="font-display text-3xl sm:text-5xl font-extrabold tracking-tight text-foreground mb-3">
-            Discover Top AI Prompt Creators
+            Discover AI Prompt Creators
           </h1>
           <p className="mx-auto max-w-2xl text-sm sm:text-base text-muted-foreground leading-relaxed mb-8">
-            Connect with vetted prompt engineers, follow workflow specialists, and discover high-converting prompt systems for ChatGPT, Claude 3.7, Midjourney, and Gemini.
+            Find prompt creators, follow the ones you like and explore their prompts for ChatGPT, Claude, Midjourney and Gemini.
           </p>
 
           {/* Search and Filters */}
@@ -99,19 +92,11 @@ export default function CreatorsDiscovery() {
               </Button>
               <Button
                 size="sm"
-                variant={tierFilter === "platinum" ? "default" : "outline"}
-                onClick={() => setTierFilter("platinum")}
-                className={`h-11 rounded-xl text-xs font-semibold ${tierFilter === "platinum" ? "bg-amber-500 text-slate-950 font-bold" : "border-amber-500/30 text-amber-300 bg-card/50"}`}
+                variant={tierFilter === "selling" ? "default" : "outline"}
+                onClick={() => setTierFilter("selling")}
+                className={`h-11 rounded-xl text-xs font-semibold ${tierFilter === "selling" ? "bg-gradient-primary" : "border-white/10 bg-card/50"}`}
               >
-                <Crown className="mr-1 h-3.5 w-3.5" /> Platinum
-              </Button>
-              <Button
-                size="sm"
-                variant={tierFilter === "pro" ? "default" : "outline"}
-                onClick={() => setTierFilter("pro")}
-                className={`h-11 rounded-xl text-xs font-semibold ${tierFilter === "pro" ? "bg-primary text-primary-foreground" : "border-primary/30 text-primary-glow bg-card/50"}`}
-              >
-                <ShieldCheck className="mr-1 h-3.5 w-3.5" /> Pro
+                Has sales
               </Button>
             </div>
           </div>
@@ -128,14 +113,11 @@ export default function CreatorsDiscovery() {
           <div className="rounded-3xl border border-dashed border-white/10 p-12 text-center text-muted-foreground">
             <Users className="mx-auto h-10 w-10 text-muted-foreground/60 mb-3" />
             <h3 className="text-base font-semibold text-foreground mb-1">No creators matched</h3>
-            <p className="text-xs text-muted-foreground">Try clearing your search query or tier filter.</p>
+            <p className="text-xs text-muted-foreground">Try clearing your search or filter.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {filteredCreators.map((creator) => {
-              const isPlat = (creator.total_sales ?? 0) >= 50;
-              const isPro = (creator.total_sales ?? 0) >= 5;
-
               return (
                 <div
                   key={creator.id}
@@ -154,11 +136,6 @@ export default function CreatorsDiscovery() {
                         <h3 className="truncate font-display text-base font-bold text-foreground group-hover:text-primary-glow transition-colors">
                           {creator.display_name || `@${creator.handle}`}
                         </h3>
-                        {isPlat ? (
-                          <Crown className="h-3.5 w-3.5 shrink-0 text-amber-400 fill-current" />
-                        ) : isPro ? (
-                          <ShieldCheck className="h-3.5 w-3.5 shrink-0 text-primary-glow" />
-                        ) : null}
                       </div>
                       <p className="truncate text-xs text-muted-foreground">@{creator.handle}</p>
                     </div>
@@ -171,10 +148,9 @@ export default function CreatorsDiscovery() {
                   )}
 
                   <div className="flex items-center justify-between border-t border-white/5 pt-3 text-xs text-muted-foreground">
-                    <div className="flex items-center gap-1 text-amber-400">
-                      <Star className="h-3.5 w-3.5 fill-current" />
-                      <span className="font-semibold">{Math.min(99, 75 + (creator.total_sales ?? 0) * 2)}</span>
-                      <span className="text-[10px] text-muted-foreground">Rep</span>
+                    <div className="flex items-center gap-1">
+                      <span className="font-semibold text-foreground">{creator.total_sales ?? 0}</span>
+                      <span className="text-[10px]">{(creator.total_sales ?? 0) === 1 ? "sale" : "sales"}</span>
                     </div>
 
                     <Button
