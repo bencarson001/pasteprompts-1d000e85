@@ -31,7 +31,7 @@ export default function Landing() {
   const promptList = prompts ?? [];
   const related = (content.related ?? [])
     .map((s) => LANDING_PAGES[s])
-    .filter(Boolean);
+    .filter((p): p is NonNullable<typeof p> => Boolean(p));
 
   const jsonLd: Record<string, unknown>[] = [
     {
@@ -82,7 +82,7 @@ export default function Landing() {
         description={content.metaDescription}
         canonical={`/prompts/${slug}`}
         jsonLd={jsonLd}
-        noindex={content.noindex}
+        noindex={content.noindex ?? false}
       />
       <div className="container-wide py-10">
         <nav className="mb-4 text-sm text-muted-foreground">
