@@ -347,7 +347,7 @@ export async function checkHandleAvailability(
   // Security check: Reserved words (admin, mod, moderator)
   const reservedCheck = checkReservedName(clean, userEmail, isAdmin);
   if (reservedCheck.isReserved) {
-    return { available: false, error: reservedCheck.reason };
+    return { available: false, error: reservedCheck.reason ?? "This name is reserved." };
   }
 
   let q = supabase.from("profiles").select("id").eq("handle", clean);
@@ -387,7 +387,7 @@ export async function checkDisplayNameAvailability(
   // Security check: Reserved words (admin, mod, moderator)
   const reservedCheck = checkReservedName(clean, userEmail, isAdmin);
   if (reservedCheck.isReserved) {
-    return { available: false, error: reservedCheck.reason };
+    return { available: false, error: reservedCheck.reason ?? "This name is reserved." };
   }
 
   let q = supabase.from("profiles").select("id").ilike("display_name", clean);
