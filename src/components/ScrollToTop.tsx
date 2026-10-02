@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation } from "@/lib/router-compat";
 import { ArrowUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 

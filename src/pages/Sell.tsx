@@ -1,6 +1,6 @@
 import { supabase } from "@/integrations/supabase/client";
 import { useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "@/lib/router-compat";
 import { useQuery } from "@tanstack/react-query";
 import { Sparkles, Loader2, ArrowRight, ArrowLeft, Check, Crown, ShieldCheck, Info } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";

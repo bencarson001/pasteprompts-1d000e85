@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link } from "@/lib/router-compat";
 import { motion } from "framer-motion";
 import { ArrowRight, Sparkles, ShieldCheck, Users, Zap, Target, Heart } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";

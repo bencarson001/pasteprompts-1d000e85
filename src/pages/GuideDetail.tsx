@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link } from "@/lib/router-compat";
 import { motion } from "framer-motion";
 import { ArrowLeft, ArrowRight, Clock, CheckCircle2, Quote, AlertCircle, Sparkles, TrendingUp, Info } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";

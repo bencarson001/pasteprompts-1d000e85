@@ -1,4 +1,4 @@
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "@/lib/router-compat";
 import { Menu, Library, LayoutDashboard, LogOut, Sparkles, Shield, Store, Bookmark, Settings, MessageSquare, User, Zap } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";

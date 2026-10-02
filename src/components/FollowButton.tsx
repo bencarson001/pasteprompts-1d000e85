@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "@/lib/router-compat";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { UserPlus, UserCheck, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";

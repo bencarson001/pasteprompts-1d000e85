@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useParams, useSearchParams } from "@/lib/router-compat";
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import { ArrowRight, ArrowLeft, Gift, Search, Sparkles, Tag, Filter } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link } from "@/lib/router-compat";
 import { motion } from "framer-motion";
 import { Mail, MessageSquare, ShieldAlert, Clock, LifeBuoy, Store, BookOpen, Send, Loader2, CheckCircle2 } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "@/lib/router-compat";
 import {
   LayoutDashboard, Plus, Eye, ShoppingBag, Copy, Coins, FileText, Star, Pencil, Trash2, CheckCircle2, Clock, XCircle, Info,
 } from "lucide-react";

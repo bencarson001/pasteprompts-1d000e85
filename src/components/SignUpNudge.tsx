@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation } from "@/lib/router-compat";
 import { motion, AnimatePresence } from "framer-motion";
 import { Sparkles, X, Gift, Bookmark, BellRing } from "lucide-react";
 import { Button } from "@/components/ui/button";
