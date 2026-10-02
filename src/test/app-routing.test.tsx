@@ -22,7 +22,6 @@ async function renderAt(path: string) {
 
 afterEach(() => {
   cleanup();
-  document.body.innerHTML = "";
   vi.restoreAllMocks();
 });
 
