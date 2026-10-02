@@ -1,0 +1,20 @@
+{
+  "customizations": [
+    { "token": ":root light palette (background/foreground/card/popover/elevated/primary/primary-glow/secondary/muted/accent/destructive/success/warning/border/input/ring/radius)", "source": "src/index.css", "reappliedIn": "src/styles.css" },
+    { "token": ".dark palette (same token set, Midnight Indigo dark values)", "source": "src/index.css", "reappliedIn": "src/styles.css" },
+    { "token": "--gradient-primary / --gradient-hero / --gradient-card / --gradient-glow", "source": "src/index.css", "reappliedIn": "src/styles.css" },
+    { "token": "--shadow-sm / --shadow-md / --shadow-glow / --shadow-elevated", "source": "src/index.css", "reappliedIn": "src/styles.css" },
+    { "token": "sidebar token set (--sidebar-background etc.)", "source": "src/index.css", "reappliedIn": "src/styles.css" },
+    { "token": "body::before fixed hero gradient layer", "source": "src/index.css", "reappliedIn": "src/styles.css" },
+    { "token": "h1-h4/.font-display Space Grotesk + letter-spacing", "source": "src/index.css", "reappliedIn": "src/styles.css" },
+    { "token": "::selection / custom scrollbar / scrollbar buttons", "source": "src/index.css", "reappliedIn": "src/styles.css" },
+    { "token": "prefers-reduced-motion + :focus-visible accessibility rules", "source": "src/index.css", "reappliedIn": "src/styles.css" },
+    { "token": ".glass / .glass-strong / .text-gradient / .btn-glow / .card-hover", "source": "src/index.css", "reappliedIn": "src/styles.css" },
+    { "token": ".bg-gradient-primary / .bg-gradient-glow / .shadow-glow / .container-tight / .container-wide utilities", "source": "src/index.css", "reappliedIn": "src/styles.css" },
+    { "token": "font-sans Inter / font-display Space Grotesk theme fonts", "source": "tailwind.config.ts", "reappliedIn": "src/styles.css" },
+    { "token": "semantic color mapping incl. elevated/success/warning/primary-glow", "source": "tailwind.config.ts", "reappliedIn": "src/styles.css" },
+    { "token": "bg-gradient-card / shadow-elevated utility mappings", "source": "tailwind.config.ts", "reappliedIn": "src/styles.css" },
+    { "token": "--radius 0.85rem with sm/md/lg mapping", "source": "tailwind.config.ts", "reappliedIn": "src/styles.css" },
+    { "token": "keyframes + animations: accordion-down/up, fade-up, shimmer, float", "source": "tailwind.config.ts", "reappliedIn": "src/styles.css" }
+  ]
+}
