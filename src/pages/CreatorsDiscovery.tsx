@@ -20,7 +20,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 export default function CreatorsDiscovery() {
   const [search, setSearch] = useState("");
-  const [tierFilter, setTierFilter] = useState<"all" | "platinum" | "pro">("all");
+  const [tierFilter, setTierFilter] = useState<"all" | "selling">("all");
 
   const { data: creators = [], isLoading } = useQuery({
     queryKey: ["creators-discovery-list"],
