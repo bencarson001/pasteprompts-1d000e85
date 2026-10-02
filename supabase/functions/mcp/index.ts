@@ -12,8 +12,8 @@ import { z } from "npm:zod@^3.25.76";
 // src/lib/mcp/tools/_shared.ts
 import { createClient } from "npm:@supabase/supabase-js@^2.105.1";
 function marketplaceClient() {
-  const url = process.env.SUPABASE_URL;
-  const key = process.env.SUPABASE_PUBLISHABLE_KEY ?? process.env.SUPABASE_ANON_KEY;
+  const url = process.env["SUPABASE_URL"];
+  const key = process.env["SUPABASE_PUBLISHABLE_KEY"] ?? process.env["SUPABASE_ANON_KEY"];
   if (!url || !key) throw new Error("Supabase env not configured");
   return createClient(url, key, {
     auth: { persistSession: false, autoRefreshToken: false }
@@ -76,16 +76,16 @@ var search_prompts_default = defineTool({
     const { data, error } = await q;
     if (error) return { content: [{ type: "text", text: error.message }], isError: true };
     const results = (data ?? []).map((p) => ({
-      slug: p.slug,
-      title: p.title,
-      description: p.description,
-      model: p.model,
-      price: p.is_free ? "Free" : `\xA3${((p.price_pence ?? 0) / 100).toFixed(2)}`,
-      rating: p.rating_avg,
-      sales: p.sales_count,
-      category: p.category?.name ?? null,
-      creator: p.creator?.display_name ?? null,
-      url: promptUrl(p.slug)
+      slug: p["slug"],
+      title: p["title"],
+      description: p["description"],
+      model: p["model"],
+      price: p["is_free"] ? "Free" : `\xA3${((p["price_pence"] ?? 0) / 100).toFixed(2)}`,
+      rating: p["rating_avg"],
+      sales: p["sales_count"],
+      category: p["category"]?.name ?? null,
+      creator: p["creator"]?.display_name ?? null,
+      url: promptUrl(p["slug"])
     }));
     return {
       content: [{ type: "text", text: JSON.stringify({ count: results.length, results }, null, 2) }],
@@ -113,21 +113,21 @@ var get_prompt_default = defineTool2({
     if (!data) return { content: [{ type: "text", text: `No approved prompt found for slug "${slug}".` }], isError: true };
     const p = data;
     const detail = {
-      slug: p.slug,
-      title: p.title,
-      description: p.description,
-      example_output: p.example_output,
-      model: p.model,
-      price: p.is_free ? "Free" : `\xA3${((p.price_pence ?? 0) / 100).toFixed(2)}`,
-      rating: p.rating_avg,
-      rating_count: p.rating_count,
-      sales: p.sales_count,
-      views: p.views,
-      tags: p.tags,
-      category: p.category?.name ?? null,
-      creator: p.creator?.display_name ?? null,
-      created_at: p.created_at,
-      url: promptUrl(p.slug)
+      slug: p["slug"],
+      title: p["title"],
+      description: p["description"],
+      example_output: p["example_output"],
+      model: p["model"],
+      price: p["is_free"] ? "Free" : `\xA3${((p["price_pence"] ?? 0) / 100).toFixed(2)}`,
+      rating: p["rating_avg"],
+      rating_count: p["rating_count"],
+      sales: p["sales_count"],
+      views: p["views"],
+      tags: p["tags"],
+      category: p["category"]?.name ?? null,
+      creator: p["creator"]?.display_name ?? null,
+      created_at: p["created_at"],
+      url: promptUrl(p["slug"])
     };
     return {
       content: [{ type: "text", text: JSON.stringify(detail, null, 2) }],
@@ -172,14 +172,14 @@ var get_featured_prompts_default = defineTool4({
     const { data, error } = await supabase.from("prompts").select(PROMPT_CARD_SELECT).eq("status", "approved").eq("featured", true).order("trending_score", { ascending: false }).limit(limit ?? 8);
     if (error) return { content: [{ type: "text", text: error.message }], isError: true };
     const results = (data ?? []).map((p) => ({
-      slug: p.slug,
-      title: p.title,
-      description: p.description,
-      model: p.model,
-      price: p.is_free ? "Free" : `\xA3${((p.price_pence ?? 0) / 100).toFixed(2)}`,
-      rating: p.rating_avg,
-      category: p.category?.name ?? null,
-      url: promptUrl(p.slug)
+      slug: p["slug"],
+      title: p["title"],
+      description: p["description"],
+      model: p["model"],
+      price: p["is_free"] ? "Free" : `\xA3${((p["price_pence"] ?? 0) / 100).toFixed(2)}`,
+      rating: p["rating_avg"],
+      category: p["category"]?.name ?? null,
+      url: promptUrl(p["slug"])
     }));
     return {
       content: [{ type: "text", text: JSON.stringify({ count: results.length, results }, null, 2) }],
@@ -219,7 +219,7 @@ function supabasePublishableKey() {
       const parsed = JSON.parse(keyset);
       if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
         const keys = parsed;
-        const key = [keys.default, ...Object.values(keys)].find((v) => typeof v === "string" && v.trim().startsWith("sb_publishable_"))?.trim();
+        const key = [keys["default"], ...Object.values(keys)].find((v) => typeof v === "string" && v.trim().startsWith("sb_publishable_"))?.trim();
         if (key) return key;
       }
     } catch {
