@@ -1,0 +1,18 @@
+{"functions": [
+  {"name": "create-checkout", "classification": "internal-only", "signal": "called from 1 src/ file; Stripe payment flow — user's standing rule forbids speculative payment-system changes, so left in place", "outcome": "left"},
+  {"name": "create-portal-session", "classification": "internal-only", "signal": "called from 1 src/ file; Stripe billing portal — same payment-system preservation rule, left in place", "outcome": "left"},
+  {"name": "payments-webhook", "classification": "webhook receiver", "signal": "Stripe webhook; URL registered in Stripe dashboard", "outcome": "left"},
+  {"name": "mcp", "classification": "MCP server", "signal": "MCP endpoint with fixed URL, no internal call sites", "outcome": "left"},
+  {"name": "tiktok-oauth", "classification": "webhook receiver", "signal": "OAuth redirect callback; redirect_uri points at its own /functions/v1 URL registered with TikTok", "outcome": "left"},
+  {"name": "facebook-token", "classification": "internal-only", "signal": "called from 3 src/ files but part of the Facebook automation pipeline (shared secrets/state with cron-driven post-daily-fb); left to keep the social pipeline on one runtime", "outcome": "left"},
+  {"name": "post-daily-fb", "classification": "cron target", "signal": "dashboard-managed pg_cron schedule (fb-autopilot twice-daily job); live state only visible in the database", "outcome": "left"},
+  {"name": "process-scheduled-posts", "classification": "cron target", "signal": "dashboard-managed pg_cron schedule (TikTok 15-minute checker)", "outcome": "left"},
+  {"name": "site-maintenance", "classification": "cron target", "signal": "dashboard-managed pg_cron daily maintenance job", "outcome": "left"},
+  {"name": "process-email-queue", "classification": "cron target", "signal": "referenced in supabase/migrations SQL cron statements", "outcome": "left"},
+  {"name": "tiktok-automation", "classification": "cron target", "signal": "invoked by scheduled TikTok pipeline; also referenced in migrations SQL", "outcome": "left"},
+  {"name": "generate-fb-image", "classification": "cron target", "signal": "accepts MAINTENANCE_SECRET server-to-server calls from the maintenance/autopilot pipeline", "outcome": "left"},
+  {"name": "generate-fb-post-pool", "classification": "cron target", "signal": "accepts MAINTENANCE_SECRET server-to-server calls from the maintenance/autopilot pipeline", "outcome": "left"},
+  {"name": "generate-social-post", "classification": "internal-only", "signal": "called from 1 src/ file (admin AI tooling); left this turn — candidate for follow-up migration", "outcome": "left"},
+  {"name": "try-prompt", "classification": "internal-only", "signal": "called from 1 src/ file (auth-required AI preview); left this turn — candidate for follow-up migration", "outcome": "left"},
+  {"name": "vet-prompt", "classification": "internal-only", "signal": "called from 1 src/ file (AI vetting); left this turn — candidate for follow-up migration", "outcome": "left"}
+]}
