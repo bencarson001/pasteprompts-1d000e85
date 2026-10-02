@@ -28,7 +28,7 @@ export function ProfileBadges({ badges }: ProfileBadgesProps) {
           key={badge.id}
           className="flex items-start gap-3.5 rounded-2xl border border-white/10 bg-card/40 p-4 transition-all hover:bg-card/70 hover:border-white/20"
         >
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-background/80 shadow-sm">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-background/80 shadow-xs">
             {getIcon(badge.icon)}
           </div>
           <div>

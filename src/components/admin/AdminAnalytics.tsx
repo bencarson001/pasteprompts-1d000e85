@@ -537,7 +537,7 @@ export function AdminAnalytics() {
             <div
               key={card.id}
               id={card.id}
-              className="group relative overflow-hidden rounded-2xl border border-white/10 bg-[#121124]/90 p-5 shadow-lg backdrop-blur-sm transition-all hover:border-purple-500/30 hover:bg-[#15132c]"
+              className="group relative overflow-hidden rounded-2xl border border-white/10 bg-[#121124]/90 p-5 shadow-lg backdrop-blur-xs transition-all hover:border-purple-500/30 hover:bg-[#15132c]"
             >
               <div className="flex items-center gap-2 text-xs font-medium text-white/70">
                 <Icon className={`h-4 w-4 ${card.iconColor}`} />
@@ -573,7 +573,7 @@ export function AdminAnalytics() {
       {/* 2. MAIN CHARTS ROW: Daily Page Views & Traffic Sources */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
         {/* Daily Page Views Chart (3 cols) */}
-        <div className="rounded-2xl border border-white/10 bg-[#121124]/90 p-6 shadow-xl backdrop-blur-sm lg:col-span-3">
+        <div className="rounded-2xl border border-white/10 bg-[#121124]/90 p-6 shadow-xl backdrop-blur-xs lg:col-span-3">
           <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
             <div>
               <h3 className="text-base font-bold text-white">Daily page views</h3>
@@ -598,7 +598,7 @@ export function AdminAnalytics() {
         </div>
 
         {/* Traffic Sources Donut Chart (2 cols) */}
-        <div className="flex flex-col justify-between rounded-2xl border border-white/10 bg-[#121124]/90 p-6 shadow-xl backdrop-blur-sm lg:col-span-2">
+        <div className="flex flex-col justify-between rounded-2xl border border-white/10 bg-[#121124]/90 p-6 shadow-xl backdrop-blur-xs lg:col-span-2">
           <div>
             <h3 className="text-base font-bold text-white">Traffic sources</h3>
             <p className="text-xs text-white/50">Where visitors come from</p>
@@ -624,7 +624,7 @@ export function AdminAnalytics() {
       {/* 3. SECOND ROW: Top Prompts Table & Visitor Geography + Funnel */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
         {/* Top Prompts By Views (3 cols) */}
-        <div className="overflow-hidden rounded-2xl border border-white/10 bg-[#121124]/90 p-6 shadow-xl backdrop-blur-sm lg:col-span-3">
+        <div className="overflow-hidden rounded-2xl border border-white/10 bg-[#121124]/90 p-6 shadow-xl backdrop-blur-xs lg:col-span-3">
           <div className="mb-4">
             <h3 className="text-base font-bold text-white">Top prompts by views</h3>
             <p className="text-xs text-white/50">Most viewed prompts this period</p>
@@ -681,7 +681,7 @@ export function AdminAnalytics() {
         {/* Visitor Geography & Conversion Funnel (2 cols) */}
         <div className="space-y-6 lg:col-span-2">
           {/* Visitor Geography */}
-          <div className="rounded-2xl border border-white/10 bg-[#121124]/90 p-6 shadow-xl backdrop-blur-sm">
+          <div className="rounded-2xl border border-white/10 bg-[#121124]/90 p-6 shadow-xl backdrop-blur-xs">
             <div>
               <h3 className="text-base font-bold text-white">Visitor geography</h3>
               <p className="text-xs text-white/50">Top countries by sessions</p>
@@ -709,7 +709,7 @@ export function AdminAnalytics() {
           </div>
 
           {/* Conversion Funnel */}
-          <div className="rounded-2xl border border-white/10 bg-[#121124]/90 p-6 shadow-xl backdrop-blur-sm">
+          <div className="rounded-2xl border border-white/10 bg-[#121124]/90 p-6 shadow-xl backdrop-blur-xs">
             <div>
               <h3 className="text-base font-bold text-white">Conversion funnel</h3>
               <p className="text-xs text-white/50">Visitor journey this period</p>
@@ -744,7 +744,7 @@ export function AdminAnalytics() {
       {/* 4. THIRD ROW: Category Performance & Engagement / SEO Signals */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         {/* Category Performance */}
-        <div className="rounded-2xl border border-white/10 bg-[#121124]/90 p-6 shadow-xl backdrop-blur-sm">
+        <div className="rounded-2xl border border-white/10 bg-[#121124]/90 p-6 shadow-xl backdrop-blur-xs">
           <div>
             <h3 className="text-base font-bold text-white">Category performance</h3>
             <p className="text-xs text-white/50">Views by prompt category</p>
@@ -775,7 +775,7 @@ export function AdminAnalytics() {
         </div>
 
         {/* Engagement & SEO signals */}
-        <div className="flex flex-col justify-between rounded-2xl border border-white/10 bg-[#121124]/90 p-6 shadow-xl backdrop-blur-sm">
+        <div className="flex flex-col justify-between rounded-2xl border border-white/10 bg-[#121124]/90 p-6 shadow-xl backdrop-blur-xs">
           <div>
             <h3 className="text-base font-bold text-white">Engagement & SEO signals</h3>
             <p className="text-xs text-white/50">Health metrics for search performance</p>

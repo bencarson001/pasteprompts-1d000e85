@@ -144,7 +144,7 @@ export function ProfileSocialFeed({
             return (
               <div
                 key={post.id}
-                className="rounded-2xl border border-white/10 bg-card/50 p-5 shadow-sm transition-all hover:border-white/20"
+                className="rounded-2xl border border-white/10 bg-card/50 p-5 shadow-xs transition-all hover:border-white/20"
               >
                 {/* Header */}
                 <div className="flex items-center justify-between mb-3">
@@ -243,7 +243,7 @@ export function ProfileSocialFeed({
                         value={commentText}
                         onChange={(e) => setCommentText(e.target.value)}
                         placeholder="Write a thoughtful comment..."
-                        className="flex-1 rounded-xl border border-white/10 bg-card px-3 py-1.5 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+                        className="flex-1 rounded-xl border border-white/10 bg-card px-3 py-1.5 text-xs text-foreground placeholder:text-muted-foreground focus:outline-hidden focus:ring-1 focus:ring-primary"
                         onKeyDown={(e) => {
                           if (e.key === "Enter") handleAddComment(post.id);
                         }}

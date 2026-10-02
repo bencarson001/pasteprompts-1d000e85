@@ -82,7 +82,7 @@ export function MobileHeader({ onOpenMenu, unreadCount = 0 }: MobileHeaderProps)
               <button
                 type="button"
                 onClick={onOpenMenu}
-                className="ml-0.5 rounded-full p-0.5 ring-1 ring-primary/40 focus:outline-none"
+                className="ml-0.5 rounded-full p-0.5 ring-1 ring-primary/40 focus:outline-hidden"
                 aria-label="Open user menu"
               >
                 <Avatar className="h-7 w-7">

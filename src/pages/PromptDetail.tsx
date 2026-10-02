@@ -365,7 +365,7 @@ export default function PromptDetail() {
                   )
                 ) : (
                   <div className="relative overflow-hidden rounded-2xl glass p-5">
-                    <pre className="pointer-events-none select-none whitespace-pre-wrap break-words font-mono text-sm text-foreground/60 blur-sm">
+                    <pre className="pointer-events-none select-none whitespace-pre-wrap break-words font-mono text-sm text-foreground/60 blur-xs">
 {`You are an elite specialist with a track record of measurable results.
 
 GOAL: Act as a done-for-you engine for your exact situation.
