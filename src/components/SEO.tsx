@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import { Helmet } from "react-helmet-async";
 
 type JsonLd = Record<string, unknown>;
 
@@ -67,8 +66,11 @@ export function SEO({ title, description, canonical, type = "website", image, no
   const schemas = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
   const canonicalUrl = canonical ? absolutize(canonical) : undefined;
 
+  // React 19 hoists <title>/<meta>/<link> to <head> natively, so these render
+  // as plain tags (no Helmet — its imperative head mutation conflicts with
+  // React-managed head nodes and crashes unmounts during client navigation).
   return (
-    <Helmet>
+    <>
       <title>{fullTitle}</title>
       <meta name="description" content={safeDescription} />
       <meta name="keywords" content={keywords ?? DEFAULT_KEYWORDS} />
@@ -81,7 +83,6 @@ export function SEO({ title, description, canonical, type = "website", image, no
       {canonicalUrl && <meta property="og:url" content={canonicalUrl} />}
       {image && <meta property="og:image" content={image} />}
 
-
       <meta name="twitter:card" content={image ? "summary_large_image" : "summary"} />
       <meta name="twitter:title" content={fullTitle} />
       <meta name="twitter:description" content={safeDescription} />
@@ -92,7 +93,7 @@ export function SEO({ title, description, canonical, type = "website", image, no
           {JSON.stringify(s)}
         </script>
       ))}
-    </Helmet>
+    </>
   );
 }
 
