@@ -72,7 +72,7 @@ export async function logError(
     scope,
     details: detailObj,
     path,
-    stack,
+    ...(stack !== undefined ? { stack } : {}),
     created_at: new Date().toISOString(),
   };
 

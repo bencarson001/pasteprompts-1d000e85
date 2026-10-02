@@ -36,7 +36,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const { data: existing, error } = await supabase.from("profiles").select("id").eq("id", u.id).maybeSingle();
       if (!error && existing) return;
-      const rawHandle = u.email.split("@")[0].toLowerCase().replace(/[^a-z0-9]/g, "");
+      const rawHandle = (u.email.split("@")[0] ?? "").toLowerCase().replace(/[^a-z0-9]/g, "");
       const handle = checkReservedName(rawHandle, u.email).isReserved
         ? `user_${u.id.replace(/-/g, "").slice(0, 8)}`
         : rawHandle;

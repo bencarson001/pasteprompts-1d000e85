@@ -171,7 +171,7 @@ export async function fetchFreePromptsByCategory(perCategory = 4) {
       index[cat.slug] = groups.length;
       groups.push({ name: cat.name, slug: cat.slug, prompts: [] });
     }
-    const group = groups[index[cat.slug]];
+    const group = groups[index[cat.slug]!]!;
     if (group.prompts.length < perCategory) group.prompts.push(p);
   }
   return groups;
