@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "@/lib/router-compat";
 import { Sparkles, Search, Menu, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -82,7 +82,7 @@ export function MobileHeader({ onOpenMenu, unreadCount = 0 }: MobileHeaderProps)
               <button
                 type="button"
                 onClick={onOpenMenu}
-                className="ml-0.5 rounded-full p-0.5 ring-1 ring-primary/40 focus:outline-none"
+                className="ml-0.5 rounded-full p-0.5 ring-1 ring-primary/40 focus:outline-hidden"
                 aria-label="Open user menu"
               >
                 <Avatar className="h-7 w-7">

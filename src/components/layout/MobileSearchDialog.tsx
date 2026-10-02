@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "@/lib/router-compat";
 import { Search, X, TrendingUp, Sparkles, ArrowRight, Tag, Zap } from "lucide-react";
 import {
   Dialog,

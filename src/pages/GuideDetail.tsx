@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link } from "@/lib/router-compat";
 import { motion } from "framer-motion";
 import { ArrowLeft, ArrowRight, Clock, CheckCircle2, Quote, AlertCircle, Sparkles, TrendingUp, Info } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
@@ -63,7 +63,7 @@ function Block({ block }: { block: GuideBlock }) {
       return (
         <div className="my-8 grid gap-4 sm:grid-cols-3">
           {block.stats.map((s, idx) => (
-            <div key={idx} className="rounded-2xl border border-white/10 bg-card/60 p-5 shadow-sm">
+            <div key={idx} className="rounded-2xl border border-white/10 bg-card/60 p-5 shadow-xs">
               <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{s.label}</div>
               <div className="mt-2 font-display text-3xl font-extrabold text-foreground">{s.value}</div>
               <div className="mt-1 text-xs text-muted-foreground">{s.desc}</div>

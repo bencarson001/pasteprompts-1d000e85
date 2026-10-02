@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "@/lib/router-compat";
 import {
   Sparkles,
   Search,
@@ -85,7 +85,7 @@ export function MobileNavDrawer({ open, onOpenChange, unreadCount = 0 }: MobileN
         <div className="flex-1 overflow-y-auto p-4 space-y-5">
           {/* User Profile / Guest State */}
           {user ? (
-            <div className="rounded-2xl border border-primary/20 bg-card/80 p-3.5 shadow-sm">
+            <div className="rounded-2xl border border-primary/20 bg-card/80 p-3.5 shadow-xs">
               <div className="flex items-center gap-3">
                 <Avatar className="h-10 w-10 border border-primary/30">
                   <AvatarFallback className="bg-gradient-primary text-sm font-semibold text-primary-foreground">
@@ -143,7 +143,7 @@ export function MobileNavDrawer({ open, onOpenChange, unreadCount = 0 }: MobileN
               </div>
             </div>
           ) : (
-            <div className="rounded-2xl border border-primary/25 bg-gradient-glow p-4 shadow-sm">
+            <div className="rounded-2xl border border-primary/25 bg-gradient-glow p-4 shadow-xs">
               <div className="flex items-center gap-2 mb-1.5">
                 <Sparkles className="h-4 w-4 text-primary-glow" />
                 <h4 className="text-sm font-bold text-foreground">Unlock Free Prompts</h4>

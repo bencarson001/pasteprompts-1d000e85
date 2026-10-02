@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link } from "@/lib/router-compat";
 import { Sparkles, Facebook, Instagram, Twitter } from "lucide-react";
 
 const socials = [

@@ -27,11 +27,11 @@ export function AdminSocial() {
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="facebook" className="mt-0 focus-visible:outline-none">
+        <TabsContent value="facebook" className="mt-0 focus-visible:outline-hidden">
           <AdminFacebookAutopilot />
         </TabsContent>
 
-        <TabsContent value="tiktok" className="mt-0 focus-visible:outline-none">
+        <TabsContent value="tiktok" className="mt-0 focus-visible:outline-hidden">
           <AdminTikTok />
         </TabsContent>
       </Tabs>

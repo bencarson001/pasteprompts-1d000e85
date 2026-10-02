@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { Link } from "react-router-dom";
+import { Link } from "@/lib/router-compat";
 import { motion } from "framer-motion";
 import { BookMarked, ArrowRight, Search, Sparkles, HelpCircle } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";

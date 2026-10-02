@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation } from "@/lib/router-compat";
 import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { fetchCategories } from "@/lib/queries";

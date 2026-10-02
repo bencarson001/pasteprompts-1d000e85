@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link } from "@/lib/router-compat";
 import { Lock, Sparkles, TrendingUp, DollarSign, Users, BarChart3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -11,7 +11,7 @@ export function ProfileStatsLocked({ creatorName = "this creator", isOwner = fal
   return (
     <div className="relative overflow-hidden rounded-2xl border border-primary/30 bg-card/40 p-6 sm:p-8 text-center backdrop-blur-md">
       {/* Blurred mock background items */}
-      <div className="grid grid-cols-3 gap-4 blur-sm opacity-30 pointer-events-none mb-4">
+      <div className="grid grid-cols-3 gap-4 blur-xs opacity-30 pointer-events-none mb-4">
         <div className="h-20 rounded-xl bg-primary/20 p-4" />
         <div className="h-20 rounded-xl bg-accent/20 p-4" />
         <div className="h-20 rounded-xl bg-primary/20 p-4" />

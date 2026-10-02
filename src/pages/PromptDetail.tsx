@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, Link, useNavigate } from "@/lib/router-compat";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import {
@@ -365,7 +365,7 @@ export default function PromptDetail() {
                   )
                 ) : (
                   <div className="relative overflow-hidden rounded-2xl glass p-5">
-                    <pre className="pointer-events-none select-none whitespace-pre-wrap break-words font-mono text-sm text-foreground/60 blur-sm">
+                    <pre className="pointer-events-none select-none whitespace-pre-wrap break-words font-mono text-sm text-foreground/60 blur-xs">
 {`You are an elite specialist with a track record of measurable results.
 
 GOAL: Act as a done-for-you engine for your exact situation.

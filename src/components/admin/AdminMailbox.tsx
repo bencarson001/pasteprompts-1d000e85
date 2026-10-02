@@ -321,7 +321,7 @@ export default function AdminMailbox() {
 
             {/* Claim Promo Slot by Typing Username Form */}
             <form onSubmit={handleClaimByUsername} className="pt-2">
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 p-3 bg-background/90 rounded-xl border border-indigo-500/30 shadow-sm">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 p-3 bg-background/90 rounded-xl border border-indigo-500/30 shadow-xs">
                 <div className="relative flex-1">
                   <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
                   <Input
@@ -335,7 +335,7 @@ export default function AdminMailbox() {
                 <Button
                   type="submit"
                   disabled={isGrantingUsername || !promoUsername.trim()}
-                  className="h-9 px-4 text-xs font-semibold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:from-indigo-700 hover:to-pink-700 text-white shadow flex items-center justify-center gap-1.5 shrink-0"
+                  className="h-9 px-4 text-xs font-semibold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:from-indigo-700 hover:to-pink-700 text-white shadow-sm flex items-center justify-center gap-1.5 shrink-0"
                 >
                   <UserPlus className="w-3.5 h-3.5" />
                   {isGrantingUsername ? "Granting..." : "Claim Slot for Username"}

@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link } from "@/lib/router-compat";
 import { motion } from "framer-motion";
 import { ShieldCheck, CheckCircle2, FileText, Cpu, AlertTriangle, RefreshCw, Sparkles, Scale, BookOpen } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";

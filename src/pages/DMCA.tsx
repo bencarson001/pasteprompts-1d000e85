@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link } from "@/lib/router-compat";
 import { motion } from "framer-motion";
 import { Scale, CheckCircle2, AlertCircle, Send, ShieldCheck, Mail } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
