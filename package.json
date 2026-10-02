@@ -9,7 +9,6 @@
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",
-    "start": "node dist/server.cjs",
     "test": "vitest run",
     "test:watch": "vitest",
     "predev": "npx tsx scripts/generate-sitemap.ts",
