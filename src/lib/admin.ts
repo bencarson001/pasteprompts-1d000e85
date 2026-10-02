@@ -188,15 +188,15 @@ export async function fetchAdminAnalytics(days = 30): Promise<AdminAnalytics> {
       if (seenVisitor.has(e.visitor_id)) continue;
       seenVisitor.add(e.visitor_id);
       const r = (e.referrer || "").toLowerCase();
-      if (!r || r.includes("pasteprompts")) srcCounts["Direct"]++;
-      else if (/google|bing|duckduckgo|yahoo|ecosia/.test(r)) srcCounts["Organic"]++;
-      else if (/facebook|instagram|tiktok|twitter|t\.co|x\.com|reddit|youtube|linkedin|pinterest/.test(r)) srcCounts["Social"]++;
-      else srcCounts["Referral"]++;
+      if (!r || r.includes("pasteprompts")) srcCounts["Direct"] = (srcCounts["Direct"] ?? 0) + 1;
+      else if (/google|bing|duckduckgo|yahoo|ecosia/.test(r)) srcCounts["Organic"] = (srcCounts["Organic"] ?? 0) + 1;
+      else if (/facebook|instagram|tiktok|twitter|t\.co|x\.com|reddit|youtube|linkedin|pinterest/.test(r)) srcCounts["Social"] = (srcCounts["Social"] ?? 0) + 1;
+      else srcCounts["Referral"] = (srcCounts["Referral"] ?? 0) + 1;
     }
     const srcTotal = Object.values(srcCounts).reduce((a, b) => a + b, 0);
     const srcColors: Record<string, string> = { Direct: "#8B5CF6", Organic: "#06B6D4", Social: "#F59E0B", Referral: "#3B82F6" };
     const trafficSources = srcTotal
-      ? Object.entries(srcCounts).map(([name, n]) => ({ name, value: Math.round((n / srcTotal) * 100), color: srcColors[name] }))
+      ? Object.entries(srcCounts).map(([name, n]) => ({ name, value: Math.round((n / srcTotal) * 100), color: srcColors[name] ?? "#8B5CF6" }))
       : [];
 
     // Top prompts (real counts)
@@ -626,7 +626,7 @@ export async function fetchFeatureFlags() {
   return data ?? [];
 }
 export async function upsertFeatureFlag(key: string, enabled: boolean, description?: string) {
-  const { error } = await supabase.from("feature_flags").upsert({ key, enabled, description, updated_at: new Date().toISOString() });
+  const { error } = await supabase.from("feature_flags").upsert({ key, enabled, description: description ?? null, updated_at: new Date().toISOString() });
   if (error) throw error;
   await logAdminAction("flag.set", "flag", key, { enabled });
 }
