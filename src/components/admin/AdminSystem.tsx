@@ -246,7 +246,7 @@ export function AdminErrorLogs() {
                 </div>
               </div>
 
-              {inspectItem["details"] && (
+              {inspectItem["details"] != null && (
                 <div>
                   <label className="text-[11px] font-semibold text-muted-foreground uppercase">Details & Context</label>
                   <pre className="mt-1 max-h-60 overflow-auto rounded-xl border border-white/10 bg-black/60 p-3 font-mono text-[11px] text-amber-200/90 whitespace-pre-wrap">

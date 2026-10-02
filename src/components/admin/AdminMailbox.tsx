@@ -101,7 +101,7 @@ export default function AdminMailbox() {
   // Grant Early Bird manually mutation
   const grantPromoMutation = useMutation({
     mutationFn: async (userId: string) => {
-      const targetUser = usersList?.find((u) => u.id === userId);
+      const targetUser = usersList?.find((u: any) => u.id === userId);
       return await checkAndApplyEarlyBirdPromo(
         userId,
         targetEmail || undefined,
@@ -412,7 +412,7 @@ export default function AdminMailbox() {
                       className="w-full h-9 px-3 rounded-md border border-input bg-background text-sm"
                     >
                       <option value="">-- Choose User --</option>
-                      {usersList?.map((u) => (
+                      {usersList?.map((u: any) => (
                         <option key={u.id} value={u.id}>
                           {u.display_name || u.handle || u.id} ({u.membership_tier || "free"})
                         </option>
@@ -534,7 +534,7 @@ export default function AdminMailbox() {
 
           {sentMessages && sentMessages.length > 0 ? (
             <div className="space-y-2">
-              {sentMessages.map((msg) => (
+              {sentMessages.map((msg: any) => (
                 <Card key={msg.id} className="p-3 text-xs border bg-card">
                   <div className="flex justify-between items-start mb-1">
                     <div className="font-semibold text-foreground flex items-center gap-2">
@@ -573,7 +573,7 @@ export default function AdminMailbox() {
 
           {emailQueue && emailQueue.length > 0 ? (
             <div className="space-y-2">
-              {emailQueue.map((em) => (
+              {emailQueue.map((em: any) => (
                 <Card key={em.id} className="p-3 text-xs border bg-card flex items-center justify-between">
                   <div className="min-w-0 flex-1 pr-3">
                     <div className="flex items-center gap-2 font-semibold text-foreground">

@@ -88,7 +88,7 @@ async function call(action: string, extra: Record<string, unknown> = {}) {
       const pages = body.data as Array<{ id: string; name: string; access_token: string }>;
       const matched = requestedPage ? pages.find((p) => p.id === requestedPage) : pages[0];
       if (!matched && requestedPage) throw new Error(`Page ID "${requestedPage}" not found.`);
-      const targetPage = matched || pages[0];
+      const targetPage = (matched || pages[0])!;
       pageId = targetPage.id;
       pageName = targetPage.name;
       pageToken = targetPage.access_token;
