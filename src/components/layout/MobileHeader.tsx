@@ -1,7 +1,7 @@
 import logoAsset from "@/assets/pasteprompts-logo.png.asset.json";
 import { useState } from "react";
 import { Link, useNavigate } from "@/lib/router-compat";
-import { Sparkles, Search, Menu, MessageSquare } from "lucide-react";
+import { Search, Menu, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ThemeToggle } from "@/components/ThemeToggle";

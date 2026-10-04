@@ -1,7 +1,7 @@
 import logoAsset from "@/assets/pasteprompts-logo.png.asset.json";
 import { useState } from "react";
 import { Link } from "@/lib/router-compat";
-import { Sparkles, ChevronDown, Facebook, Instagram, Twitter } from "lucide-react";
+import { ChevronDown, Facebook, Instagram, Twitter } from "lucide-react";
 
 const socials = [
   { label: "Follow on X", href: "https://x.com/pasteprompts", icon: Twitter },
