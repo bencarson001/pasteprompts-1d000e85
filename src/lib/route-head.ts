@@ -23,7 +23,8 @@ export function headFromMeta(meta: PageMeta): RouteHead {
       { name: "twitter:title", content: title },
       { name: "twitter:description", content: meta.description },
       // Exactly one robots tag per page (root no longer sets one).
-      { name: "robots", content: meta.noindex ? "noindex,nofollow" : "index, follow, max-image-preview:large, max-snippet:-1" },
+      // noindex pages still let crawlers follow their links to indexable prompts/topics.
+      { name: "robots", content: meta.noindex ? "noindex, follow" : "index, follow, max-image-preview:large, max-snippet:-1" },
     ],
     links: meta.noindex ? [] : [{ rel: "canonical", href: canonical }],
   };
