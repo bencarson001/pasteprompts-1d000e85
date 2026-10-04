@@ -83,22 +83,18 @@ const STATIC_META: Record<string, Omit<PageMeta, "canonicalPath">> = {
   "/prompts/dalle-prompts": {
     title: "DALL-E 3 Prompts",
     description: "DALL-E 3 image prompts on Paste Prompts. See the current listings, how to adapt them in ChatGPT, and related Midjourney and image collections.",
-    noindex: true,
   },
   "/prompts/sora-prompts": {
     title: "Sora AI Video Prompts",
     description: "Sora text-to-video prompts on Paste Prompts. See the current listings, what a video prompt should describe, and related image prompt collections.",
-    noindex: true,
   },
   "/prompts/flux-prompts": {
     title: "FLUX.1 AI Prompts",
-    description: "FLUX.1 image prompts on Paste Prompts. No FLUX prompts are listed yet; see related Midjourney and DALL-E image prompt collections.",
-    noindex: true,
+    description: "FLUX.1 image prompts for product heroes, portraits, food, interiors, fashion, mockups and travel scenes. 49p templates with bracketed fields to fill in.",
   },
   "/prompts/coding-prompts": {
     title: "AI Coding Prompts",
     description: "AI coding prompts on Paste Prompts for code review, SQL queries and pair programming with ChatGPT or Claude. See the current listings and related collections.",
-    noindex: true,
   },
   "/prompts/copywriting-prompts": {
     title: "AI Copywriting Prompts",
