@@ -46,6 +46,10 @@ const landingSlugs = [
   "free-ai-prompts",
   "copywriting-prompts",
   "business-prompts",
+  "coding-prompts",
+  "dalle-prompts",
+  "sora-prompts",
+  "flux-prompts",
 ];
 
 const staticEntries: Entry[] = [
