@@ -1782,6 +1782,10 @@ export type Database = {
         }
         Returns: number
       }
+      profile_text_is_reserved: {
+        Args: { _strict: boolean; _txt: string }
+        Returns: boolean
+      }
       prompt_uploads_this_month: { Args: { _user_id: string }; Returns: number }
       prune_platform_prompts: {
         Args: { _remove_count: number }
