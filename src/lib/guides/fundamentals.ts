@@ -273,7 +273,7 @@ Draft the email update using the variables above.`,
     slug: "how-to-remove-a-prompt-from-chatgpt",
     title: "How to Remove or Delete a Prompt in ChatGPT (2026 Guide)",
     description:
-      "You can't delete one message, but you can edit it, delete the chat or clear all history. Quick steps for web and app, plus how to stop chats being used for training.",
+      "Remove a ChatGPT prompt by deleting the chat, clearing your full history or deleting a custom GPT, step by step. Plus how to stop your chats being used for training.",
     category: "Fundamentals",
     readMinutes: 10,
     updated: "2026-06-19",
