@@ -58,27 +58,13 @@ export function checkReservedName(
   const alphanumeric = clean.replace(/[^a-z0-9]/g, "");
   const unleetAlphanumeric = unleet.replace(/[^a-z0-9]/g, "");
 
-  // Only block when the reserved word stands alone as a token — not when it
-  // merely appears inside a longer legitimate name ("Padmini", "admin.jones").
-  const tokens = unleet.split(/[^a-z0-9]+/).filter(Boolean);
-  const RESERVED = new Set([
-    "admin", "admins", "administrator", "administrators",
-    "mod", "mods", "moderator", "moderators",
-  ]);
-
-  const isAdminVariation =
-    tokens.some((t) => t === "admin" || t === "admins" || t.startsWith("administrator")) ||
-    unleetAlphanumeric === "admin" ||
-    unleetAlphanumeric === "administrator";
-
-  const isModVariation =
-    tokens.some((t) => RESERVED.has(t) && t.startsWith("mod")) ||
-    unleetAlphanumeric === "mod" ||
-    unleetAlphanumeric === "mods" ||
-    unleetAlphanumeric === "moderator" ||
-    // Staff-style compounds such as "sitemod" / "modteam" remain reserved.
-    /^(team|site|lead|head|official|staff|community|discord|global|chat|forum)mods?$/.test(unleetAlphanumeric) ||
-    /^mods?(team|site|lead|head|official|staff|community|discord|global|chat|forum)$/.test(unleetAlphanumeric);
+  // Strict: block the reserved words anywhere in a name/handle, including
+  // inside longer words ("benadmin", "sitemods") and leetspeak ("4dm1n").
+  // Mirrors the server-side profile trigger, which is the real enforcement.
+  void alphanumeric;
+  const lettersOnly = unleetAlphanumeric.replace(/[^a-z]/g, "");
+  const isAdminVariation = /admi*n/.test(lettersOnly);
+  const isModVariation = /mod/.test(lettersOnly);
 
   if (isAdminVariation || isModVariation) {
     return {
