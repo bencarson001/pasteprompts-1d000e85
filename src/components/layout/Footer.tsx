@@ -1,4 +1,5 @@
 import logoAsset from "@/assets/pasteprompts-logo.png.asset.json";
+import logoLight from "@/assets/pasteprompts-logo-light.png";
 import { Link } from "@/lib/router-compat";
 import { Facebook, Instagram, Twitter } from "lucide-react";
 
@@ -87,7 +88,8 @@ export function Footer() {
       <div className="container-wide grid grid-cols-2 gap-8 py-14 md:grid-cols-3 lg:grid-cols-7">
         <div className="col-span-2">
           <Link to="/" className="flex items-center gap-2 font-display text-lg font-bold">
-            <img src={logoAsset.url} alt="PastePrompts.co.uk" width={Math.round(36*957/160)} height={36} className="h-auto w-auto" style={{ height: 36 }} />
+            <img src={logoAsset.url} alt="PastePrompts.co.uk" width={Math.round(36*957/160)} height={36} className="hidden h-auto w-auto dark:block" style={{ height: 36 }} />
+          <img src={logoLight} alt="PastePrompts.co.uk" width={Math.round(36*957/160)} height={36} className="block h-auto w-auto dark:hidden" style={{ height: 36 }} />
           </Link>
           <p className="mt-4 max-w-xs text-sm text-muted-foreground">
             The marketplace for AI prompts that actually work. Discover, buy and instantly use high-performing prompts

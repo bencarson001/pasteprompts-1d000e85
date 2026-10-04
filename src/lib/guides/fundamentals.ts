@@ -271,9 +271,9 @@ Draft the email update using the variables above.`,
   },
   {
     slug: "how-to-remove-a-prompt-from-chatgpt",
-    title: "How to Delete a Prompt in ChatGPT (Step-by-Step, 2026)",
+    title: "How to Remove or Delete a Prompt in ChatGPT (2026 Guide)",
     description:
-      "Delete a single prompt, a whole chat or your full ChatGPT history in minutes. Plus how to stop OpenAI training on your chats and remove custom GPT prompts.",
+      "Remove a ChatGPT prompt by deleting the chat, clearing your full history or deleting a custom GPT, step by step. Plus how to stop your chats being used for training.",
     category: "Fundamentals",
     readMinutes: 10,
     updated: "2026-06-19",

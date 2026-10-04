@@ -1,4 +1,5 @@
 import logoAsset from "@/assets/pasteprompts-logo.png.asset.json";
+import logoLight from "@/assets/pasteprompts-logo-light.png";
 import { useState } from "react";
 import { Link, useNavigate } from "@/lib/router-compat";
 import { Search, Menu, MessageSquare } from "lucide-react";
@@ -37,7 +38,8 @@ export function MobileHeader({ onOpenMenu, unreadCount = 0 }: MobileHeaderProps)
               <Menu className="h-5 w-5" />
             </Button>
             <Link to="/" className="flex items-center gap-1.5 font-display text-base font-bold">
-              <img src={logoAsset.url} alt="PastePrompts.co.uk" width={Math.round(26*957/160)} height={26} className="h-auto w-auto" style={{ height: 26 }} />
+              <img src={logoAsset.url} alt="PastePrompts.co.uk" width={Math.round(26*957/160)} height={26} className="hidden h-auto w-auto dark:block" style={{ height: 26 }} />
+          <img src={logoLight} alt="PastePrompts.co.uk" width={Math.round(26*957/160)} height={26} className="block h-auto w-auto dark:hidden" style={{ height: 26 }} />
             </Link>
           </div>
 
