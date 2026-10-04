@@ -22,7 +22,8 @@ export function headFromMeta(meta: PageMeta): RouteHead {
       { property: "og:url", content: canonical },
       { name: "twitter:title", content: title },
       { name: "twitter:description", content: meta.description },
-      ...(meta.noindex ? [{ name: "robots", content: "noindex,nofollow" }] : []),
+      // Exactly one robots tag per page (root no longer sets one).
+      { name: "robots", content: meta.noindex ? "noindex,nofollow" : "index, follow, max-image-preview:large, max-snippet:-1" },
     ],
     links: meta.noindex ? [] : [{ rel: "canonical", href: canonical }],
   };
