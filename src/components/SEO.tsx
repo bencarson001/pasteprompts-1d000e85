@@ -60,25 +60,11 @@ export function SEO({ title, description, canonical, type = "website", image, no
   // React 19 hoists <title>/<meta>/<link> to <head> natively, so these render
   // as plain tags (no Helmet — its imperative head mutation conflicts with
   // React-managed head nodes and crashes unmounts during client navigation).
+  // Title/description/canonical/robots/og come from each route's head() so
+  // crawlers see exactly one of each; this component only adds JSON-LD.
+  void fullTitle; void safeDescription; void canonicalUrl; void noindex; void keywords; void type; void image;
   return (
     <>
-      <title>{fullTitle}</title>
-      <meta name="description" content={safeDescription} />
-      <meta name="keywords" content={keywords ?? DEFAULT_KEYWORDS} />
-      {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
-      {noindex && <meta name="robots" content="noindex,nofollow" />}
-
-      <meta property="og:title" content={fullTitle} />
-      <meta property="og:description" content={safeDescription} />
-      <meta property="og:type" content={type} />
-      {canonicalUrl && <meta property="og:url" content={canonicalUrl} />}
-      {image && <meta property="og:image" content={image} />}
-
-      <meta name="twitter:card" content={image ? "summary_large_image" : "summary"} />
-      <meta name="twitter:title" content={fullTitle} />
-      <meta name="twitter:description" content={safeDescription} />
-      {image && <meta name="twitter:image" content={image} />}
-
       {schemas.map((s, i) => (
         <script key={i} type="application/ld+json">
           {JSON.stringify(s)}

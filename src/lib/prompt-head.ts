@@ -6,8 +6,8 @@ export interface PromptHeadData { title: string; description: string }
 
 export async function loadPromptHead(slug: string): Promise<PromptHeadData | null> {
   try {
-    const url = import.meta.env.VITE_SUPABASE_URL;
-    const key = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+    const url = import.meta.env['VITE_SUPABASE_URL'];
+    const key = import.meta.env['VITE_SUPABASE_PUBLISHABLE_KEY'];
     if (!url || !key) return null;
     const res = await fetch(
       `${url}/rest/v1/prompts?select=title,description&status=eq.approved&slug=eq.${encodeURIComponent(slug)}&limit=1`,
