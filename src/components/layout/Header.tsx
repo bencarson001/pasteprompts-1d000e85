@@ -1,4 +1,5 @@
 import logoAsset from "@/assets/pasteprompts-logo.png.asset.json";
+import logoLight from "@/assets/pasteprompts-logo-light.png";
 import { Link, useNavigate, useLocation } from "@/lib/router-compat";
 import { Menu, Library, LayoutDashboard, LogOut, Shield, Store, Bookmark, Settings, MessageSquare, User, Zap } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
@@ -41,7 +42,8 @@ export function Header() {
       {/* Top Row: Brand & Authenticated Controls */}
       <div className="container-wide flex h-12 sm:h-13 items-center justify-between gap-4">
         <Link to="/" className="flex shrink-0 items-center gap-1.5 font-display text-base font-bold tracking-wider">
-          <img src={logoAsset.url} alt="PastePrompts.co.uk" width={Math.round(28*957/160)} height={28} className="h-auto w-auto" style={{ height: 28 }} />
+          <img src={logoAsset.url} alt="PastePrompts.co.uk" width={Math.round(28*957/160)} height={28} className="hidden h-auto w-auto dark:block" style={{ height: 28 }} />
+          <img src={logoLight} alt="PastePrompts.co.uk" width={Math.round(28*957/160)} height={28} className="block h-auto w-auto dark:hidden" style={{ height: 28 }} />
         </Link>
 
         <div className="flex items-center gap-2">
