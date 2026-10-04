@@ -174,21 +174,20 @@ export const LANDING_PAGES: Record<string, LandingContent> = {
     title: "DALL-E 3 Prompts",
     heading: "DALL-E 3 image prompts",
     metaDescription: "DALL-E 3 image prompts on Paste Prompts. See the current listings, how to adapt them in ChatGPT, and related Midjourney and image collections.",
-    lead: "Image prompts written for DALL-E 3, which you can run inside ChatGPT. This collection is new and still small.",
+    lead: "Image prompts written for DALL-E 3, which you can run inside ChatGPT. Ten new templates cover product, portrait, food, architecture, poster and character scenes.",
     filters: { model: "dalle", sort: "trending", limit: 48 },
-    noindex: true,
     sections: [
       {
         h2: "What these prompts are for",
         paragraphs: [
           "DALL-E 3 follows plain-language descriptions closely, so a useful prompt states the subject, setting, style, composition and any text that should appear in the image. The listings here are templates: replace the bracketed subject and keep the style instructions.",
-          "Until more DALL-E prompts are published, the Midjourney collection and the AI Tools category contain other image prompts you can adapt.",
+          "For more image ideas, the FLUX.1 and Midjourney collections cover similar subjects with wording suited to those models.",
         ],
       },
     ],
     faqs: [
       { q: "Where can I run a DALL-E 3 prompt?", a: "DALL-E 3 image generation is available inside ChatGPT. Availability depends on your OpenAI plan." },
-      { q: "Why are there only a few prompts here?", a: "This page lists only approved prompts tagged for DALL-E. It will grow as creators publish more." },
+      { q: "Which prompts appear here?", a: "Only approved prompts written for DALL-E. Each listing shows the full description and price before you buy." },
     ],
     related: ["midjourney-prompts", "sora-prompts", "free-ai-prompts"],
   },
@@ -197,9 +196,8 @@ export const LANDING_PAGES: Record<string, LandingContent> = {
     title: "Sora AI Video Prompts",
     heading: "Sora video prompts",
     metaDescription: "Sora text-to-video prompts on Paste Prompts. See the current listings, what a video prompt should describe, and related image prompt collections.",
-    lead: "Video prompts written for OpenAI's Sora. This collection is new and still small.",
+    lead: "Video prompts written for OpenAI's Sora. Templates cover product commercials, short social clips, demonstrations, brand stories, explainers and storyboard direction.",
     filters: { model: "sora", sort: "trending", limit: 48 },
-    noindex: true,
     sections: [
       {
         h2: "What a video prompt needs",
@@ -249,9 +247,8 @@ export const LANDING_PAGES: Record<string, LandingContent> = {
     title: "AI Coding Prompts",
     heading: "AI coding prompts for developers",
     metaDescription: "AI coding prompts on Paste Prompts for code review, SQL queries and pair programming with ChatGPT or Claude. See the current listings and related collections.",
-    lead: "Prompts for everyday development work: reviewing and refactoring code, writing SQL and working through problems with an AI assistant. This collection is new and still small.",
+    lead: "Prompts for everyday development work: reviewing and refactoring code, writing SQL and working through problems with an AI assistant. Templates also cover API integrations, test suites, authentication reviews, documentation and architecture decisions.",
     filters: { q: "code", sort: "trending", limit: 48 },
-    noindex: true,
     sections: [
       {
         h2: "What these prompts are for",
@@ -263,7 +260,7 @@ export const LANDING_PAGES: Record<string, LandingContent> = {
     ],
     faqs: [
       { q: "Which assistants can I use these with?", a: "They are written as plain text, so you can paste them into ChatGPT, Claude or another chat-based assistant." },
-      { q: "Why are there only a few prompts here?", a: "There is no dedicated coding category yet, so this page shows approved prompts that mention code. It will grow as creators publish more." },
+      { q: "Which prompts appear here?", a: "Approved prompts that mention code, drawn from the Coding & Troubleshooting and Software Development categories." },
     ],
     related: ["chatgpt-prompts", "claude-prompts", "business-prompts"],
   },
@@ -329,15 +326,15 @@ export const LANDING_PAGES: Record<string, LandingContent> = {
     slug: "flux-prompts",
     title: "FLUX.1 AI Prompts",
     heading: "FLUX.1 image prompts",
-    metaDescription: "FLUX.1 image prompts on Paste Prompts. No FLUX prompts are listed yet; see related Midjourney and DALL-E image prompt collections.",
-    lead: "Image prompts for FLUX.1 models. No FLUX prompts have been published yet, so related image collections are linked below.",
+    metaDescription: "FLUX.1 image prompts for product heroes, portraits, food, interiors, fashion, mockups and travel scenes. 49p templates with bracketed fields to fill in.",
+    lead: "Photorealistic image prompts written for FLUX.1: product and e-commerce shots, editorial portraits, food, interiors, fashion, book mockups, travel and concept art.",
     filters: { q: "flux", sort: "trending", limit: 48 },
-    noindex: true,
     sections: [
       {
-        h2: "Looking for image prompts?",
+        h2: "What these prompts are for",
         paragraphs: [
-          "FLUX.1 prompts will appear here once creators publish them. Until then, the Midjourney and DALL-E collections contain image prompts you can adapt: describe the subject, lighting, camera and style in clear phrases.",
+          "FLUX.1 responds well to concrete visual direction. Each template asks for the subject, setting, lighting, viewpoint and aspect ratio, and tells the model what not to invent, such as extra text, logos or landmarks.",
+          "Fill in every bracketed field with specific details. Vague inputs give generic images, so describe materials, light direction and framing rather than adjectives like \"stunning\".",
         ],
       },
     ],

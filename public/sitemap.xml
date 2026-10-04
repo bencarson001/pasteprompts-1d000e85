@@ -46,6 +46,26 @@
     <priority>0.9</priority>
   </url>
   <url>
+    <loc>https://pasteprompts.co.uk/prompts/coding-prompts</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://pasteprompts.co.uk/prompts/dalle-prompts</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://pasteprompts.co.uk/prompts/sora-prompts</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://pasteprompts.co.uk/prompts/flux-prompts</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
     <loc>https://pasteprompts.co.uk/prompts/copywriting-prompts</loc>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
