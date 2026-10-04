@@ -1,5 +1,6 @@
+import logoAsset from "@/assets/pasteprompts-logo.png.asset.json";
 import { Link } from "@/lib/router-compat";
-import { Sparkles, Facebook, Instagram, Twitter } from "lucide-react";
+import { Facebook, Instagram, Twitter } from "lucide-react";
 
 const socials = [
   { label: "Follow on X", href: "https://x.com/pasteprompts", icon: Twitter },
@@ -86,10 +87,7 @@ export function Footer() {
       <div className="container-wide grid grid-cols-2 gap-8 py-14 md:grid-cols-3 lg:grid-cols-7">
         <div className="col-span-2">
           <Link to="/" className="flex items-center gap-2 font-display text-lg font-bold">
-            <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-primary shadow-glow">
-              <Sparkles className="h-5 w-5 text-primary-foreground" />
-            </span>
-            Paste<span className="text-gradient">Prompts</span>
+            <img src={logoAsset.url} alt="PastePrompts.co.uk" width={Math.round(36*957/160)} height={36} className="h-auto w-auto" style={{ height: 36 }} />
           </Link>
           <p className="mt-4 max-w-xs text-sm text-muted-foreground">
             The marketplace for AI prompts that actually work. Discover, buy and instantly use high-performing prompts
