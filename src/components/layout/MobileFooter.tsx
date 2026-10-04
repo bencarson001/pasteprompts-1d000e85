@@ -1,3 +1,4 @@
+import logoAsset from "@/assets/pasteprompts-logo.png.asset.json";
 import { useState } from "react";
 import { Link } from "@/lib/router-compat";
 import { Sparkles, ChevronDown, Facebook, Instagram, Twitter } from "lucide-react";
@@ -84,10 +85,7 @@ export function MobileFooter() {
         {/* Brand identity */}
         <div className="space-y-3">
           <Link to="/" className="flex items-center gap-2 font-display text-base font-bold">
-            <span className="grid h-8 w-8 place-items-center rounded-xl bg-gradient-primary shadow-glow">
-              <Sparkles className="h-4 w-4 text-primary-foreground" />
-            </span>
-            Paste<span className="text-gradient">Prompts</span>
+            <img src={logoAsset.url} alt="PastePrompts.co.uk" width={Math.round(30*957/160)} height={30} className="h-auto w-auto" style={{ height: 30 }} />
           </Link>
           <p className="text-xs text-muted-foreground leading-relaxed">
             The marketplace for AI prompts that actually work. Discover, buy and instantly copy high-performing prompts.

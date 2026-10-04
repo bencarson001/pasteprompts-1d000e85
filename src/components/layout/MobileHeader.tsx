@@ -1,3 +1,4 @@
+import logoAsset from "@/assets/pasteprompts-logo.png.asset.json";
 import { useState } from "react";
 import { Link, useNavigate } from "@/lib/router-compat";
 import { Sparkles, Search, Menu, MessageSquare } from "lucide-react";
@@ -36,10 +37,7 @@ export function MobileHeader({ onOpenMenu, unreadCount = 0 }: MobileHeaderProps)
               <Menu className="h-5 w-5" />
             </Button>
             <Link to="/" className="flex items-center gap-1.5 font-display text-base font-bold">
-              <span className="grid h-7 w-7 place-items-center rounded-lg bg-gradient-primary shadow-glow">
-                <Sparkles className="h-3.5 w-3.5 text-primary-foreground" />
-              </span>
-              <span>Paste<span className="text-gradient">Prompts</span></span>
+              <img src={logoAsset.url} alt="PastePrompts.co.uk" width={Math.round(26*957/160)} height={26} className="h-auto w-auto" style={{ height: 26 }} />
             </Link>
           </div>
 

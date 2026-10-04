@@ -1,3 +1,4 @@
+import logoAsset from "@/assets/pasteprompts-logo.png.asset.json";
 import { Link, useNavigate, useLocation } from "@/lib/router-compat";
 import { Menu, Library, LayoutDashboard, LogOut, Sparkles, Shield, Store, Bookmark, Settings, MessageSquare, User, Zap } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
@@ -40,13 +41,7 @@ export function Header() {
       {/* Top Row: Brand & Authenticated Controls */}
       <div className="container-wide flex h-12 sm:h-13 items-center justify-between gap-4">
         <Link to="/" className="flex shrink-0 items-center gap-1.5 font-display text-base font-bold tracking-wider">
-          <span className="flex h-6 w-6 items-center justify-center rounded bg-primary/20 text-primary border border-primary/40 shadow-glow">
-            <Sparkles className="h-3.5 w-3.5" />
-          </span>
-          <span className="font-bold text-white uppercase text-sm sm:text-base tracking-widest">
-            PASTEPROMPTS<span className="text-primary font-medium">.CO.UK</span>
-          </span>
-          <span className="sr-only">PASTEPROMPTS.CO.UK</span>
+          <img src={logoAsset.url} alt="PastePrompts.co.uk" width={Math.round(28*957/160)} height={28} className="h-auto w-auto" style={{ height: 28 }} />
         </Link>
 
         <div className="flex items-center gap-2">
