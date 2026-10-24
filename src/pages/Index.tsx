@@ -184,7 +184,7 @@ export default function Index() {
                 <Link to="/browse">Browse prompts <ArrowRight className="ml-1 h-4 w-4" /></Link>
               </Button>
               <Button asChild size="lg" variant="outline" className="h-12 rounded-xl px-6 font-semibold">
-                {user ? <Link to="/sell">Start selling</Link> : <Link to="/auth">Create free account</Link>}
+                {user ? <Link to="/sell">Start selling</Link> : <Link to="/auth?mode=signup">Create free account</Link>}
               </Button>
             </div>
 
@@ -281,7 +281,7 @@ export default function Index() {
               <h2 className="font-display text-2xl font-bold text-foreground sm:text-3xl">Join free and keep the prompts you love</h2>
               <p className="mt-2 text-muted-foreground">No subscription needed to get started.</p>
               <Button asChild size="lg" className="mt-5 h-12 rounded-xl px-6 font-semibold">
-                <Link to="/auth">Create free account</Link>
+                <Link to="/auth?mode=signup">Create free account</Link>
               </Button>
             </div>
             <ul className="space-y-3 text-sm">
