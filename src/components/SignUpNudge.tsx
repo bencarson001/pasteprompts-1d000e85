@@ -120,7 +120,7 @@ export function SignUpNudge() {
 
           <div className="flex items-center gap-2">
             <Button asChild className="flex-1">
-              <Link to="/auth" onClick={dismiss}>
+              <Link to="/auth?mode=signup" onClick={dismiss}>
                 Create free account
               </Link>
             </Button>
