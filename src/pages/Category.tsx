@@ -118,14 +118,44 @@ export default function Category() {
             </p>
           )}
           <div className="mt-4 flex flex-wrap items-center gap-2 text-xs">
-            <span className="text-muted-foreground">Quick filter by model:</span>
+            <span className="text-muted-foreground font-medium">Model:</span>
             <Link to="/prompts/chatgpt-prompts" className="rounded-lg border border-white/10 bg-card/60 px-2.5 py-1 text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground">ChatGPT</Link>
             <Link to="/prompts/claude-prompts" className="rounded-lg border border-white/10 bg-card/60 px-2.5 py-1 text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground">Claude</Link>
             <Link to="/prompts/gemini-prompts" className="rounded-lg border border-white/10 bg-card/60 px-2.5 py-1 text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground">Gemini</Link>
             <Link to="/prompts/midjourney-prompts" className="rounded-lg border border-white/10 bg-card/60 px-2.5 py-1 text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground">Midjourney</Link>
-            <Link to="/prompts/coding-prompts" className="rounded-lg border border-white/10 bg-card/60 px-2.5 py-1 text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground">Coding</Link>
-            <Link to="/prompts/copywriting-prompts" className="rounded-lg border border-white/10 bg-card/60 px-2.5 py-1 text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground">Copywriting</Link>
-            <Link to="/prompts/business-prompts" className="rounded-lg border border-white/10 bg-card/60 px-2.5 py-1 text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground">Business</Link>
+            <span className="mx-1 text-border">|</span>
+            <span className="text-muted-foreground font-medium">Focus:</span>
+            <Link to={`/browse/free/all/${slug}`} className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-emerald-400 font-semibold transition-colors hover:bg-emerald-500/20">⚡ Free {name} Prompts</Link>
+            <Link to="/browse/all/all/copywriting" className="rounded-lg border border-white/10 bg-card/60 px-2.5 py-1 text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground">Product & Email Copy</Link>
+            <Link to="/browse/all/all/business" className="rounded-lg border border-white/10 bg-card/60 px-2.5 py-1 text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground">Small Business Ops</Link>
+          </div>
+
+          {/* Why buy vs DIY objection killer */}
+          <div className="mt-6 rounded-2xl border border-primary/20 bg-gradient-to-r from-primary/10 via-card/70 to-accent/5 p-4 sm:p-5 backdrop-blur-md">
+            <div className="flex items-start gap-3">
+              <div className="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-primary/20 text-primary">
+                <Sparkles className="h-4 w-4" />
+              </div>
+              <div className="flex-1">
+                <h2 className="text-sm font-bold text-foreground">
+                  Why use engineered prompts instead of writing your own?
+                </h2>
+                <p className="mt-1 text-xs text-muted-foreground leading-relaxed">
+                  Zero-shot prompts produce generic, robotic filler. Every prompt on Paste Prompts comes pre-configured with role constraints, tone controls, and bracketed <code className="rounded bg-muted px-1 py-0.5 font-mono text-[11px] text-foreground">[INPUTS]</code> — tested to deliver measurable results in seconds.
+                </p>
+                <div className="mt-3 flex flex-wrap items-center gap-3 text-xs">
+                  <span className="inline-flex items-center gap-1 text-emerald-400 font-medium">
+                    ✓ 100% Free or 49p (no recurring lock-in)
+                  </span>
+                  <span className="inline-flex items-center gap-1 text-muted-foreground">
+                    ✓ One-click copy & paste
+                  </span>
+                  <Link to={`/browse/free/all/${slug}`} className="font-semibold text-primary hover:underline">
+                    Try a free prompt right now →
+                  </Link>
+                </div>
+              </div>
+            </div>
           </div>
         </header>
 

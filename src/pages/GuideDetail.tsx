@@ -336,14 +336,28 @@ export default function GuideDetail() {
           </div>
 
           {/* Inline CTA */}
-          <div className="mt-8 flex flex-col items-start gap-3 rounded-2xl bg-gradient-glow p-6 sm:flex-row sm:items-center sm:justify-between">
+          <div className="mt-8 flex flex-col items-start gap-4 rounded-2xl border border-primary/25 bg-gradient-to-r from-primary/10 via-card to-accent/5 p-6 sm:flex-row sm:items-center sm:justify-between shadow-lg backdrop-blur-md">
             <div>
-              <p className="font-display text-lg font-semibold">Put these techniques to work</p>
-              <p className="text-sm text-muted-foreground">Browse hundreds of tested prompts — many free.</p>
+              <p className="font-display text-lg font-bold text-foreground">Put these prompt techniques to work</p>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Skip the trial-and-error. Browse tested, copy-ready prompts with fill-in-the-blank placeholders.
+              </p>
+              <div className="mt-2 flex items-center gap-3 text-xs text-emerald-400 font-medium">
+                <span>✓ Hundreds of free prompts</span>
+                <span>•</span>
+                <span>✓ Paid prompts just 49p</span>
+                <span>•</span>
+                <span>✓ No subscription needed</span>
+              </div>
             </div>
-            <Button asChild className="bg-gradient-primary btn-glow">
-              <Link to="/browse">Browse prompts <ArrowRight className="ml-1 h-4 w-4" /></Link>
-            </Button>
+            <div className="flex flex-wrap sm:flex-nowrap gap-2.5 w-full sm:w-auto">
+              <Button asChild variant="outline" className="w-full sm:w-auto border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10">
+                <Link to="/browse/free">Free prompts</Link>
+              </Button>
+              <Button asChild className="w-full sm:w-auto bg-gradient-primary btn-glow font-semibold">
+                <Link to="/browse">Browse all <ArrowRight className="ml-1 h-4 w-4" /></Link>
+              </Button>
+            </div>
           </div>
         </motion.article>
 

@@ -33,6 +33,7 @@ import { SignUpGate } from "@/components/SignUpGate";
 import { hasReachedFreeLimit, incrementFreeCopies } from "@/lib/copyGate";
 import { PromptVariableCustomizer } from "@/components/PromptVariableCustomizer";
 import { ModelCompatibilityBadge } from "@/components/ModelCompatibilityBadge";
+import { PromptProofCard } from "@/components/PromptProofCard";
 import { cn } from "@/lib/utils";
 
 const SITE_URL = "https://pasteprompts.co.uk";
@@ -334,7 +335,7 @@ export default function PromptDetail() {
               <TabsList className="bg-card/60">
                 <TabsTrigger value="prompt">Prompt</TabsTrigger>
                 {tryEnabled && <TabsTrigger value="try">Try it live</TabsTrigger>}
-                <TabsTrigger value="example">Example output</TabsTrigger>
+                <TabsTrigger value="example">Verified Output & Proof</TabsTrigger>
                 <TabsTrigger value="reviews">Reviews ({reviews?.length ?? 0})</TabsTrigger>
               </TabsList>
 
@@ -411,9 +412,20 @@ INPUTS (fill these in):
               )}
 
               <TabsContent value="example" className="mt-4">
-                <div className="rounded-2xl glass p-5">
-                  <pre className="whitespace-pre-wrap break-words text-sm text-foreground/90">{prompt.example_output}</pre>
-                </div>
+                <PromptProofCard
+                  model={prompt.model}
+                  exampleOutput={prompt.example_output || "No verified sample output available for this prompt yet."}
+                  categoryName={category?.name}
+                  promptTitle={prompt.title}
+                  hasAccess={hasAccess}
+                  onUnlockClick={() => {
+                    if (!user) {
+                      navigate(`/auth?redirect=${encodeURIComponent(currentPath)}`);
+                    } else {
+                      handleGet();
+                    }
+                  }}
+                />
               </TabsContent>
 
               <TabsContent value="reviews" className="mt-4">
