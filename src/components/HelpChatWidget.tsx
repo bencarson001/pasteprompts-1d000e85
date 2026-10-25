@@ -104,12 +104,26 @@ export function HelpChatWidget() {
         }),
       });
 
-      if (!res.ok) {
-        const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.error || `Server responded with status ${res.status}`);
+      const contentType = res.headers.get("content-type") || "";
+      let data: { reply?: string; error?: string } | null = null;
+      if (contentType.includes("application/json")) {
+        try {
+          data = (await res.json()) as { reply?: string; error?: string };
+        } catch {
+          // ignore parsing error
+        }
       }
 
-      const data = await res.json();
+      if (!res.ok || !data) {
+        throw new Error(
+          data?.error || "Gemini assistant is temporarily unavailable. Please try again shortly.",
+        );
+      }
+
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
       const modelMessage: Message = {
         id: "msg-" + Date.now() + "-ai",
         role: "model",
@@ -119,15 +133,30 @@ export function HelpChatWidget() {
 
       setMessages((prev) => [...prev, modelMessage]);
     } catch (err: unknown) {
-      const errorMessage =
-        err instanceof Error
-          ? err.message
-          : "An unexpected error occurred while communicating with Gemini.";
+      let friendlyError =
+        "The AI assistant is temporarily experiencing high demand. Please try again in a few moments.";
+
+      if (err instanceof Error) {
+        const raw = err.message || "";
+        if (raw.includes("Unexpected token") || raw.includes("not valid JSON")) {
+          friendlyError =
+            "The AI assistant is temporarily busy or reconnecting. Please wait a moment and try asking again.";
+        } else if (
+          raw.includes("503") ||
+          raw.toLowerCase().includes("demand") ||
+          raw.toLowerCase().includes("unavailable")
+        ) {
+          friendlyError =
+            "Gemini is currently experiencing high demand. Please try again in a few moments.";
+        } else {
+          friendlyError = raw;
+        }
+      }
 
       const failureMessage: Message = {
         id: "msg-" + Date.now() + "-err",
         role: "model",
-        text: `⚠️ **Error:** ${errorMessage}\n\nPlease try again shortly.`,
+        text: `⚠️ ${friendlyError}\n\nPlease try again shortly.`,
         timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
       };
       setMessages((prev) => [...prev, failureMessage]);

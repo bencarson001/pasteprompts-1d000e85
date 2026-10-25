@@ -33,6 +33,7 @@ import { SignUpGate } from "@/components/SignUpGate";
 import { hasReachedFreeLimit, incrementFreeCopies } from "@/lib/copyGate";
 import { PromptVariableCustomizer } from "@/components/PromptVariableCustomizer";
 import { ModelCompatibilityBadge } from "@/components/ModelCompatibilityBadge";
+import { cn } from "@/lib/utils";
 
 const SITE_URL = "https://pasteprompts.co.uk";
 
@@ -376,13 +377,29 @@ INPUTS (fill these in):
 - Primary goal: [WHAT SUCCESS LOOKS LIKE]
 ...`}
                     </pre>
-                    <div className="absolute inset-0 grid place-items-center bg-background/40 backdrop-blur-[2px]">
-                      <div className="text-center">
-                        <Lock className="mx-auto mb-2 h-7 w-7 text-primary-glow" />
-                        <p className="font-medium">Unlock the full prompt</p>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (!user) {
+                          navigate(`/auth?redirect=${encodeURIComponent(currentPath)}`);
+                        } else {
+                          handleGet();
+                        }
+                      }}
+                      className="group absolute inset-0 grid place-items-center bg-background/50 backdrop-blur-[2px] transition-all hover:bg-background/60 focus:outline-none focus:ring-2 focus:ring-primary cursor-pointer"
+                      aria-label="Unlock the full prompt"
+                    >
+                      <div className="rounded-2xl border border-primary/25 bg-card/90 px-6 py-4 shadow-xl backdrop-blur-md transition-all duration-200 group-hover:scale-105 group-hover:border-primary/50 group-hover:shadow-primary/20 text-center">
+                        <Lock className="mx-auto mb-2 h-7 w-7 text-primary-glow transition-transform duration-200 group-hover:scale-110" />
+                        <p className="font-medium text-foreground">Unlock the full prompt</p>
                         <p className="text-sm text-muted-foreground">Get it to reveal the complete, copy-ready text.</p>
+                        <div className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                          {user
+                            ? (prompt.is_free ? "Get for free" : `Unlock now for ${formatPrice(prompt.price_pence)}`)
+                            : "Log in or sign up to unlock →"}
+                        </div>
                       </div>
-                    </div>
+                    </button>
                   </div>
                 )}
               </TabsContent>
@@ -453,17 +470,44 @@ INPUTS (fill these in):
                     t: "Run it, then refine",
                     d: "Send it and review the output. Ask a short follow-up (“make it punchier”, “add a table”) to tailor the result to you.",
                   },
-                ].map((s, i) => (
-                  <li key={s.t} className="flex gap-4 rounded-2xl glass p-5">
-                    <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-gradient-primary text-sm font-bold text-primary-foreground">
-                      {i + 1}
-                    </span>
-                    <div>
-                      <h3 className="font-semibold">{s.t}</h3>
-                      <p className="mt-1 text-sm text-muted-foreground">{s.d}</p>
-                    </div>
-                  </li>
-                ))}
+                ].map((s, i) => {
+                  const isUnlockStep = i === 0 && !hasAccess;
+                  return (
+                    <li
+                      key={s.t}
+                      onClick={
+                        isUnlockStep
+                          ? () => {
+                              if (!user) {
+                                navigate(`/auth?redirect=${encodeURIComponent(currentPath)}`);
+                              } else {
+                                handleGet();
+                              }
+                            }
+                          : undefined
+                      }
+                      className={cn(
+                        "flex gap-4 rounded-2xl glass p-5 transition-colors",
+                        isUnlockStep && "cursor-pointer hover:border-primary/50 hover:bg-card/70 group",
+                      )}
+                    >
+                      <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-gradient-primary text-sm font-bold text-primary-foreground">
+                        {i + 1}
+                      </span>
+                      <div className="flex-1">
+                        <h3 className="font-semibold flex items-center justify-between">
+                          <span>{s.t}</span>
+                          {isUnlockStep && (
+                            <span className="text-xs font-medium text-primary group-hover:underline">
+                              {!user ? "Sign in to unlock →" : "Unlock →"}
+                            </span>
+                          )}
+                        </h3>
+                        <p className="mt-1 text-sm text-muted-foreground">{s.d}</p>
+                      </div>
+                    </li>
+                  );
+                })}
               </ol>
               <div className="mt-6 rounded-2xl border border-white/5 bg-card/40 p-5">
                 <h3 className="flex items-center gap-2 font-semibold">

@@ -103,13 +103,19 @@ export async function handleGeminiChat(request: Request): Promise<Response> {
 
   for (const modelToUse of modelsToTry) {
     try {
-      const response = await ai.models.generateContent({
+      const generatePromise = ai.models.generateContent({
         model: modelToUse,
         contents,
         config: {
           systemInstruction: SYSTEM_INSTRUCTION,
         },
       });
+
+      const timeoutPromise = new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error("Model request timed out")), 7000),
+      );
+
+      const response = await Promise.race([generatePromise, timeoutPromise]);
 
       const reply = response.text || "I'm sorry, I couldn't generate a response. Please try again.";
       return new Response(
@@ -129,17 +135,19 @@ export async function handleGeminiChat(request: Request): Promise<Response> {
     }
   }
 
-  const errorMessage =
-    lastError instanceof Error
-      ? lastError.message
-      : "Gemini assistant is temporarily unavailable. Please try again in a moment.";
+  let friendlyError = "Gemini assistant is temporarily experiencing high traffic. Please try your question again in a moment.";
+  if (lastError instanceof Error) {
+    if (lastError.message.includes("503") || lastError.message.toLowerCase().includes("demand") || lastError.message.toLowerCase().includes("unavailable")) {
+      friendlyError = "The AI model is currently experiencing high demand. Please try asking again in a few moments.";
+    }
+  }
 
   return new Response(
     JSON.stringify({
-      error: errorMessage,
+      error: friendlyError,
     }),
     {
-      status: 503,
+      status: 200,
       headers: { "Content-Type": "application/json" },
     },
   );
