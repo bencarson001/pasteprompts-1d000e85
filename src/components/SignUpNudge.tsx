@@ -85,7 +85,7 @@ export function SignUpNudge() {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 40 }}
           transition={{ type: "spring", stiffness: 260, damping: 24 }}
-          className="fixed inset-x-3 bottom-16 z-50 mx-auto max-w-2xl rounded-2xl border border-primary/25 bg-card/95 p-4 shadow-2xl backdrop-blur-xl sm:inset-x-auto sm:right-5 sm:bottom-5 sm:w-[26rem] sm:p-5"
+          className="fixed inset-x-3 bottom-20 z-40 mx-auto max-w-2xl rounded-2xl border border-primary/25 bg-card/95 p-4 shadow-2xl backdrop-blur-xl sm:inset-x-auto sm:left-5 sm:right-auto sm:bottom-5 sm:w-[26rem] sm:p-5"
           role="dialog"
           aria-label="Create a free account"
         >

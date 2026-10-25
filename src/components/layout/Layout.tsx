@@ -9,6 +9,7 @@ import { AnnouncementBanner } from "@/components/AnnouncementBanner";
 import { SignUpNudge } from "@/components/SignUpNudge";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { CookieConsent } from "@/components/CookieConsent";
+import { HelpChatWidget } from "@/components/HelpChatWidget";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/contexts/AuthContext";
 import { fetchUnreadCount } from "@/lib/messages";
@@ -73,6 +74,7 @@ export function Layout({ children }: { children: ReactNode }) {
       <SignUpNudge />
       <ScrollToTop />
       <CookieConsent />
+      <HelpChatWidget />
     </div>
   );
 }
