@@ -216,9 +216,6 @@ async function authorize(req: Request, supabase: ReturnType<typeof createClient>
   if (providedSecret) {
     const envSecret = Deno.env.get("MAINTENANCE_SECRET");
     if (envSecret && providedSecret === envSecret) return true;
-    const { data: ok, error } = await supabase.rpc("verify_fb_cron_token", { _token: providedSecret });
-    if (error) console.error("verify_fb_cron_token failed", error.message);
-    if (ok === true) return true;
   }
   const token = req.headers.get("Authorization")?.replace("Bearer ", "");
   if (!token) return false;
