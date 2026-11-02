@@ -208,8 +208,9 @@ async function authorize(req: Request, supabase: ReturnType<typeof createClient>
   if (providedSecret) {
     const envSecret = Deno.env.get("MAINTENANCE_SECRET");
     if (envSecret && providedSecret === envSecret) return true;
-    const { data } = await supabase.schema("vault").from("decrypted_secrets").select("decrypted_secret").eq("name", "fb_autopilot_cron_token").maybeSingle();
-    if (data?.decrypted_secret && providedSecret === data.decrypted_secret) return true;
+    const { data: ok, error } = await supabase.rpc("verify_fb_cron_token", { _token: providedSecret });
+    if (error) console.error("verify_fb_cron_token failed", error.message);
+    if (ok === true) return true;
   }
   const token = req.headers.get("Authorization")?.replace("Bearer ", "");
   if (!token) return false;
