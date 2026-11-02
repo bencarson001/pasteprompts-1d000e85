@@ -204,6 +204,14 @@ function json(obj: unknown, status = 200) {
 }
 
 async function authorize(req: Request, supabase: ReturnType<typeof createClient>): Promise<boolean> {
+  // pg_cron inserts a fresh one-time token (service-role-only table) and sends it here.
+  const nonce = req.headers.get("x-cron-nonce");
+  if (nonce && /^[0-9a-f-]{36}$/i.test(nonce)) {
+    const cutoff = new Date(Date.now() - 10 * 60 * 1000).toISOString();
+    const { data: used } = await supabase.from("fb_cron_nonces").delete()
+      .eq("token", nonce).gte("created_at", cutoff).select("token");
+    if (used && used.length > 0) return true;
+  }
   const providedSecret = req.headers.get("x-maintenance-secret");
   if (providedSecret) {
     const envSecret = Deno.env.get("MAINTENANCE_SECRET");
