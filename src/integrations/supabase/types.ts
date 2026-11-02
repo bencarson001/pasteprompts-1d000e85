@@ -546,6 +546,21 @@ export type Database = {
         }
         Relationships: []
       }
+      fb_cron_nonces: {
+        Row: {
+          created_at: string
+          token: string
+        }
+        Insert: {
+          created_at?: string
+          token?: string
+        }
+        Update: {
+          created_at?: string
+          token?: string
+        }
+        Relationships: []
+      }
       fb_groups: {
         Row: {
           active: boolean
