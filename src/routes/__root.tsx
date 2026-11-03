@@ -120,18 +120,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           copyrightYear: 2026,
         }),
       },
-      // Google tag (gtag.js) — ported from index.html
-      { src: "https://www.googletagmanager.com/gtag/js?id=G-D0T32ZB520", async: true },
-      {
-        children:
-          "window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-D0T32ZB520');",
-      },
-      // Google AdSense — global verification, ported from index.html
-      {
-        src: "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3809061959162534",
-        async: true,
-        crossOrigin: "anonymous",
-      },
+      // Google Analytics and AdSense load only after consent (see src/lib/consent.ts).
     ],
   }),
   shellComponent: RootShell,
