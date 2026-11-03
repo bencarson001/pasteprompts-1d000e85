@@ -22,3 +22,5 @@
 
 ## 4. Search metadata
 - Keep crawler-visible initial HTML metadata in `seo-meta.ts` aligned with each page's React `<SEO>` values; the server applies it before returning the SPA shell so non-JavaScript crawlers do not see duplicate homepage metadata.
+- Guide content and metadata resolve through the shared guide query, which loads published database articles during SSR with public read-only credentials; this keeps stored articles crawler-visible without duplicating them as static content.
+- Generate guide sitemap URLs and modification dates from the static guide inventory plus published articles, rather than a partial hardcoded slug list, so new guides cannot be silently omitted.

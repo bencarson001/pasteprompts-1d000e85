@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { useParams, Link } from "@/lib/router-compat";
 import { motion } from "framer-motion";
 import { ArrowLeft, ArrowRight, Clock, CheckCircle2, Quote, AlertCircle, Sparkles, TrendingUp, Info } from "lucide-react";
@@ -9,18 +9,10 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { AdSlot } from "@/components/AdSlot";
 import { AD_SLOTS } from "@/lib/ads";
-import { getGuide, relatedGuides, type GuideBlock, type Guide } from "@/lib/guides";
-import { fetchArticle } from "@/lib/articles";
+import { relatedGuides, type GuideBlock } from "@/lib/guides";
+import { guideQueryOptions, resolveGuideSlug } from "@/lib/guide-query";
 
 const SITE_URL = "https://pasteprompts.co.uk";
-
-const GUIDE_SLUG_ALIASES: Record<string, string> = {
-  "chatgpt-vs-claude-vs-gemini-prompting": "chatgpt-vs-claude-vs-gemini",
-  "midjourney-v6-prompt-formula": "midjourney-v6-prompt-formula-guide",
-  "how-to-sell-ai-prompts-and-make-money": "make-money-selling-ai-prompts",
-  "how-to-sell-ai-prompts": "make-money-selling-ai-prompts",
-  "selling-ai-prompts": "make-money-selling-ai-prompts",
-};
 
 function Block({ block }: { block: GuideBlock }) {
   switch (block.type) {
@@ -153,6 +145,8 @@ function Block({ block }: { block: GuideBlock }) {
           </div>
         </div>
       );
+    case "references":
+      return <section className="mt-8"><h2 className="font-display text-xl font-bold">Official sources</h2><ul className="mt-3 space-y-2">{block.links.map((link) => <li key={link.href}><a href={link.href} className="text-primary underline" target="_blank" rel="noopener noreferrer">{link.title}</a></li>)}</ul></section>;
     default:
       return null;
   }
@@ -160,37 +154,10 @@ function Block({ block }: { block: GuideBlock }) {
 
 export default function GuideDetail() {
   const { slug: rawSlug = "" } = useParams();
-  const slug = GUIDE_SLUG_ALIASES[rawSlug.toLowerCase()] || rawSlug;
-  const staticGuide = getGuide(slug);
-  const [article, setArticle] = useState<Guide | null>(null);
-  const [loading, setLoading] = useState(!staticGuide);
-
-  // Articles published from the Admin Hub or via the MCP `publish_article`
-  // tool live in the database and render with the same layout.
-  useEffect(() => {
-    if (staticGuide) return;
-    let active = true;
-    setLoading(true);
-    fetchArticle(slug).then((row) => {
-      if (!active) return;
-      setArticle(row);
-      setLoading(false);
-    });
-    return () => {
-      active = false;
-    };
-  }, [slug, staticGuide]);
-
-  const guide = staticGuide ?? article;
+  const slug = resolveGuideSlug(rawSlug);
+  const { data: guide } = useSuspenseQuery(guideQueryOptions(rawSlug));
 
   if (!guide) {
-    if (loading) {
-      return (
-        <Layout>
-          <div className="container-tight py-24 text-center text-muted-foreground">Loading article…</div>
-        </Layout>
-      );
-    }
     return (
       <Layout>
         <div className="container-tight py-24 text-center">
@@ -205,8 +172,7 @@ export default function GuideDetail() {
 
   const related = relatedGuides(slug);
   const url = `${SITE_URL}/guides/${guide.slug}`;
-  // Only monetise genuinely long-form articles. Short guides stay ad-free so an
-  // ad never sits on a thin page (AdSense "low value content" compliance).
+  // Conservative placement heuristic, not a claim of AdSense policy approval.
   const adEligible = guide.blocks.length >= 8 && guide.readMinutes >= 5;
   // Insert one in-article ad roughly a third of the way down the body.
   const adIndex = adEligible
@@ -226,7 +192,6 @@ export default function GuideDetail() {
             "@type": "Article",
             headline: guide.title,
             description: guide.description,
-            datePublished: guide.updated,
             dateModified: guide.updated,
             author: {
               "@type": "Organization",
@@ -323,10 +288,9 @@ export default function GuideDetail() {
               <div className="flex-1 min-w-0">
                 <div className="flex flex-wrap items-center gap-2">
                   <h3 className="font-display text-base font-bold text-foreground">Paste Prompts Editorial Team</h3>
-                  <Badge variant="outline" className="text-[11px] border-primary/30 text-primary-glow">Verified Prompt Engineers</Badge>
                 </div>
                 <p className="mt-1 text-xs sm:text-sm text-muted-foreground leading-relaxed">
-                  Written, benchmarked, and reviewed by senior AI prompt specialists across ChatGPT (GPT-4o), Claude 3.7 Sonnet, and Google Gemini. Adheres to our strict{" "}
+                  Practical guidance and illustrative templates. Model features change; check official documentation and review outputs before using them. Read our{" "}
                   <Link to="/editorial-standards" className="text-primary-glow underline hover:text-primary">
                     Editorial Standards & Fact-Checking Guidelines
                   </Link>.
@@ -340,10 +304,10 @@ export default function GuideDetail() {
             <div>
               <p className="font-display text-lg font-bold text-foreground">Put these prompt techniques to work</p>
               <p className="mt-1 text-sm text-muted-foreground">
-                Skip the trial-and-error. Browse tested, copy-ready prompts with fill-in-the-blank placeholders.
+                Browse prompts for a relevant task, fill in your own details and check the result before using it.
               </p>
               <div className="mt-2 flex items-center gap-3 text-xs text-emerald-400 font-medium">
-                <span>✓ Hundreds of free prompts</span>
+                <span>Free listings</span>
                 <span>•</span>
                 <span>✓ Paid prompts just 49p</span>
                 <span>•</span>

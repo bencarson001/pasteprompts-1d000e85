@@ -2,342 +2,616 @@ import type { Guide } from "./types";
 
 export const MODELS_AND_REASONING_GUIDES: Guide[] = [
   {
-    slug: "chatgpt-vs-claude-vs-gemini",
-    title: "ChatGPT vs Claude vs Gemini: Which AI Should You Use?",
-    description:
-      "A plain-English comparison of ChatGPT, Claude and Gemini for writing, coding, research and long documents, with prompting tips for each and ready-made prompts to try.",
-    category: "AI Models",
-    readMinutes: 8,
-    updated: "2026-11-03",
-    emoji: "⚡",
-    intro:
-      "Short answer: there is no single winner. All three are capable general assistants, and for most everyday tasks the best one is the one you already pay for. The differences show up at the edges — how they handle long documents, how their writing sounds by default, and which tools they connect to. This guide summarises those differences in plain English, explains how to adjust your prompts for each, and links to prompts on Paste Prompts you can try with them. Models change often, so test your own task on each before committing.",
-    blocks: [
+    "slug": "chatgpt-vs-claude-vs-gemini",
+    "title": "ChatGPT vs Claude vs Gemini: Which AI Should You Use?",
+    "description": "Compare ChatGPT, Claude and Gemini for writing, coding and document work. Try a practical comparison method and relevant prompts without unsupported rankings.",
+    "intro": "There is no single winner for every task. Compare the assistants using work you actually do and choose the result that needs less correction, within the tools and budget you have.",
+    "blocks": [
       {
-        type: "callout",
-        variant: "info",
-        title: "Quick summary",
-        text: "ChatGPT: the broadest all-rounder, with strong tool features (images, voice, file analysis) built in. Claude: popular for long-form writing and coding, and for following detailed instructions. Gemini: tightly linked to Google apps and well suited to very long documents. Try the same prompt on two of them and keep whichever result needs less editing.",
-      },
-      { type: "h2", text: "How the three compare at a glance" },
-      {
-        type: "table",
-        headers: ["Assistant", "Often chosen for", "Worth knowing"],
-        rows: [
-          ["ChatGPT (OpenAI)", "Everyday questions, brainstorming, image creation, voice chat, analysing uploaded files.", "Default marketing copy can sound generic; give it a tone, audience and banned phrases."],
-          ["Claude (Anthropic)", "Long-form writing, editing, coding help, working through long instructions.", "Responds well to clearly separated sections (for example, labelled context and task)."],
-          ["Gemini (Google)", "Very long documents, Google Docs/Gmail/Drive workflows, research with Google Search.", "Ask it to keep answers concise and to cite where in your document each point came from."],
-        ],
-      },
-      { type: "h2", text: "Which one for which job" },
-      { type: "h3", text: "Writing and copywriting" },
-      {
-        type: "p",
-        text: "All three can draft emails, product descriptions and landing pages. The quality depends far more on the brief than the model: who the reader is, what they should do next, the tone, and what to avoid. Many writers find Claude's default voice less salesy, while ChatGPT is quick for lots of variations. Whichever you use, ask for two or three versions and edit the best one.",
-      },
-      { type: "h3", text: "Coding" },
-      {
-        type: "p",
-        text: "Claude and ChatGPT are both widely used for code review, debugging and refactoring. Paste the exact error, the relevant code and what you expected to happen. Always run and test the result — any model can suggest functions or packages that don't exist.",
-      },
-      { type: "h3", text: "Research and long documents" },
-      {
-        type: "p",
-        text: "Gemini and Claude both accept long inputs, which helps when summarising reports, contracts or meeting transcripts. Ask for quotes or section references alongside each point so you can check them quickly, and treat any claim you can't trace back to the source as unverified.",
-      },
-      { type: "h2", text: "Prompting tips for each" },
-      {
-        type: "table",
-        headers: ["Assistant", "Tip", "Example"],
-        rows: [
-          ["ChatGPT", "State the format you want up front.", "\"Reply as a table with columns: idea, audience, first step.\""],
-          ["Claude", "Separate your material from your instructions.", "\"<notes>...</notes> Using only the notes above, write...\""],
-          ["Gemini", "Ground answers in what you provided.", "\"Use only the attached document and cite the section for each point.\""],
-        ],
+        "type": "callout",
+        "title": "Short answer",
+        "text": "There is no single winner for every task. Compare the assistants using work you actually do and choose the result that needs less correction, within the tools and budget you have.",
+        "variant": "info"
       },
       {
-        type: "callout",
-        variant: "tip",
-        title: "A fair way to choose",
-        text: "Pick one real task you do every week, run the same prompt on each assistant, and compare how much editing each answer needs. That tells you more than any general ranking.",
+        "type": "h2",
+        "text": "Compare the service you can actually use"
       },
       {
-        type: "related_prompts",
-        prompts: [
-          { title: "Production Code Review & Refactor", href: "/prompt/production-code-review-refactor-pp1", description: "A structured code review prompt written for Claude." },
-          { title: "Debug This Error Systematically", href: "/prompt/debug-this-error-systematically-pp2", description: "Work through a bug step by step instead of guessing." },
-          { title: "Product Description That Sells", href: "/prompt/product-description-that-sells-pp13", description: "A ChatGPT brief for clear, specific product copy." },
-          { title: "Sales Email Sequence", href: "/prompt/sales-email-sequence-pp12", description: "Plan and draft a short sales email series." },
-          { title: "Document Summarisation Engine", href: "/prompt/document-summarisation-engine-ai14", description: "A Gemini prompt for summarising long documents." },
-          { title: "AI Research Assistant", href: "/prompt/ai-research-assistant-ai15", description: "Organise research questions and sources with Claude." },
-        ],
+        "type": "p",
+        "text": "ChatGPT, Claude and Gemini are general-purpose assistants with overlapping writing, coding and analysis abilities. Features, models, usage limits and connected tools change by plan and over time. Check the service’s current interface before assuming a capability is available on your account."
       },
       {
-        type: "p",
-        text: "Browse more by topic: Coding Prompts, Copywriting Prompts and Business Prompts are all linked from the Browse page.",
+        "type": "h2",
+        "text": "For writing, compare editing effort"
       },
+      {
+        "type": "p",
+        "text": "Give each assistant the same audience, facts, tone and length. Compare specificity, readability and invented claims rather than how polished the opening sounds. A favourite default writing style is a personal preference, not evidence that one service is universally better."
+      },
+      {
+        "type": "h2",
+        "text": "For coding, compare working changes"
+      },
+      {
+        "type": "p",
+        "text": "Provide the relevant code, exact error, framework version and behaviour to preserve. Ask for a small change and tests. Run the proposed code in your own environment: an answer that compiles but weakens permissions or changes the public API is not a successful fix."
+      },
+      {
+        "type": "h2",
+        "text": "For documents, check traceability"
+      },
+      {
+        "type": "p",
+        "text": "Ask for references to pages or sections and verify those references. A large input limit does not guarantee that every passage will be used correctly. For long files, compare a summary with the original and inspect omitted qualifications."
+      },
+      {
+        "type": "h2",
+        "text": "Run a fair small comparison"
+      },
+      {
+        "type": "p",
+        "text": "Choose one writing task, one technical task and one document task you need. Use the same inputs and judge against criteria set beforehand. Record the model, date, limitations and edits required. Do not turn a few personal trials into a claimed general benchmark."
+      },
+      {
+        "type": "h2",
+        "text": "A starting prompt to adapt"
+      },
+      {
+        "type": "p",
+        "text": "This is an illustrative template, not a recorded model result. Replace the bracketed fields with your own material, then check the answer before using it."
+      },
+      {
+        "type": "code",
+        "label": "Example prompt — fill in the brackets",
+        "text": "Using only [SOURCE MATERIAL], complete [TASK] for [AUDIENCE].\nReturn [FORMAT] and keep within [LENGTH].\nLabel missing evidence or assumptions.\nInclude source sections for factual points.\nFinish with a short list of items that need human verification."
+      },
+      {
+        "type": "h2",
+        "text": "Check the result before using it"
+      },
+      {
+        "type": "list",
+        "items": [
+          "Use the same source and brief for each assistant.",
+          "Check factual accuracy before judging style.",
+          "Run code and inspect permission changes.",
+          "Choose on actual editing effort, available tools and cost."
+        ]
+      },
+      {
+        "type": "h2",
+        "text": "Common questions"
+      },
+      {
+        "type": "h3",
+        "text": "Should I pay for all three?"
+      },
+      {
+        "type": "p",
+        "text": "Not necessarily. Start with a service you already have and compare alternatives only where a recurring task remains difficult."
+      },
+      {
+        "type": "h3",
+        "text": "Will the same prompt work in all three?"
+      },
+      {
+        "type": "p",
+        "text": "The task and facts often transfer, but tool availability, input limits and formatting behaviour can differ. Adapt and retest."
+      },
+      {
+        "type": "related_prompts",
+        "prompts": [
+          {
+            "title": "Production Code Review & Refactor",
+            "href": "/prompt/production-code-review-refactor-pp1",
+            "description": "Organise a code review and refactor proposal; run your own tests before merging changes."
+          },
+          {
+            "title": "Debug This Error Systematically",
+            "href": "/prompt/debug-this-error-systematically-pp2",
+            "description": "Separate a debugging hypothesis from evidence and choose a way to confirm it."
+          },
+          {
+            "title": "Product Description That Sells",
+            "href": "/prompt/product-description-that-sells-pp13",
+            "description": "Turn supplied product facts into a structured description; review the draft for unsupported claims."
+          },
+          {
+            "title": "Sales Email Sequence",
+            "href": "/prompt/sales-email-sequence-pp12",
+            "description": "Draft a sales email series around the offer and evidence you supply."
+          },
+          {
+            "title": "Document Summarisation Engine",
+            "href": "/prompt/document-summarisation-engine-ai14",
+            "description": "Summarise supplied documents and check the summary against the original."
+          },
+          {
+            "title": "AI Research Assistant",
+            "href": "/prompt/ai-research-assistant-ai15",
+            "description": "Organise research questions and source material; verify citations yourself."
+          }
+        ]
+      }
     ],
-    takeaways: [
-      "No single assistant is best at everything; test your own task on two of them.",
-      "ChatGPT is a strong all-rounder with built-in tools like images and voice.",
-      "Claude is often chosen for long-form writing, editing and coding help.",
-      "Gemini suits very long documents and Google app workflows.",
-      "A clear brief (reader, goal, tone, format) matters more than which model you pick.",
+    "takeaways": [
+      "Use the same source and brief for each assistant.",
+      "Check factual accuracy before judging style.",
+      "Run code and inspect permission changes.",
+      "Choose on actual editing effort, available tools and cost."
     ],
+    "updated": "2026-11-03",
+    "category": "AI Models",
+    "emoji": "⚡",
+    "readMinutes": 4
   },
   {
-    slug: "claude-3-7-sonnet-prompt-engineering",
-    title: "Claude 3.7 Sonnet & Hybrid Reasoning: The Complete Prompt Engineering Field Manual",
-    description:
-      "Master Anthropic's flagship hybrid reasoning model. Learn how to calibrate dynamic thinking budgets, use XML tag architecture, prompt for deep architectural coding, and eliminate over-thinking latency.",
-    category: "Claude & Reasoning",
-    readMinutes: 16,
-    updated: "2026-06-27",
-    emoji: "🧠",
-    intro:
-      "Anthropic's Claude 3.7 Sonnet introduces a breakthrough architecture in modern artificial intelligence: hybrid reasoning. Unlike previous models that were either fixed fast generators or rigid pure-reasoning engines, Claude 3.7 allows engineers to dynamically scale internal chain-of-thought tokens on a per-query basis. In this hands-on field manual, we share our production prompt patterns, thinking budget allocation strategies, and architectural prompt templates.",
-    blocks: [
+    "slug": "claude-3-7-sonnet-prompt-engineering",
+    "title": "Claude Prompting: Clear Briefs and Reasoning Tasks",
+    "description": "Write useful Claude prompts for editing, coding and analysis. Separate sources from instructions and check reasoning features in the model you actually use.",
+    "intro": "Give Claude a clear deliverable, relevant source material and constraints. This page keeps its older URL, but the advice is not a claim that Claude 3.7 is the current model or best choice.",
+    "blocks": [
       {
-        type: "stats_grid",
-        stats: [
-          { label: "Coding Benchmark (SWE-bench)", value: "70.3%", desc: "State of the art score with extended thinking enabled" },
-          { label: "Instruction Adherence", value: "98.7%", desc: "Observed when prompts use nested XML structured tags" },
-          { label: "Thinking Token Range", value: "0 - 128k", desc: "Configurable per-request reasoning budget envelope" },
-        ],
-      },
-      { type: "h2", text: "1. Understanding Hybrid Reasoning Architecture" },
-      {
-        type: "p",
-        text: "In standard LLM inference, the model generates output tokens sequentially without an internal intermediate scratchpad. While this works well for straightforward text generation, it frequently fails on non-trivial mathematical derivations, multi-file code refactors, and complex logic puzzles where the initial token prediction locks the model into an unrecoverable hallucination path.",
+        "type": "callout",
+        "title": "Short answer",
+        "text": "Give Claude a clear deliverable, relevant source material and constraints. This page keeps its older URL, but the advice is not a claim that Claude 3.7 is the current model or best choice.",
+        "variant": "info"
       },
       {
-        type: "p",
-        text: "With Claude 3.7 Sonnet's hybrid reasoning, the model enters an explicit thinking loop before emitting user-visible tokens. During this internal reasoning phase, it explores multiple hypotheses, tests edge cases against stated constraints, catches its own subtle logical errors, and synthesizes a pristine final solution.",
+        "type": "h2",
+        "text": "Begin with the task and source"
       },
       {
-        type: "callout",
-        variant: "info",
-        title: "Calibrating the Thinking Budget",
-        text: "For fast UI tasks or simple copy edits, set the thinking budget to 0 (Standard mode) for sub-second responses. For complex database migrations, architectural code audits, or cryptographic proofs, allocate between 4,000 and 16,000 thinking tokens.",
-      },
-      { type: "h2", text: "2. The XML Prompt Blueprint for Claude" },
-      {
-        type: "p",
-        text: "Anthropic models are pre-trained to recognize XML structural hierarchies as high-priority semantic boundaries. In our testing, structuring Claude prompts with semantic XML tags improves constraint adherence by over 30% compared to flat Markdown text.",
+        "type": "p",
+        "text": "Explain what must be produced and provide the code, document or draft it depends on. Label context, instructions and output requirements with headings. XML-style tags are an optional organising convention, not a special access-control mechanism or a measured improvement promised by this site."
       },
       {
-        type: "code",
-        label: "Claude 3.7 Production Prompt Envelope",
-        text: `<system_instructions>
-You are a Principal Software Architect specialising in high-throughput distributed systems.
-</system_instructions>
-
-<context>
-We are refactoring a Node.js / PostgreSQL queue processing worker that processes 10,000 webhook events per minute. Under peak load, worker nodes experience connection pool exhaustion.
-</context>
-
-<code_snippet language="typescript">
-{{EXISTING_WORKER_CODE}}
-</code_snippet>
-
-<constraints>
-1. Preserve strict idempotency across duplicate webhook event IDs.
-2. Implement an exponential backoff jitter algorithm with a max retry limit of 5.
-3. Use a connection pool checkout timeout of 2,000ms.
-4. Output fully typed TypeScript code without placeholder comments or omitted functions.
-</constraints>
-
-<instructions>
-First, in your internal thinking process, systematically analyze the three most likely failure vectors causing pool starvation in the provided snippet.
-Then, generate the complete, production-ready refactored implementation wrapped inside a \`\`\`typescript code block.
-</instructions>`,
-      },
-      { type: "h2", text: "3. Prompting for Nuanced Tone & Human Cadence" },
-      {
-        type: "p",
-        text: "Claude 3.7 is widely recognized as the most articulate model for natural long-form writing. To unlock its full literary potential without robotic stiffness, instruct it to vary sentence lengths rhythmically and avoid repetitive transitional openers:",
+        "type": "h2",
+        "text": "Use reasoning features only where available"
       },
       {
-        type: "quote",
-        text: "Instruct Claude to write like a seasoned essayist: use deliberate sentence length variation, employ concrete sensory imagery over abstract generalizations, and eliminate self-congratulatory corporate jargon.",
+        "type": "p",
+        "text": "Some Claude models and plans offer extended thinking or related controls. Their availability, limits and API settings vary. Check current Anthropic documentation for your selected model rather than copying a token budget from an old article. Extra processing can cost time and money and does not guarantee correctness."
       },
+      {
+        "type": "h2",
+        "text": "Ask for evidence you can check"
+      },
+      {
+        "type": "p",
+        "text": "For a code audit, request a ranked list of issues with the relevant lines, proposed minimal changes and tests. For document work, ask for quoted passages or section references. You do not need the model’s private internal reasoning; a concise explanation and verifiable evidence are more useful."
+      },
+      {
+        "type": "h2",
+        "text": "Calibrate writing with an example"
+      },
+      {
+        "type": "p",
+        "text": "Provide a short piece of your own approved writing and say what should carry over: direct openings, varied sentence lengths or restrained language. Ask it not to imitate a named person or invent expertise. Compare the draft with your reader’s needs, not a claim about a model’s natural voice."
+      },
+      {
+        "type": "h2",
+        "text": "A starting prompt to adapt"
+      },
+      {
+        "type": "p",
+        "text": "This is an illustrative template, not a recorded model result. Replace the bracketed fields with your own material, then check the answer before using it."
+      },
+      {
+        "type": "code",
+        "label": "Example prompt — fill in the brackets",
+        "text": "Review [CODE] in [FRAMEWORK AND VERSION].\nPreserve: [PUBLIC BEHAVIOUR AND SECURITY RULES].\nReturn: issues ranked by severity, evidence, smallest suggested fix, and tests to run.\nDistinguish confirmed defects from hypotheses.\nDo not add dependencies or change permissions without explaining why."
+      },
+      {
+        "type": "h2",
+        "text": "Check the result before using it"
+      },
+      {
+        "type": "list",
+        "items": [
+          "Check the actual model and feature availability.",
+          "Supply code versions and behaviour to preserve.",
+          "Require source evidence for important findings.",
+          "Run the tests yourself before accepting changes."
+        ]
+      },
+      {
+        "type": "h2",
+        "text": "Common questions"
+      },
+      {
+        "type": "h3",
+        "text": "Are XML tags mandatory?"
+      },
+      {
+        "type": "p",
+        "text": "No. Clear headings can work too. Choose a structure that makes the instructions and source easy to distinguish."
+      },
+      {
+        "type": "h3",
+        "text": "Does more thinking always improve a response?"
+      },
+      {
+        "type": "p",
+        "text": "No. Compare on the task you need; extra time can add complexity without fixing missing evidence."
+      },
+      {
+        "type": "related_prompts",
+        "prompts": [
+          {
+            "title": "Production Code Review & Refactor",
+            "href": "/prompt/production-code-review-refactor-pp1",
+            "description": "Organise a code review and refactor proposal; run your own tests before merging changes."
+          },
+          {
+            "title": "Debug This Error Systematically",
+            "href": "/prompt/debug-this-error-systematically-pp2",
+            "description": "Separate a debugging hypothesis from evidence and choose a way to confirm it."
+          }
+        ]
+      }
     ],
-    takeaways: [
-      "Leverage Claude 3.7 Sonnet's hybrid reasoning by calibrating thinking budgets dynamically per workload.",
-      "Always structure complex inputs using semantic XML tags (`<context>`, `<constraints>`, `<instructions>`).",
-      "Ask Claude to verify edge cases in its internal scratchpad before rendering final code.",
-      "For natural writing, provide negative vocabulary lists and encourage rhythmic sentence variance.",
+    "takeaways": [
+      "Check the actual model and feature availability.",
+      "Supply code versions and behaviour to preserve.",
+      "Require source evidence for important findings.",
+      "Run the tests yourself before accepting changes."
     ],
+    "updated": "2026-11-03",
+    "category": "Claude & Reasoning",
+    "emoji": "🧠",
+    "readMinutes": 3
   },
   {
-    slug: "advanced-prompt-engineering-techniques",
-    title: "Advanced Prompt Engineering: Few-Shot, Chain-of-Thought, ReAct & Tree of Thoughts",
-    description:
-      "The definitive technical guide to cutting-edge prompt reasoning frameworks. Master zero-shot CoT, self-consistency sampling, ReAct tool agents, and algorithmic Tree of Thoughts in production.",
-    category: "Advanced Techniques",
-    readMinutes: 17,
-    updated: "2026-06-24",
-    emoji: "🔬",
-    intro:
-      "When building mission-critical AI applications—such as autonomous code agents, financial fraud analyzers, or multi-step diagnostic engines—basic zero-shot prompting is fundamentally insufficient. Achieving enterprise-grade reliability requires structured cognitive prompting frameworks developed in computer science literature. In this technical deep-dive, we deconstruct the four most powerful advanced prompting frameworks with practical, copyable code implementations.",
-    blocks: [
+    "slug": "advanced-prompt-engineering-techniques",
+    "title": "Advanced Prompting: Examples, Task Chains and Tool Use",
+    "description": "Use examples, staged tasks and controlled tool calls for complex AI work. Learn when each technique helps and why verification still matters.",
+    "intro": "Use extra structure when a simple brief fails for a clear reason. Examples, staged tasks and tool-assisted work solve different problems; none turns a language model into a reliable decision-maker by itself.",
+    "blocks": [
       {
-        type: "stats_grid",
-        stats: [
-          { label: "GSM8K Math Benchmark", value: "+37.5%", desc: "Accuracy boost from Standard Prompting to Chain-of-Thought" },
-          { label: "Reasoning Error Reduction", value: "62%", desc: "Achieved via Self-Consistency majority voting across 5 paths" },
-          { label: "Complex Task Success", value: "88.4%", desc: "Using ReAct (Reason + Act) tool loops for external APIs" },
-        ],
-      },
-      { type: "h2", text: "1. Chain-of-Thought (CoT) Prompting" },
-      {
-        type: "p",
-        text: "Chain-of-Thought prompting prompts the foundation model to decompose complex problems into discrete, sequential reasoning steps before outputting a final answer. By forcing token emission during the calculation phase, the model allocates compute to intermediate representations, drastically reducing arithmetic and deductive errors.",
+        "type": "callout",
+        "title": "Short answer",
+        "text": "Use extra structure when a simple brief fails for a clear reason. Examples, staged tasks and tool-assisted work solve different problems; none turns a language model into a reliable decision-maker by itself.",
+        "variant": "info"
       },
       {
-        type: "code",
-        label: "Zero-Shot CoT vs. Few-Shot CoT",
-        text: `// Zero-Shot CoT Trigger:
-"Let's work through this step-by-step to ensure complete accuracy."
-
-// Few-Shot CoT Pattern:
-Q: A logistics warehouse has 480 pallets. On Monday, 1/4 are shipped out. On Tuesday, 60 new pallets arrive, and 1/3 of the remaining stock is shipped. How many pallets remain?
-A: Step 1: Initial pallets = 480.
-Step 2: Monday shipments = 480 * 1/4 = 120 pallets shipped. Remaining = 480 - 120 = 360 pallets.
-Step 3: Tuesday arrivals = 360 + 60 = 420 pallets.
-Step 4: Tuesday shipments = 420 * 1/3 = 140 pallets shipped. Remaining = 420 - 140 = 280 pallets.
-Final Answer: 280 pallets.`,
-      },
-      { type: "h2", text: "2. The ReAct (Reason + Act) Agent Framework" },
-      {
-        type: "p",
-        text: "The ReAct framework combines reasoning traces with action execution. Instead of hallucinating real-time data, the model alternates between a 'Thought' step (evaluating current state), an 'Action' step (calling an external API or database tool), and an 'Observation' step (interpreting tool output).",
+        "type": "h2",
+        "text": "Use examples for format and boundaries"
       },
       {
-        type: "table",
-        headers: ["Step", "Agent State", "Example Execution"],
-        rows: [
-          ["Thought 1", "Identifies what data is missing.", "I need to check the customer's current Stripe subscription status before issuing a refund."],
-          ["Action 1", "Invokes external tool.", "`stripe.subscriptions.get(customer_id='cus_99182')`"],
-          ["Observation 1", "Receives raw tool output.", "`status: 'active', plan: 'pro_annual', amount: 24000`"],
-          ["Thought 2", "Synthesizes next decision.", "The customer has an active Pro Annual subscription with 8 months remaining. Calculate prorated refund."],
-          ["Action 2", "Executes refund endpoint.", "`stripe.refunds.create(charge_id='ch_3812', amount=16000)`"],
-        ],
+        "type": "p",
+        "text": "Few-shot prompting supplies input-output examples. Include a normal case and an incomplete case so the model can see both the expected format and the rule for missing information. Use examples you have permission to share and do not label fictional demonstrations as real results."
       },
-      { type: "h2", text: "3. Tree of Thoughts (ToT) for Complex Strategic Planning" },
       {
-        type: "p",
-        text: "Tree of Thoughts generalizes chain-of-thought by allowing the model to explore multiple reasoning branches simultaneously, evaluate their viability, backtrack from dead ends, and perform lookahead search algorithms (like BFS or DFS) across cognitive decision trees.",
+        "type": "h2",
+        "text": "Break long tasks into reviewable stages"
       },
+      {
+        "type": "p",
+        "text": "For research and writing, gather sources first, check a proposed outline next and draft after that. For software work, identify the fault before generating a patch. A task chain provides places to correct errors; it does not guarantee that later stages will notice every earlier mistake."
+      },
+      {
+        "type": "h2",
+        "text": "Treat ReAct as a tool workflow, not a magic phrase"
+      },
+      {
+        "type": "p",
+        "text": "ReAct-style systems combine reasoning and actions using tool results. Writing “use ReAct” into an ordinary chat does not give it a search tool or database connection. Tool access must be implemented, scoped and authorised in the application. Approve consequential actions outside the model."
+      },
+      {
+        "type": "h2",
+        "text": "Explore alternatives without inventing certainty"
+      },
+      {
+        "type": "p",
+        "text": "Comparing several approaches can expose trade-offs. Ask for assumptions, costs and a way to test each option. Agreement between several model answers is not proof: they may repeat the same error. Verify calculations and decisions against independent evidence."
+      },
+      {
+        "type": "h2",
+        "text": "A starting prompt to adapt"
+      },
+      {
+        "type": "p",
+        "text": "This is an illustrative template, not a recorded model result. Replace the bracketed fields with your own material, then check the answer before using it."
+      },
+      {
+        "type": "code",
+        "label": "Example prompt — fill in the brackets",
+        "text": "For [PROBLEM], propose three approaches.\nFor each: required evidence, trade-offs, risks, and a small test.\nDo not execute actions.\nRecommend a next step only after stating what remains unknown.\nUse [SOURCE MATERIAL] and mark anything not supported by it."
+      },
+      {
+        "type": "h2",
+        "text": "Check the result before using it"
+      },
+      {
+        "type": "list",
+        "items": [
+          "Match the technique to a specific failure.",
+          "Keep a review point between dependent tasks.",
+          "Enforce tool permissions outside the model.",
+          "Treat agreement between outputs as a clue, not proof."
+        ]
+      },
+      {
+        "type": "h2",
+        "text": "Common questions"
+      },
+      {
+        "type": "h3",
+        "text": "Can a prompt create an autonomous agent?"
+      },
+      {
+        "type": "p",
+        "text": "No. An agent also needs software, tools, state and permissions. A chat instruction alone cannot supply those capabilities."
+      },
+      {
+        "type": "h3",
+        "text": "Is a complex framework always better?"
+      },
+      {
+        "type": "p",
+        "text": "No. Start with the smallest workflow that meets the task and add stages only when they help you detect or prevent a real failure."
+      },
+      {
+        "type": "related_prompts",
+        "prompts": [
+          {
+            "title": "AI Research Assistant",
+            "href": "/prompt/ai-research-assistant-ai15",
+            "description": "Organise research questions and source material; verify citations yourself."
+          },
+          {
+            "title": "Debug This Error Systematically",
+            "href": "/prompt/debug-this-error-systematically-pp2",
+            "description": "Separate a debugging hypothesis from evidence and choose a way to confirm it."
+          }
+        ]
+      }
     ],
-    takeaways: [
-      "Chain-of-Thought prompting significantly boosts accuracy on multi-step analytical and quantitative tasks.",
-      "Deploy the ReAct paradigm when your LLM needs to interact deterministically with external APIs and databases.",
-      "Leverage Self-Consistency sampling (running 3-5 parallel generations and majority-voting the result) to eliminate random flukes.",
-      "Tree of Thoughts is the gold standard for strategic planning, multi-vector problem solving, and complex software refactoring.",
+    "takeaways": [
+      "Match the technique to a specific failure.",
+      "Keep a review point between dependent tasks.",
+      "Enforce tool permissions outside the model.",
+      "Treat agreement between outputs as a clue, not proof."
     ],
+    "updated": "2026-11-03",
+    "category": "Advanced Techniques",
+    "emoji": "🔬",
+    "readMinutes": 3
   },
   {
-    slug: "chain-of-thought-and-few-shot-prompting",
-    title: "Chain-of-Thought & Few-Shot Prompting: Engineering Deterministic Reasoning",
-    description:
-      "Learn how to craft high-impact few-shot exemplars and trigger explicit reasoning paths to maximize accuracy, prevent hallucinations, and lock in exact formatting.",
-    category: "Advanced Techniques",
-    readMinutes: 14,
-    updated: "2026-06-23",
-    emoji: "🔗",
-    intro:
-      "When prompt engineers encounter model inconsistency, their first instinct is often to write longer paragraphs of instructions. In reality, modern LLMs learn far more effectively from concrete input-output demonstration pairs (few-shot exemplars) and explicit intermediate reasoning paths. In this deep-dive guide, we explore the science of exemplar selection, token distribution, and step-by-step reasoning triggers.",
-    blocks: [
+    "slug": "chain-of-thought-and-few-shot-prompting",
+    "title": "Few-Shot Prompting and Checkable AI Explanations",
+    "description": "Show AI examples of the answer you need and ask for concise, checkable explanations. Includes missing-data examples and advice on reviewing reasoning tasks.",
+    "intro": "Examples help communicate a pattern, while a short explanation can make an answer easier to review. Neither guarantees accuracy, and you do not need to request hidden internal reasoning.",
+    "blocks": [
       {
-        type: "callout",
-        variant: "tip",
-        title: "The Information Density of Examples",
-        text: "In our benchmark experiments, supplying 2 high-quality input/output exemplars improved format compliance by 91%, outperforming a 300-word block of descriptive rules alone.",
-      },
-      { type: "h2", text: "1. Exemplar Selection Strategy for Few-Shot Prompting" },
-      {
-        type: "p",
-        text: "Not all examples are created equal. A weak exemplar demonstrates only the happy path. A robust exemplar suite covers edge cases, unusual formatting, and explicit negative handling.",
+        "type": "callout",
+        "title": "Short answer",
+        "text": "Examples help communicate a pattern, while a short explanation can make an answer easier to review. Neither guarantees accuracy, and you do not need to request hidden internal reasoning.",
+        "variant": "info"
       },
       {
-        type: "table",
-        headers: ["Exemplar Slot", "Purpose", "What to Demonstrate"],
-        rows: [
-          ["Exemplar 1 (Standard)", "Establishes baseline format & tone.", "Standard input with ideal clean output structure."],
-          ["Exemplar 2 (Edge Case)", "Demonstrates boundary behavior.", "Input with missing fields, null values, or unusual characters."],
-          ["Exemplar 3 (Negative / Rejection)", "Demonstrates refusal criteria.", "Input that violates constraints, showing how the model should cleanly reject or ask for clarification."],
-        ],
+        "type": "h2",
+        "text": "Show the pattern with a small example"
       },
-      { type: "h2", text: "2. Combining Few-Shot with Explicit Chain-of-Thought" },
       {
-        type: "p",
-        text: "When you embed step-by-step reasoning inside your few-shot exemplars, the model naturally mimics the internal reasoning format before writing the final output. This is the single most effective technique for complex math, data extraction, and logic analysis.",
+        "type": "p",
+        "text": "Use an input and an approved output that demonstrate the required fields and tone. Avoid examples that introduce rules you never intended. If you need factual extraction, show how a missing value should be reported rather than invented."
       },
+      {
+        "type": "h2",
+        "text": "Cover an edge case"
+      },
+      {
+        "type": "p",
+        "text": "A normal example alone can encourage guessing when the next input is incomplete. Add a second example with missing or conflicting information. For a date extractor, “next Friday” without a reference date should stay ambiguous rather than becoming a made-up calendar date."
+      },
+      {
+        "type": "h2",
+        "text": "Ask for a concise explanation you can verify"
+      },
+      {
+        "type": "p",
+        "text": "For maths, ask for the calculation and units. For analysis, ask for the supporting source and assumptions. A plausible explanation can accompany a wrong answer, so independently check the steps that matter. Do not treat a request to “think step by step” as a factual guarantee."
+      },
+      {
+        "type": "h2",
+        "text": "Test beyond the examples"
+      },
+      {
+        "type": "p",
+        "text": "Try new inputs instead of only the demonstrations embedded in your prompt. Keep separate examples for evaluation and note which failures remain. When formatting must be strict, validate the returned fields in code rather than relying solely on the prompt."
+      },
+      {
+        "type": "h2",
+        "text": "A starting prompt to adapt"
+      },
+      {
+        "type": "p",
+        "text": "This is an illustrative template, not a recorded model result. Replace the bracketed fields with your own material, then check the answer before using it."
+      },
+      {
+        "type": "code",
+        "label": "Example prompt — fill in the brackets",
+        "text": "Extract task, owner and deadline from each note.\nExample input: “Maya will send the quote by 12 May.”\nExample output: task=send quote; owner=Maya; deadline=12 May (year unspecified).\nExample input: “Someone should update the website soon.”\nExample output: task=update website; owner=not specified; deadline=not specified.\nNow process: [NOTES]. Do not fill missing fields."
+      },
+      {
+        "type": "h2",
+        "text": "Check the result before using it"
+      },
+      {
+        "type": "list",
+        "items": [
+          "Use examples that match the real task.",
+          "Include a missing-data case.",
+          "Check calculations and cited passages independently.",
+          "Test on inputs not included in the demonstrations."
+        ]
+      },
+      {
+        "type": "h2",
+        "text": "Common questions"
+      },
+      {
+        "type": "h3",
+        "text": "How many examples do I need?"
+      },
+      {
+        "type": "p",
+        "text": "Start with one or two that show distinct cases. Add another only when it teaches a boundary the others miss."
+      },
+      {
+        "type": "h3",
+        "text": "Does an explanation prove the answer?"
+      },
+      {
+        "type": "p",
+        "text": "No. Check the calculation or source directly; a model can explain an incorrect conclusion convincingly."
+      },
+      {
+        "type": "related_prompts",
+        "prompts": [
+          {
+            "title": "Few-Shot Example Generator",
+            "href": "/prompt/few-shot-example-generator-ai11",
+            "description": "Draft examples for a prompting pattern, then check that each example follows your rules."
+          },
+          {
+            "title": "Meeting Notes to Action Items",
+            "href": "/prompt/meeting-notes-to-action-items-pro24",
+            "description": "Extract actions from notes, with owners and deadlines checked against the meeting record."
+          }
+        ]
+      }
     ],
-    takeaways: [
-      "Demonstrate target formatting with 2-3 structured few-shot exemplars rather than relying solely on descriptive rules.",
-      "Include edge cases and refusal examples in your exemplar suite to handle ambiguous inputs gracefully.",
-      "Embed step-by-step reasoning inside your exemplars to encourage the model to show its work before rendering final answers.",
+    "takeaways": [
+      "Use examples that match the real task.",
+      "Include a missing-data case.",
+      "Check calculations and cited passages independently.",
+      "Test on inputs not included in the demonstrations."
     ],
+    "updated": "2026-11-03",
+    "category": "Advanced Techniques",
+    "emoji": "🔗",
+    "readMinutes": 3
   },
   {
-    slug: "meta-prompting-and-ai-prompt-generators",
-    title: "Meta-Prompting Masterclass: How to Build Prompts That Generate Production-Grade Prompts",
-    description:
-      "The engineering guide to recursive meta-prompting. Build self-improving prompt generators, automated prompt optimizers, and domain-specific prompt compilers.",
-    category: "Meta Prompting",
-    readMinutes: 15,
-    updated: "2026-06-25",
-    emoji: "🪄",
-    intro:
-      "Why spend hours manually drafting prompt variations when large language models are themselves the world's most capable prompt engineers? Meta-prompting is the practice of using a master prompt to architect, optimize, and test specialized child prompts. In this masterclass, we provide our production meta-prompt compiler that turns vague user ideas into comprehensive, 5-part engineered prompt templates in seconds.",
-    blocks: [
+    "slug": "meta-prompting-and-ai-prompt-generators",
+    "title": "How to Use AI to Improve Your Prompts",
+    "description": "Turn a vague task into a clearer AI prompt with defined inputs, constraints and a review checklist. Learn the limits of automatic prompt generators.",
+    "intro": "An AI assistant can help draft a prompt, but it cannot know your workflow or prove that its own template works. Give it the task, then test and edit the result yourself.",
+    "blocks": [
       {
-        type: "stats_grid",
-        stats: [
-          { label: "Prompt Development Speed", value: "10x Faster", desc: "Generating comprehensive templates in under 15 seconds" },
-          { label: "Constraint Completeness", value: "98.4%", desc: "Meta-prompts automatically include negative rules and edge cases" },
-          { label: "Variable Coverage", value: "100%", desc: "Automated extraction of dynamic {{VARIABLES}} for marketplace use" },
-        ],
-      },
-      { type: "h2", text: "1. The Meta-Prompt Architecture Blueprint" },
-      {
-        type: "p",
-        text: "A production meta-prompt acts as a specialized prompt compiler. It takes a raw objective from a human user, analyzes the hidden assumptions, generates the optimal persona, defines dynamic template variables, establishes negative guardrails, and outputs the final production-ready prompt wrapped in clean code blocks.",
+        "type": "callout",
+        "title": "Short answer",
+        "text": "An AI assistant can help draft a prompt, but it cannot know your workflow or prove that its own template works. Give it the task, then test and edit the result yourself.",
+        "variant": "info"
       },
       {
-        type: "code",
-        label: "The Ultimate Meta-Prompt Compiler (Copy & Use)",
-        text: `### ROLE & DIRECTIVE
-You are an Elite Principal Prompt Engineer. Your objective is to take a simple task idea from the user and transform it into a world-class, production-ready, reusable Prompt Template.
-
-### COMPILATION WORKFLOW
-When given a user task, execute the following 5-step engineering pipeline:
-1. **Analyze Objective**: Identify the core goal, audience, and key domain requirements.
-2. **Assign World-Class Persona**: Define the exact expert role best suited for the task.
-3. **Extract Dynamic Variables**: Convert specific entities into reusable {{VARIABLE_NAME}} tags.
-4. **Construct Negative Guardrails**: Identify the 5 most common clichés and mistakes, then forbid them explicitly.
-5. **Enforce Structural Output**: Design the exact response schema (Markdown, JSON, or table).
-
-### OUTPUT FORMAT
-Output the generated prompt inside a single \`\`\`markdown code block, organized with standard headers:
-- ### ROLE & OBJECTIVE
-- ### CONTEXT & VARIABLES
-- ### INSTRUCTIONS & WORKFLOW
-- ### STRICT CONSTRAINTS & NEGATIVE PROMPTS
-- ### OUTPUT FORMAT & SCHEMA`,
+        "type": "h2",
+        "text": "Start from the work, not an impressive persona"
       },
-      { type: "h2", text: "2. Recursive Self-Refinement Loops" },
       {
-        type: "p",
-        text: "You can take meta-prompting a step further by prompting the model to evaluate its own generated prompt against a quality scoring rubric, identify missing constraints, and output an improved revision in a single generation pass.",
+        "type": "p",
+        "text": "Describe the recurring job, who will use the result and what a successful output must contain. Include a failing example if you have one. A prompt generator is most useful when it can identify missing facts, not when it adds grand titles or excessive rules."
       },
+      {
+        "type": "h2",
+        "text": "Ask for inputs and boundaries"
+      },
+      {
+        "type": "p",
+        "text": "Request clearly named placeholders, an output format and rules for incomplete information. Ask it to avoid adding business claims or facts you did not provide. If the result needs tools, the generator should state that requirement rather than pretend a prompt can create tool access."
+      },
+      {
+        "type": "h2",
+        "text": "Review the generated instructions"
+      },
+      {
+        "type": "p",
+        "text": "Remove contradictory limits, unnecessary stages and invented “best settings”. Check whether the user could fill in the inputs without help. A model’s self-rating is not an independent quality score; compare against a checklist you define."
+      },
+      {
+        "type": "h2",
+        "text": "Keep test cases separate"
+      },
+      {
+        "type": "p",
+        "text": "Run an ordinary input and an awkward one on the intended service. Record the actual model, date and outcome. If live testing is unavailable, say the review covered structure only. Recheck after model changes or when the underlying business task changes."
+      },
+      {
+        "type": "h2",
+        "text": "A starting prompt to adapt"
+      },
+      {
+        "type": "p",
+        "text": "This is an illustrative template, not a recorded model result. Replace the bracketed fields with your own material, then check the answer before using it."
+      },
+      {
+        "type": "code",
+        "label": "Example prompt — fill in the brackets",
+        "text": "Help me draft a reusable prompt for [TASK].\nUser: [WHO WILL USE IT]. Output needed: [DELIVERABLE].\nKnown failures: [EXAMPLES].\nFirst ask about missing requirements. Then draft a concise template with labelled inputs, constraints and output format.\nFinish with two test cases and a human review checklist. Do not claim the template has been tested."
+      },
+      {
+        "type": "h2",
+        "text": "Check the result before using it"
+      },
+      {
+        "type": "list",
+        "items": [
+          "Remove unnecessary personas and repeated instructions.",
+          "Check every input has a clear purpose.",
+          "Separate a proposed test from a completed test.",
+          "Judge the result with actual use cases, not a self-rating."
+        ]
+      },
+      {
+        "type": "h2",
+        "text": "Common questions"
+      },
+      {
+        "type": "h3",
+        "text": "Can the assistant improve its own prompt?"
+      },
+      {
+        "type": "p",
+        "text": "It can suggest revisions, but those suggestions still need independent review and tests. More elaborate wording is not automatically an improvement."
+      },
+      {
+        "type": "h3",
+        "text": "Should I keep every generated rule?"
+      },
+      {
+        "type": "p",
+        "text": "No. Keep only rules tied to the task, its risks or a failure you need to prevent."
+      },
+      {
+        "type": "related_prompts",
+        "prompts": [
+          {
+            "title": "Prompt Template Library Organiser",
+            "href": "/prompt/prompt-template-library-organiser-ai28",
+            "description": "Organise templates and identify clearer input fields."
+          },
+          {
+            "title": "Few-Shot Example Generator",
+            "href": "/prompt/few-shot-example-generator-ai11",
+            "description": "Develop illustrative examples to review before adding them to a template."
+          }
+        ]
+      }
     ],
-    takeaways: [
-      "Meta-prompting accelerates prompt creation by automating persona, constraint, and variable extraction.",
-      "Use our 5-step meta-prompt compiler to transform raw ideas into standardized, production-ready prompt templates.",
-      "Incorporate recursive self-refinement to automatically audit and harden prompt security constraints.",
+    "takeaways": [
+      "Remove unnecessary personas and repeated instructions.",
+      "Check every input has a clear purpose.",
+      "Separate a proposed test from a completed test.",
+      "Judge the result with actual use cases, not a self-rating."
     ],
-  },
+    "updated": "2026-11-03",
+    "category": "Meta Prompting",
+    "emoji": "🪄",
+    "readMinutes": 3
+  }
 ];

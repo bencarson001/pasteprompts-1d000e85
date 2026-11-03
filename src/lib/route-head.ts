@@ -19,9 +19,11 @@ export function headFromMeta(meta: PageMeta): RouteHead {
       { name: "description", content: meta.description },
       { property: "og:title", content: title },
       { property: "og:description", content: meta.description },
+      { property: "og:type", content: "website" },
       { property: "og:url", content: canonical },
       { name: "twitter:title", content: title },
       { name: "twitter:description", content: meta.description },
+      { name: "twitter:card", content: "summary_large_image" },
       // Exactly one robots tag per page (root no longer sets one).
       // noindex pages still let crawlers follow their links to indexable prompts/topics.
       { name: "robots", content: meta.noindex ? "noindex, follow" : "index, follow, max-image-preview:large, max-snippet:-1" },

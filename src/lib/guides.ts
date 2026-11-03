@@ -1,9 +1,7 @@
 /**
- * Original long-form editorial content for the Paste Prompts Learn hub.
- *
- * Every guide here is deep, original, practitioner-written, and substantial
- * with benchmarks, tables, empirical data, and step-by-step frameworks
- * ensuring high AdSense value, Google Information Gain, and reader utility.
+ * Practical editorial guides for the Paste Prompts Learn hub.
+ * Examples are illustrative unless a recorded test is explicitly documented.
+ * Guide metadata, sitemap entries and page rendering share this inventory.
  */
 
 import { FUNDAMENTAL_GUIDES } from "./guides/fundamentals";
