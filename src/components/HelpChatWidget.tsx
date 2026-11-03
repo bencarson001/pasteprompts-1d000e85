@@ -188,7 +188,7 @@ export function HelpChatWidget() {
   };
 
   return (
-    <aside aria-label="Paste Prompts AI Assistant" className="fixed bottom-5 right-5 z-40">
+    <aside aria-label="Paste Prompts AI Assistant" className="fixed bottom-20 right-4 z-40 md:bottom-5 md:right-5">
       {/* Floating Toggle Button */}
       {!isOpen && (
         <Button
@@ -210,7 +210,7 @@ export function HelpChatWidget() {
       {isOpen && (
         <section
           aria-label="AI Chat Session"
-          className="flex h-[560px] max-h-[85vh] w-[calc(100vw-2.5rem)] flex-col overflow-hidden rounded-2xl border border-primary/25 bg-card/95 shadow-2xl backdrop-blur-2xl sm:w-[420px]"
+          className="flex h-[560px] max-h-[calc(100vh-7rem)] md:max-h-[85vh] w-[calc(100vw-2.5rem)] flex-col overflow-hidden rounded-2xl border border-primary/25 bg-card/95 shadow-2xl backdrop-blur-2xl sm:w-[420px]"
         >
           {/* Header */}
           <div className="flex items-center justify-between border-b border-border/40 bg-muted/40 px-4 py-3">
