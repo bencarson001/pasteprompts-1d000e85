@@ -47,7 +47,6 @@ export default function Guides() {
             headline: g.title,
             description: g.description,
             url: `${SITE_URL}/guides/${g.slug}`,
-            datePublished: g.updated,
             dateModified: g.updated,
           })),
         }}
@@ -142,8 +141,7 @@ export default function Guides() {
           <BookOpen className="mx-auto mb-3 h-8 w-8 text-primary-glow" />
           <h2 className="font-display text-2xl font-bold sm:text-3xl">Ready to put this into practice?</h2>
           <p className="mx-auto mt-2 max-w-xl text-muted-foreground">
-            Browse hundreds of tested, ready-to-use prompts built on exactly these techniques —
-            many of them completely free.
+            Browse free and 49p prompts for a relevant task, add your own details and review the output.
           </p>
           <Button asChild size="lg" className="mt-6 bg-gradient-primary btn-glow">
             <Link to="/browse">Browse prompts <ArrowRight className="ml-1 h-4 w-4" /></Link>

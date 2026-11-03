@@ -9,6 +9,7 @@ export type GuideBlock =
   | { type: "table"; headers: string[]; rows: string[][] }
   | { type: "callout"; title: string; text: string; variant?: "info" | "tip" | "warning" }
   | { type: "stats_grid"; stats: { label: string; value: string; desc: string }[] }
+  | { type: "references"; links: { title: string; href: string }[] }
   | { type: "related_prompts"; prompts: { title: string; href: string; description: string }[] };
 
 export interface Guide {

@@ -145,6 +145,8 @@ function Block({ block }: { block: GuideBlock }) {
           </div>
         </div>
       );
+    case "references":
+      return <section className="mt-8"><h2 className="font-display text-xl font-bold">Official sources</h2><ul className="mt-3 space-y-2">{block.links.map((link) => <li key={link.href}><a href={link.href} className="text-primary underline" target="_blank" rel="noopener noreferrer">{link.title}</a></li>)}</ul></section>;
     default:
       return null;
   }
