@@ -3,90 +3,86 @@ import type { Guide } from "./types";
 export const MODELS_AND_REASONING_GUIDES: Guide[] = [
   {
     slug: "chatgpt-vs-claude-vs-gemini",
-    title: "ChatGPT vs Claude vs Gemini: The Definitive Frontier Model Comparison & Benchmark",
+    title: "ChatGPT vs Claude vs Gemini: Which AI Should You Use?",
     description:
-      "An empirical, benchmark-backed comparison of OpenAI's GPT-4o, Anthropic's Claude 3.7 Sonnet, and Google's Gemini 2.5 across code refactoring, creative copywriting, nuanced reasoning, and long-context document analysis.",
+      "A plain-English comparison of ChatGPT, Claude and Gemini for writing, coding, research and long documents, with prompting tips for each and ready-made prompts to try.",
     category: "AI Models",
-    readMinutes: 18,
-    updated: "2026-06-26",
+    readMinutes: 8,
+    updated: "2026-11-03",
     emoji: "⚡",
     intro:
-      "In our prompt engineering lab, our evaluation team ran a benchmark suite across identical prompts on the three flagship frontier models: OpenAI GPT-4o, Anthropic Claude 3.7 Sonnet (with hybrid thinking enabled), and Google Gemini 2.5 Pro. Rather than relying on generic synthetic leaderboard scores, we evaluated practical real-world tasks: complex TypeScript refactoring, high-converting B2B copy generation, multi-step logical deduction, and structured extraction across long-form documents. Here are our empirical findings, latency distributions, cost profiles, and model-specific prompt optimization rules.",
+      "Short answer: there is no single winner. All three are capable general assistants, and for most everyday tasks the best one is the one you already pay for. The differences show up at the edges — how they handle long documents, how their writing sounds by default, and which tools they connect to. This guide summarises those differences in plain English, explains how to adjust your prompts for each, and links to prompts on Paste Prompts you can try with them. Models change often, so test your own task on each before committing.",
     blocks: [
       {
-        type: "stats_grid",
-        stats: [
-          { label: "Evaluation Suite", value: "Multi-Model", desc: "Standardized across coding, writing, reasoning & extraction" },
-          { label: "Claude Coding Win Rate", value: "68.4%", desc: "On multi-file TypeScript & React architecture challenges" },
-          { label: "Gemini Context Recall", value: "99.1%", desc: "Needle-in-a-haystack retrieval across long-context inputs" },
-        ],
+        type: "callout",
+        variant: "info",
+        title: "Quick summary",
+        text: "ChatGPT: the broadest all-rounder, with strong tool features (images, voice, file analysis) built in. Claude: popular for long-form writing and coding, and for following detailed instructions. Gemini: tightly linked to Google apps and well suited to very long documents. Try the same prompt on two of them and keep whichever result needs less editing.",
       },
-      { type: "h2", text: "1. The Frontier Model Landscape Overview" },
-      {
-        type: "p",
-        text: "The era of one universal AI model dominating every single workload is officially over. Today, each major foundation model architecture has specialized cognitive strengths, token pricing models, and distinct prompt-adherence behaviors:",
-      },
+      { type: "h2", text: "How the three compare at a glance" },
       {
         type: "table",
-        headers: ["Model", "Primary Superpower", "Context Window", "Best For", "Known Failure Mode"],
+        headers: ["Assistant", "Often chosen for", "Worth knowing"],
         rows: [
-          ["Claude 3.7 Sonnet (Anthropic)", "Hybrid Extended Thinking, Coding, Nuanced Prose", "200k tokens", "Complex software architecture, long-form creative writing, adhering to complex multi-rule system prompts.", "Slightly higher generation latency when deep thinking budget is set to maximum."],
-          ["GPT-4o (OpenAI)", "Low Latency, Omni Multimodal, Function Calling", "128k tokens", "Real-time voice, structured JSON tool execution, interactive chat agents, fast data transformation.", "Can default to robotic, clichéd marketing language without strict negative guardrails."],
-          ["Gemini 2.5 Pro (Google)", "Massive Context Memory, Multimodal Video & Audio", "2,000,000+ tokens", "Analyzing full codebases, hours of raw video, hundreds of scientific papers, multimodal grounding.", "Requires explicit XML formatting directives to prevent verbose narrative preamble."],
+          ["ChatGPT (OpenAI)", "Everyday questions, brainstorming, image creation, voice chat, analysing uploaded files.", "Default marketing copy can sound generic; give it a tone, audience and banned phrases."],
+          ["Claude (Anthropic)", "Long-form writing, editing, coding help, working through long instructions.", "Responds well to clearly separated sections (for example, labelled context and task)."],
+          ["Gemini (Google)", "Very long documents, Google Docs/Gmail/Drive workflows, research with Google Search.", "Ask it to keep answers concise and to cite where in your document each point came from."],
         ],
       },
-      { type: "h2", text: "2. Empirical Benchmark Results by Category" },
-      {
-        type: "h3",
-        text: "Category A: Complex Code Generation & Architectural Refactoring"
-      },
+      { type: "h2", text: "Which one for which job" },
+      { type: "h3", text: "Writing and copywriting" },
       {
         type: "p",
-        text: "We tested each model with 250 enterprise programming tasks—including resolving subtle React state synchronization race conditions, writing distributed database schemas with migration locks, and parsing complex AST trees. Claude 3.7 Sonnet scored the highest composite pass rate (89.2% first-pass compile success), closely followed by GPT-4o (82.1%) and Gemini 2.5 (78.5%). Claude exhibited exceptional adherence to strict TypeScript typing constraints and did not invent non-existent library helper methods.",
+        text: "All three can draft emails, product descriptions and landing pages. The quality depends far more on the brief than the model: who the reader is, what they should do next, the tone, and what to avoid. Many writers find Claude's default voice less salesy, while ChatGPT is quick for lots of variations. Whichever you use, ask for two or three versions and edit the best one.",
       },
-      {
-        type: "h3",
-        text: "Category B: Conversion Copywriting & Natural Voice"
-      },
+      { type: "h3", text: "Coding" },
       {
         type: "p",
-        text: "In blind evaluations by a panel of 5 veteran direct-response copywriters, Claude 3.7 Sonnet won 74% of side-by-side match-ups for natural cadence, rhythmic variation, and avoidance of AI buzzwords ('delve', 'testament', 'tapestry'). GPT-4o produced high-energy output that required manual tone dampening, while Gemini 2.5 excelled at analytical product positioning summaries.",
+        text: "Claude and ChatGPT are both widely used for code review, debugging and refactoring. Paste the exact error, the relevant code and what you expected to happen. Always run and test the result — any model can suggest functions or packages that don't exist.",
       },
-      {
-        type: "h3",
-        text: "Category C: Massive Context Needle-in-a-Haystack"
-      },
+      { type: "h3", text: "Research and long documents" },
       {
         type: "p",
-        text: "Gemini 2.5 Pro dominated all long-context benchmarks. When tasked with finding a single obscure contract clause buried inside an 800,000-token multi-year financial audit document, Gemini achieved a perfect 100% retrieval rate with pinpoint citation timestamps, outperforming external RAG (Retrieval Augmented Generation) architectures while maintaining zero hallucinated citations.",
+        text: "Gemini and Claude both accept long inputs, which helps when summarising reports, contracts or meeting transcripts. Ask for quotes or section references alongside each point so you can check them quickly, and treat any claim you can't trace back to the source as unverified.",
+      },
+      { type: "h2", text: "Prompting tips for each" },
+      {
+        type: "table",
+        headers: ["Assistant", "Tip", "Example"],
+        rows: [
+          ["ChatGPT", "State the format you want up front.", "\"Reply as a table with columns: idea, audience, first step.\""],
+          ["Claude", "Separate your material from your instructions.", "\"<notes>...</notes> Using only the notes above, write...\""],
+          ["Gemini", "Ground answers in what you provided.", "\"Use only the attached document and cite the section for each point.\""],
+        ],
       },
       {
         type: "callout",
         variant: "tip",
-        title: "Model Selection Matrix for Teams",
-        text: "Use Claude 3.7 Sonnet for your coding copilots and customer-facing marketing editorial. Use GPT-4o for ultra-fast API tool routers and interactive UI automations. Use Gemini 2.5 for large-scale document parsing, codebase ingestion, and multi-hour video transcript processing.",
+        title: "A fair way to choose",
+        text: "Pick one real task you do every week, run the same prompt on each assistant, and compare how much editing each answer needs. That tells you more than any general ranking.",
       },
-      { type: "h2", text: "3. Model-Specific Prompt Optimization Rules" },
+      {
+        type: "related_prompts",
+        prompts: [
+          { title: "Production Code Review & Refactor", href: "/prompt/production-code-review-refactor-pp1", description: "A structured code review prompt written for Claude." },
+          { title: "Debug This Error Systematically", href: "/prompt/debug-this-error-systematically-pp2", description: "Work through a bug step by step instead of guessing." },
+          { title: "Product Description That Sells", href: "/prompt/product-description-that-sells-pp13", description: "A ChatGPT brief for clear, specific product copy." },
+          { title: "Sales Email Sequence", href: "/prompt/sales-email-sequence-pp12", description: "Plan and draft a short sales email series." },
+          { title: "Document Summarisation Engine", href: "/prompt/document-summarisation-engine-ai14", description: "A Gemini prompt for summarising long documents." },
+          { title: "AI Research Assistant", href: "/prompt/ai-research-assistant-ai15", description: "Organise research questions and sources with Claude." },
+        ],
+      },
       {
         type: "p",
-        text: "Because each model architecture was trained on different reinforcement learning objectives, the exact same prompt wording performs differently across providers. Here is how we calibrate prompts for each engine:",
-      },
-      {
-        type: "table",
-        headers: ["Provider", "Key Prompting Technique", "Syntax Example"],
-        rows: [
-          ["Anthropic Claude", "Wrap all reference data inside XML semantic tags; specify thinking budget explicitly.", "`<thinking_budget>4000</thinking_budget>\\n<source_documents>...`"],
-          ["OpenAI GPT-4o", "Use strict JSON Schema / Structured Outputs and direct imperative role definitions.", "`response_format: { type: 'json_object' }` with explicit key types."],
-          ["Google Gemini", "Anchor tasks with explicit grounding instructions and step-by-step verification.", "`Ground all factual claims exclusively in the attached 1M token context.`"],
-        ],
+        text: "Browse more by topic: Coding Prompts, Copywriting Prompts and Business Prompts are all linked from the Browse page.",
       },
     ],
     takeaways: [
-      "No single AI model wins across all modalities; modern workflows require a multi-model routing strategy.",
-      "Claude 3.7 Sonnet leads in complex software engineering, hybrid reasoning, and natural human-like prose.",
-      "Gemini 2.5 Pro represents the state of the art for massive 1M+ token context ingestion and video analysis.",
-      "GPT-4o remains the benchmark for low-latency interactive agent tooling and structured function calling.",
-      "Tailor your prompt syntax (XML tags for Claude, JSON schema for OpenAI, grounding assertions for Gemini).",
+      "No single assistant is best at everything; test your own task on two of them.",
+      "ChatGPT is a strong all-rounder with built-in tools like images and voice.",
+      "Claude is often chosen for long-form writing, editing and coding help.",
+      "Gemini suits very long documents and Google app workflows.",
+      "A clear brief (reader, goal, tone, format) matters more than which model you pick.",
     ],
   },
   {
