@@ -55,16 +55,12 @@ export function checkReservedName(
     unleet += leetMap[char] || char;
   }
 
-  const alphanumeric = clean.replace(/[^a-z0-9]/g, "");
-  const unleetAlphanumeric = unleet.replace(/[^a-z0-9]/g, "");
-
-  // Strict: block the reserved words anywhere in a name/handle, including
-  // inside longer words ("benadmin", "sitemods") and leetspeak ("4dm1n").
-  // Mirrors the server-side profile trigger, which is the real enforcement.
-  void alphanumeric;
-  const lettersOnly = unleetAlphanumeric.replace(/[^a-z]/g, "");
-  const isAdminVariation = /admi*n/.test(lettersOnly);
-  const isModVariation = /mod/.test(lettersOnly);
+  // Check each word separately so harmless text ("Tom Odell", "badminton")
+  // isn't joined into a false match. Mirrors the server-side profile trigger.
+  const words = unleet.split(/[^a-z]+/).filter(Boolean);
+  const modAllow = /^(model|models|modelling|modeling|modern|modest|mode|modes|modular|module|modules|modify|modified)$/;
+  const isAdminVariation = words.some((w) => /admi*n/.test(w) && !/badminton/.test(w) && !/^administrat/.test(w));
+  const isModVariation = words.some((w) => /mod/.test(w) && !modAllow.test(w));
 
   if (isAdminVariation || isModVariation) {
     return {
