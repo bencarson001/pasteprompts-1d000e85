@@ -1,3 +1,4 @@
+import { openConsentSettings } from "@/lib/consent";
 import logoAsset from "@/assets/pasteprompts-logo.png.asset.json";
 import logoLight from "@/assets/pasteprompts-logo-light.png";
 import { Link } from "@/lib/router-compat";
@@ -128,7 +129,12 @@ export function Footer() {
       </div>
       <div className="border-t border-white/5">
         <div className="container-wide flex flex-col items-center justify-between gap-2 py-6 text-xs text-muted-foreground sm:flex-row">
-          <p>Copyright © {new Date().getFullYear()} Paste Prompts (pasteprompts.co.uk) · All rights reserved.</p>
+          <p>
+            Copyright © {new Date().getFullYear()} Paste Prompts (pasteprompts.co.uk) · All rights reserved. ·{" "}
+            <button type="button" onClick={openConsentSettings} className="underline hover:text-foreground">
+              Cookie settings
+            </button>
+          </p>
           <p>Prompts are user-generated. Report infringing content via our takedown form.</p>
         </div>
       </div>
