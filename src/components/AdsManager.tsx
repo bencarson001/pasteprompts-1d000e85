@@ -1,6 +1,8 @@
 import { useEffect } from "react";
 import { useLocation } from "@/lib/router-compat";
 import { ADSENSE_CLIENT, adsEnabled } from "@/lib/ads";
+import { hasMarketingConsent, onConsentChange } from "@/lib/consent";
+import { useState } from "react";
 
 /**
  * Route-aware AdSense loader (allowlist strategy).
@@ -28,9 +30,11 @@ let injected = false;
 
 export function AdsManager() {
   const { pathname } = useLocation();
+  const [consentTick, setConsentTick] = useState(0);
+  useEffect(() => onConsentChange(() => setConsentTick((n) => n + 1)), []);
 
   useEffect(() => {
-    if (!adsEnabled() || injected) return;
+    if (!adsEnabled() || injected || !hasMarketingConsent()) return;
     if (!isAdAllowedRoute(pathname)) return;
     const script = document.createElement("script");
     script.async = true;
@@ -38,7 +42,7 @@ export function AdsManager() {
     script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`;
     document.head.appendChild(script);
     injected = true;
-  }, [pathname]);
+  }, [pathname, consentTick]);
 
   return null;
 }
