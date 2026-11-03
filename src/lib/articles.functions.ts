@@ -1,5 +1,11 @@
 import { createServerFn } from "@tanstack/react-start";
 import type { ArticleRow } from "./articles";
+import type { GuideBlock } from "./guides/types";
+
+type PublicArticle = Omit<ArticleRow, "blocks" | "takeaways"> & {
+  blocks: GuideBlock[];
+  takeaways: string[];
+};
 
 // Published articles are public; never use an admin credential for this read.
 export const getPublicArticle = createServerFn({ method: "GET" })
@@ -8,8 +14,8 @@ export const getPublicArticle = createServerFn({ method: "GET" })
     return slug;
   })
   .handler(async ({ data }) => {
-    const url = process.env["SUPABASE_URL"] || import.meta.env.VITE_SUPABASE_URL;
-    const key = process.env["SUPABASE_PUBLISHABLE_KEY"] || import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+    const url = process.env["SUPABASE_URL"] || import.meta.env["VITE_SUPABASE_URL"];
+    const key = process.env["SUPABASE_PUBLISHABLE_KEY"] || import.meta.env["VITE_SUPABASE_PUBLISHABLE_KEY"];
     if (!url || !key) throw new Error("Public article configuration unavailable");
     const query = new URLSearchParams({
       select: "slug,title,description,category,read_minutes,emoji,intro,blocks,takeaways,published_at,updated_at",
@@ -22,6 +28,6 @@ export const getPublicArticle = createServerFn({ method: "GET" })
       console.error("Published article read failed", response.status);
       throw new Error("This guide could not be loaded. Please try again.");
     }
-    const rows = await response.json() as ArticleRow[];
+    const rows = await response.json() as PublicArticle[];
     return rows[0] ?? null;
   });
