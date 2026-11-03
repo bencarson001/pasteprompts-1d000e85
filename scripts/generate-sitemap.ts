@@ -6,6 +6,7 @@
  */
 import { writeFileSync, readFileSync, existsSync } from "fs";
 import { resolve } from "path";
+import { GUIDES } from "../src/lib/guides";
 
 const BASE_URL = "https://pasteprompts.co.uk";
 
@@ -22,20 +23,6 @@ function env(key: string): string | undefined {
 }
 
 interface Entry { path: string; lastmod?: string; changefreq: string; priority: string }
-
-const guideSlugs = [
-  "how-to-write-effective-ai-prompts",
-  "chatgpt-vs-claude-vs-gemini",
-  "advanced-prompt-engineering-techniques",
-  "ai-prompts-for-marketing",
-  "make-money-selling-ai-prompts",
-  "ai-prompts-for-business-productivity",
-  "common-prompting-mistakes",
-  "anatomy-of-a-perfect-prompt-template",
-  "how-to-remove-a-prompt-from-chatgpt",
-  "how-to-buy-and-sell-ai-prompts-safely",
-  "best-chatgpt-prompts-for-small-business",
-];
 
 // High-intent SEO landing pages (mirror of src/lib/landingContent.ts).
 const landingSlugs = [
@@ -59,7 +46,7 @@ const staticEntries: Entry[] = [
   { path: "/browse/paid", changefreq: "daily", priority: "0.8" },
   ...landingSlugs.map((slug) => ({ path: `/prompts/${slug}`, changefreq: "daily", priority: "0.9" })),
   { path: "/guides", changefreq: "weekly", priority: "0.8" },
-  ...guideSlugs.map((slug) => ({ path: `/guides/${slug}`, changefreq: "monthly", priority: "0.7" })),
+  ...GUIDES.map((guide) => ({ path: `/guides/${guide.slug}`, lastmod: guide.updated, changefreq: "monthly", priority: "0.7" })),
   { path: "/about", changefreq: "monthly", priority: "0.6" },
   { path: "/contact", changefreq: "monthly", priority: "0.5" },
   { path: "/glossary", changefreq: "monthly", priority: "0.6" },
@@ -103,14 +90,19 @@ function xml(entries: Entry[]): string {
 async function main() {
   const entries = [...staticEntries];
   try {
-    const [categories, prompts, creators] = await Promise.all([
+    const [categories, prompts, creators, articles] = await Promise.all([
       rest("categories", "select=slug&limit=100"),
       rest("prompts", "select=slug,updated_at&status=eq.approved&limit=5000"),
       rest("profiles", "select=handle,updated_at&is_creator=eq.true&limit=5000"),
+      rest("articles", "select=slug,updated_at&status=eq.published&limit=1000"),
     ]);
     for (const c of categories) entries.push({ path: `/category/${c.slug}`, changefreq: "weekly", priority: "0.8" });
     for (const p of prompts) entries.push({ path: `/prompt/${p.slug}`, lastmod: (p.updated_at ?? "").slice(0, 10), changefreq: "weekly", priority: "0.7" });
     for (const c of creators) entries.push({ path: `/creators/${c.handle}`, lastmod: (c.updated_at ?? "").slice(0, 10), changefreq: "weekly", priority: "0.6" });
+    for (const article of articles) {
+      const path = `/guides/${article.slug}`;
+      if (!entries.some((entry) => entry.path === path)) entries.push({ path, lastmod: (article.updated_at ?? "").slice(0, 10), changefreq: "monthly", priority: "0.7" });
+    }
   } catch (e) {
     console.warn("sitemap: DB fetch failed, writing static routes only —", (e as Error).message);
   }
