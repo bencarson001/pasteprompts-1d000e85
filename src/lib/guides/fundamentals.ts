@@ -2,333 +2,461 @@ import type { Guide } from "./types";
 
 export const FUNDAMENTAL_GUIDES: Guide[] = [
   {
-    slug: "how-to-write-effective-ai-prompts",
-    title: "How to Write Effective AI Prompts: The Definitive Practitioner Blueprint",
-    description:
-      "A complete, empirical guide to prompt engineering. Learn the 5-part anatomical framework, context calibration, delimiter syntax, and iterative debugging techniques tested across real AI model queries.",
-    category: "Fundamentals",
-    readMinutes: 14,
-    updated: "2026-06-25",
-    emoji: "✍️",
-    intro:
-      "In our prompt engineering research, we test AI prompts across OpenAI's GPT-4o, Anthropic's Claude 3.7 Sonnet, and Google's Gemini 2.5. Over the course of running extensive prompt variations, one foundational truth has emerged: large language models rarely fail because of inherent lack of intelligence; they fail because of ambiguity in human instruction. When you treat prompt creation as precision software specification rather than casual conversation, your success rate climbs dramatically.",
-    blocks: [
+    "slug": "how-to-write-effective-ai-prompts",
+    "title": "How to Write Effective AI Prompts: A Practical Guide",
+    "description": "Write clearer AI prompts with a specific task, useful context, examples and an output format. Includes an editable template and checks for common mistakes.",
+    "intro": "Start with the job you need done, give the facts the assistant cannot know, and describe a usable answer. A clearer brief reduces guesswork, but it cannot make an AI response automatically correct.",
+    "blocks": [
       {
-        type: "stats_grid",
-        stats: [
-          { label: "Instruction Drift Reduction", value: "84%", desc: "When using explicit Markdown delimiters & role framing" },
-          { label: "Output Consistency", value: "96.2%", desc: "Measured across 500 multi-turn test runs with strict schema" },
-          { label: "Token Efficiency Gain", value: "38%", desc: "Achieved by eliminating conversational filler from system briefs" },
-        ],
-      },
-      { type: "h2", text: "1. The Mechanics of LLM Continuation" },
-      {
-        type: "p",
-        text: "Large language models operate by predicting the highest-probability sequence of tokens conditioned on your prompt. When your prompt consists of a single vague sentence—such as 'Write an email announcing our new product'—the model samples from a massive probability cloud of millions of generic marketing emails written on the internet over the last two decades. The result is inevitably a bland, cliché-ridden draft stuffed with tired buzzwords like 'game-changing' and 'excited to announce'.",
+        "type": "callout",
+        "title": "Short answer",
+        "text": "Start with the job you need done, give the facts the assistant cannot know, and describe a usable answer. A clearer brief reduces guesswork, but it cannot make an AI response automatically correct.",
+        "variant": "info"
       },
       {
-        type: "p",
-        text: "By contrast, when you provide structured constraints, clear stylistic parameters, negative guardrails, and an explicit target persona, you mathematically collapse that probability distribution into a razor-sharp vector. The model stops guessing your unspoken assumptions and executes your exact specification.",
+        "type": "h2",
+        "text": "Name the task, not just a role"
       },
       {
-        type: "callout",
-        variant: "tip",
-        title: "Practitioner Rule of Thumb",
-        text: "Think of an LLM as a brilliant junior engineer or specialist copywriter who possesses encyclopedic domain knowledge but zero institutional memory of your company. Every single assumption must be made explicit inside the prompt envelope.",
-      },
-      { type: "h2", text: "2. The 5-Part Architectural Prompt Framework (RCPCF)" },
-      {
-        type: "p",
-        text: "Every production-grade prompt developed in our studio follows the RCPCF framework. This modular structure guarantees that no critical context vector is omitted:",
+        "type": "p",
+        "text": "“Act as a marketing expert” says little about the work. “Draft a customer email explaining our delivery delay” gives the assistant a concrete task. Add the reader, purpose and next action. A role can suggest a perspective, but it is optional and is not evidence of expertise."
       },
       {
-        type: "table",
-        headers: ["Component", "Function", "Production Example"],
-        rows: [
-          ["1. Role (R)", "Anchors the model's domain expertise and perspective.", "Act as a Principal Conversion Copywriter specialising in B2B developer tools."],
-          ["2. Context (C)", "Supplies background facts, target audience, and business constraints.", "We are launching a distributed caching tool for Postgres. Audience: Senior DevOps engineers who care about sub-millisecond p99 latency."],
-          ["3. Primary Task (P)", "Defines the exact operational objective with zero ambiguity.", "Draft the hero section copy for the product launch landing page."],
-          ["4. Constraints (C)", "Specifies tone, reading level, prohibited terms, and length limits.", "Use British English. Avoid buzzwords like 'revolutionize', 'seamless', 'game-changer'. Strict max length: 35 words."],
-          ["5. Format (F)", "Dictates structural shape (JSON, Markdown table, bulleted hierarchy).", "Return valid JSON containing keys: 'headline', 'subheadline', 'cta_primary', 'badge_text'."],
-        ],
-      },
-      { type: "h2", text: "3. Dissecting Weak vs. Production-Grade Prompts" },
-      {
-        type: "p",
-        text: "Let us examine the stark behavioral difference between an amateur prompt and a production-grade prompt when requesting marketing copy for a time-tracking SaaS platform:",
+        "type": "h2",
+        "text": "Give context that changes the answer"
       },
       {
-        type: "code",
-        label: "❌ Amateur Prompt (Under-Specified)",
-        text: "Write me some great landing page copy for my new time-tracking software that helps freelancers save time.",
+        "type": "p",
+        "text": "Supply the product details, source text, deadline or code the task depends on. Leave out confidential information unless you are authorised to share it with that service. Separate reference material from instructions using headings so you can see what belongs where; headings are not a security barrier."
       },
       {
-        type: "code",
-        label: "✅ Production Prompt (RCPCF Engineered)",
-        text: `### ROLE & OBJECTIVE
-You are a Principal Conversion Copywriter with 12+ years of experience writing high-converting landing pages for B2B productivity SaaS.
-
-### CONTEXT & AUDIENCE
-- Product: ClockWise — automated time-tracking software that turns IDE and Figma activity into client-ready invoices without manual timers.
-- Target Audience: Independent software consultants and UX designers billing £80-£150/hr who lose 3-5 billable hours weekly to administrative tracking.
-- Value Proposition: Reclaim billable hours automatically with zero timer friction.
-
-### TASK
-Write the above-the-fold Hero Section copy.
-
-### STRICT CONSTRAINTS & NEGATIVE PROMPTS
-1. Lead with the financial loss of untracked minutes, not the software feature list.
-2. Tone: Pragmatic, direct, respectful of developer intelligence. No breathless corporate cheerleading.
-3. Prohibited words: "seamless", "effortless", "game-changing", "supercharge", "revolutionary", "all-in-one".
-4. Punctuation: Maximum 1 exclamation mark in the entire response.
-
-### OUTPUT FORMAT
-Output exactly as structured Markdown:
-- **Headline**: (Max 8 words, bold benefit)
-- **Subheadline**: (Max 24 words, clarifies how it works)
-- **Primary CTA**: (Max 4 words, action-oriented)
-- **Social Proof Micro-Copy**: (Max 12 words)`,
+        "type": "h2",
+        "text": "Specify a workable output"
       },
       {
-        type: "p",
-        text: "In our blind evaluation tests with professional copywriters, the second prompt achieved a 94% acceptance rating on the first generation, compared to just 12% for the amateur prompt.",
-      },
-      { type: "h2", text: "4. The Power of Markdown Delimiters & Tag Anchors" },
-      {
-        type: "p",
-        text: "Modern frontier models (GPT-4o, Claude 3.7, Gemini 2.5) are heavily fine-tuned on code, structured documents, and Markdown. When you separate prompt instructions from reference materials using clear delimiter tags (such as `### CONTEXT`, `### RAW_DATA`, or `<source_text>`), the model's self-attention mechanism cleanly bifurcates instructions from payload data. This prevents hallucinated bleed and prompt injection attacks.",
+        "type": "p",
+        "text": "Ask for the shape you need: a short email, a table, a checklist or a code change. State important limits and show a brief example if tone or formatting matters. Avoid contradictory requirements such as “include every detail” and “keep it under fifty words”."
       },
       {
-        type: "callout",
-        variant: "info",
-        title: "Why XML & Markdown Tags Matter",
-        text: "Anthropic Claude models specifically exhibit up to a 22% improvement in context recall and extraction precision when reference material is enclosed inside `<documents>` or `<data>` tags compared to raw unstructured text blocks.",
-      },
-      { type: "h2", text: "5. The 4-Step Iterative Debugging Loop" },
-      {
-        type: "p",
-        text: "When a prompt produces sub-optimal results, do not wipe the slate clean and start over. Follow our systematic debugging protocol:",
+        "type": "h2",
+        "text": "Improve one thing at a time"
       },
       {
-        type: "steps",
-        items: [
-          "Isolate the Failure Vector: Determine whether the issue is Tone, Hallucination, Missing Context, or Format Violation.",
-          "Add Negative Constraints: If the model generated verbose fluff, add explicit negative rules (e.g., 'Do not summarize prior context in the prelude. Begin immediately with the JSON object').",
-          "Inject 1-2 Golden Examples (Few-Shot): If the voice or cadence is off, paste a concrete snippet of your ideal past output.",
-          "Calibrate Reasoning Tokens: If the problem requires complex calculations or logic, prompt the model to 'Work through the analysis inside a scratchpad tag before rendering the final result'.",
-        ],
+        "type": "p",
+        "text": "If the first answer is wrong, identify whether it lacks facts, uses the wrong tone or misses a required section. Change that part of the prompt and compare on the same input. Keep useful versions along with the model and date you actually tested them."
       },
-      { type: "h2", text: "6. Production Prompt Repository Strategy" },
       {
-        type: "p",
-        text: "In high-performing teams, writing a prompt is not a one-off task—it is an investment in reusable intellectual property. Once you parameterise a prompt template with variables like `{{AUDIENCE}}`, `{{PRODUCT_NAME}}`, and `{{CONSTRAINTS}}`, you transform a simple text snippet into an automated workflow engine. Store your battle-tested prompts in a dedicated prompt repository, version-control them, and test them across model upgrades.",
+        "type": "h2",
+        "text": "A starting prompt to adapt"
       },
+      {
+        "type": "p",
+        "text": "This is an illustrative template, not a recorded model result. Replace the bracketed fields with your own material, then check the answer before using it."
+      },
+      {
+        "type": "code",
+        "label": "Example prompt — fill in the brackets",
+        "text": "Draft an email to [customer type] about [situation].\nUse only these facts: [confirmed facts].\nTone: calm, clear and direct. Maximum 150 words.\nInclude: what happened, what we can do, and the next action.\nDo not invent dates, discounts or promises. If a required fact is missing, ask for it before drafting."
+      },
+      {
+        "type": "h2",
+        "text": "Check the result before using it"
+      },
+      {
+        "type": "list",
+        "items": [
+          "Check every factual claim against your source material.",
+          "Confirm the intended reader can find the next action.",
+          "Remove invented evidence and unnecessary jargon.",
+          "Try the template on another real input before calling it reusable."
+        ]
+      },
+      {
+        "type": "h2",
+        "text": "Common questions"
+      },
+      {
+        "type": "h3",
+        "text": "Do longer prompts work better?"
+      },
+      {
+        "type": "p",
+        "text": "Only when the extra material helps the task. Repeated instructions and irrelevant background can obscure what matters."
+      },
+      {
+        "type": "h3",
+        "text": "Do I need a special phrase?"
+      },
+      {
+        "type": "p",
+        "text": "No phrase guarantees a useful answer. Clear facts, an explicit deliverable and review are more useful than an elaborate persona."
+      },
+      {
+        "type": "related_prompts",
+        "prompts": [
+          {
+            "title": "Product Description That Sells",
+            "href": "/prompt/product-description-that-sells-pp13",
+            "description": "Turn supplied product facts into a structured description; review the draft for unsupported claims."
+          },
+          {
+            "title": "Document Summarisation Engine",
+            "href": "/prompt/document-summarisation-engine-ai14",
+            "description": "Summarise supplied documents and check the summary against the original."
+          }
+        ]
+      }
     ],
-    takeaways: [
-      "LLMs respond to explicit probability reduction: vague inputs yield bland averages, structured inputs produce deterministic precision.",
-      "Always apply the 5-part RCPCF blueprint: Role, Context, Primary Task, Constraints, and Format.",
-      "Leverage Markdown headers and XML tags to prevent context bleed between instructions and data.",
-      "Iterate systematically by isolating failure modes rather than blindly re-rolling prompts.",
-      "Embed few-shot golden examples when calibrating nuanced brand voice or specialized formatting.",
+    "takeaways": [
+      "Check every factual claim against your source material.",
+      "Confirm the intended reader can find the next action.",
+      "Remove invented evidence and unnecessary jargon.",
+      "Try the template on another real input before calling it reusable."
     ],
+    "updated": "2026-11-03",
+    "category": "Fundamentals",
+    "emoji": "✍️",
+    "readMinutes": 3
   },
   {
-    slug: "anatomy-of-a-perfect-prompt-template",
-    title: "Anatomy of a Perfect Prompt Template: Variable Calibration & Reusable Architecture",
-    description:
-      "Deep dive into parameterized prompt architecture. Learn how to design robust, injection-safe template variables that scale across marketing, engineering, and customer operations.",
-    category: "Fundamentals",
-    readMinutes: 12,
-    updated: "2026-06-22",
-    emoji: "📐",
-    intro:
-      "A raw prompt is a single-use query; a prompt template is a scalable software asset. When engineering prompts for repetitive business workflows or marketplace listing, treating variables with defensive programming principles is what separates brittle toys from enterprise-ready automation. In this guide, we break down the architectural blueprint of an industrial-strength prompt template.",
-    blocks: [
+    "slug": "anatomy-of-a-perfect-prompt-template",
+    "title": "How to Build a Reusable AI Prompt Template",
+    "description": "Build a reusable AI prompt with clear input fields, missing-data rules and an output format. Learn what to test before sharing or selling a template.",
+    "intro": "A reusable template keeps the task and checks stable while letting the user replace the facts. Useful placeholders are easy to understand; they are not a guarantee of consistent or secure output.",
+    "blocks": [
       {
-        type: "stats_grid",
-        stats: [
-          { label: "Variable Parsing Accuracy", value: "99.8%", desc: "When using double curly brace {{VARIABLE}} syntax" },
-          { label: "Context Window Efficiency", value: "42%", desc: "Average savings when parameterizing repetitive instructions" },
-          { label: "Workflow Scalability", value: "10x+", desc: "Team throughput gain when deploying standard templates" },
-        ],
-      },
-      { type: "h2", text: "1. Raw Prompts vs. Parameterized Template Engines" },
-      {
-        type: "p",
-        text: "When an operator writes a bespoke prompt every time they need a customer reply or code review, they introduce human variance, forgotten constraints, and erratic output quality. A parameterized prompt template abstracts away the complexity: it establishes immutable guardrails, formats, and reasoning structures while exposing simple, intuitive input slots for dynamic variables.",
+        "type": "callout",
+        "title": "Short answer",
+        "text": "A reusable template keeps the task and checks stable while letting the user replace the facts. Useful placeholders are easy to understand; they are not a guarantee of consistent or secure output.",
+        "variant": "info"
       },
       {
-        type: "code",
-        label: "Enterprise Template Structure",
-        text: `You are an Executive Communications Strategist.
-
-CONTEXT & STAKEHOLDER:
-- Company Stage: {{COMPANY_STAGE}}
-- Recipient: {{RECIPIENT_ROLE}}
-- Core Situation / Update: {{SITUATION_SUMMARY}}
-- Primary Emotion / Outcome Desired: {{DESIRED_OUTCOME}}
-
-COMMUNICATION RULES:
-1. Under 200 words total.
-2. Direct BLUF (Bottom Line Up Front) in the opening sentence.
-3. Clear action items highlighted in bold bullet points with exact deadlines: {{DEADLINE}}.
-4. Maintain a tone of calm authority and proactive problem-solving.
-
-TEMPLATE PAYLOAD:
-Draft the email update using the variables above.`,
-      },
-      { type: "h2", text: "2. Variable Schema Validation & Escaping" },
-      {
-        type: "p",
-        text: "When accepting user-supplied variable inputs in automated systems, unescaped text can lead to prompt injection or unintentional instruction override. We mandate strict boundary definitions around user variables using clear semantic markers.",
+        "type": "h2",
+        "text": "Separate fixed instructions from inputs"
       },
       {
-        type: "table",
-        headers: ["Variable Type", "Recommended Delimiter", "Security Consideration"],
-        rows: [
-          ["Short Strings (Names, Titles)", "{{VARIABLE_NAME}}", "Ensure quotes are escaped if passed to JSON endpoints."],
-          ["Multi-Paragraph User Content", "<user_submission>{{PAYLOAD}}</user_submission>", "Isolates arbitrary text so the model does not execute malicious commands."],
-          ["Structured Tabular Data", "```csv\\n{{CSV_DATA}}\\n```", "Prevents column misalignment and ensures predictable row parsing."],
-          ["System Fallback Defaults", "{{VARIABLE | default: 'General Public'}}", "Prevents runtime failures when an input field is left empty by the operator."],
-        ],
-      },
-      { type: "h2", text: "3. Multi-Scenario Template Engineering" },
-      {
-        type: "p",
-        text: "The best prompt templates handle edge cases gracefully. By providing conditional instructions based on variable state, a single template can adapt to multiple operational tiers without requiring separate prompt assets.",
+        "type": "p",
+        "text": "Keep the objective, output format and review rules in one section. Put changing material into clearly named fields such as [AUDIENCE], [SOURCE NOTES] and [DEADLINE]. A placeholder is a convention for the reader, not executable validation."
       },
       {
-        type: "quote",
-        text: "A well-architected prompt template fails gracefully. If given incomplete data, it identifies missing fields instead of fabricating hallucinations.",
+        "type": "h2",
+        "text": "Describe what each field needs"
       },
+      {
+        "type": "p",
+        "text": "Tell the user whether a field expects a sentence, a list or a document. Mark optional inputs. If a deadline or figure is absent, tell the assistant to flag the gap instead of supplying one. Include a small fictional input example and label it as illustrative."
+      },
+      {
+        "type": "h2",
+        "text": "Plan for awkward inputs"
+      },
+      {
+        "type": "p",
+        "text": "Try short notes, incomplete facts, conflicting dates and content outside the intended subject. In an automated application, validate values and permissions in code. Delimiters can help readability but cannot stop prompt injection or replace access controls."
+      },
+      {
+        "type": "h2",
+        "text": "Keep a record of real tests"
+      },
+      {
+        "type": "p",
+        "text": "Store the template version, model used, sample inputs, failures and changes. Do not call a template tested on a model simply because its name appears in the instructions. A format example and an actual model output should be labelled differently."
+      },
+      {
+        "type": "h2",
+        "text": "A starting prompt to adapt"
+      },
+      {
+        "type": "p",
+        "text": "This is an illustrative template, not a recorded model result. Replace the bracketed fields with your own material, then check the answer before using it."
+      },
+      {
+        "type": "code",
+        "label": "Example prompt — fill in the brackets",
+        "text": "Task: turn [SOURCE NOTES] into a project update for [AUDIENCE].\nRequired sections: current status, decisions, next actions.\nUse [DEADLINE] only when supplied; otherwise write “deadline not specified”.\nDo not add progress figures or commitments.\nBefore drafting, list any missing facts that would change the update."
+      },
+      {
+        "type": "h2",
+        "text": "Check the result before using it"
+      },
+      {
+        "type": "list",
+        "items": [
+          "Make every required input understandable without extra explanation.",
+          "Check that missing values remain visibly missing.",
+          "Test both an ordinary and an incomplete input.",
+          "Keep untrusted content separate and enforce application permissions outside the prompt."
+        ]
+      },
+      {
+        "type": "h2",
+        "text": "Common questions"
+      },
+      {
+        "type": "h3",
+        "text": "Are double curly brackets required?"
+      },
+      {
+        "type": "p",
+        "text": "No. Brackets, labelled fields or forms can all work. Use one convention consistently and explain how to replace it."
+      },
+      {
+        "type": "h3",
+        "text": "Can one template cover every situation?"
+      },
+      {
+        "type": "p",
+        "text": "Usually not. Split templates when the audience, risks or output requirements differ materially."
+      },
+      {
+        "type": "related_prompts",
+        "prompts": [
+          {
+            "title": "Prompt Template Library Organiser",
+            "href": "/prompt/prompt-template-library-organiser-ai28",
+            "description": "Organise a library of reusable prompts with clearer names and inputs."
+          },
+          {
+            "title": "Meeting Notes to Action Items",
+            "href": "/prompt/meeting-notes-to-action-items-pro24",
+            "description": "Extract actions from notes, with owners and deadlines checked against the meeting record."
+          }
+        ]
+      }
     ],
-    takeaways: [
-      "Transition from one-off prompts to reusable parameterized assets using double-bracket {{VARIABLES}}.",
-      "Defend against prompt injection by wrapping dynamic user input in XML container tags.",
-      "Standardize variable nomenclature across your entire organizational prompt library.",
-      "Incorporate fallback defaults and missing-variable assertions to prevent hallucinated assumptions.",
+    "takeaways": [
+      "Make every required input understandable without extra explanation.",
+      "Check that missing values remain visibly missing.",
+      "Test both an ordinary and an incomplete input.",
+      "Keep untrusted content separate and enforce application permissions outside the prompt."
     ],
+    "updated": "2026-11-03",
+    "category": "Fundamentals",
+    "emoji": "📐",
+    "readMinutes": 3
   },
   {
-    slug: "common-prompting-mistakes",
-    title: "10 Critical Prompt Engineering Mistakes That Cripple AI Output (And How to Fix Them)",
-    description:
-      "Empirical breakdown of the most common prompt anti-patterns: instruction contradiction, runaway conversational fluff, open-ended reasoning traps, and weak negative constraints.",
-    category: "Fundamentals",
-    readMinutes: 13,
-    updated: "2026-06-21",
-    emoji: "⚠️",
-    intro:
-      "Across our team's reviews of community prompt submissions, we consistently observe the exact same set of fatal flaws that sabotage LLM performance. These anti-patterns lead directly to hallucinated facts, robotic phrasing, format breakage, and wasted token costs. In this field guide, we analyze the 10 most damaging mistakes and demonstrate their exact, verified corrections.",
-    blocks: [
+    "slug": "common-prompting-mistakes",
+    "title": "Common AI Prompting Mistakes and How to Fix Them",
+    "description": "Fix vague requests, conflicting rules, missing sources and unchecked AI output. Practical examples for writing, research and repeatable everyday tasks.",
+    "intro": "The most useful fix is often a clearer task or a better source, not a longer prompt. Diagnose the failure first and change the instruction that caused it.",
+    "blocks": [
       {
-        type: "callout",
-        variant: "warning",
-        title: "The Cost of Prompt Anti-Patterns",
-        text: "Unoptimized prompts waste an estimated 35% to 50% of API token allowances on conversational boilerplate ('Sure, I would be happy to help you with that!') while degrading instruction-following adherence.",
-      },
-      { type: "h2", text: "Mistake 1: Conversational Politeness & Preamble Bloat" },
-      {
-        type: "p",
-        text: "Treating an AI model like a person by saying 'Please', 'Could you kindly', and 'Thank you so much' consumes context window space and primes the model to output pleasant conversational filler before delivering the actual answer. In programmatic pipelines, this breaks JSON parsing and inflates latency.",
+        "type": "callout",
+        "title": "Short answer",
+        "text": "The most useful fix is often a clearer task or a better source, not a longer prompt. Diagnose the failure first and change the instruction that caused it.",
+        "variant": "info"
       },
       {
-        type: "code",
-        label: "Correction",
-        text: "Rule: Begin output immediately with the requested payload. Do not include introductory pleasantries, explanations, or concluding remarks.",
-      },
-      { type: "h2", text: "Mistake 2: Negative-Only Constraints Without Positive Alternatives" },
-      {
-        type: "p",
-        text: "Telling an LLM 'Do not write boring copy' gives it zero actionable direction on what style it SHOULD adopt. Models handle positive directives far more effectively than vague negative bans.",
+        "type": "h2",
+        "text": "Vague requests and hidden assumptions"
       },
       {
-        type: "table",
-        headers: ["Weak Negative Prompt", "Actionable Positive Alternative"],
-        rows: [
-          ["'Don't make it sound like a sales pitch.'", "'Adopt the clinical, data-driven tone of an academic research summary.'"],
-          ["'Don't write long sentences.'", "'Strict constraint: Maximum 15 words per sentence. Use short, punchy declarative statements.'"],
-          ["'Don't use cliches.'", "'Avoid metaphors. Describe features exclusively using physical dimensions and quantified benchmarks.'"],
-        ],
+        "type": "p",
+        "text": "“Make this better” leaves the assistant to choose the goal. Say whether you need a shorter message, a clearer explanation or a friendlier tone. Provide the reader and intended action. Polite language is fine; the problem is missing information, not saying please."
       },
-      { type: "h2", text: "Mistake 3: Packing Multiple Independent Tasks into One Prompt" },
       {
-        type: "p",
-        text: "When you ask a model in a single prompt to 'Research competitors, analyze their pricing, write a strategic memo, and draft 5 social media posts', the model's attention degrades across subsequent tasks. Decompose complex workflows into sequential chained prompts or structured stages.",
+        "type": "h2",
+        "text": "Conflicting rules and overloaded tasks"
       },
-      { type: "h2", text: "Mistake 4: Asking for Absolute Factuality Without Source Text" },
       {
-        type: "p",
-        text: "Expecting an LLM to cite obscure, real-time statistics out of its parameter weights invites catastrophic hallucination. Always supply the ground-truth reference material inside `<source_data>` tags and instruct the model to state 'Not mentioned in source' if an answer is absent.",
+        "type": "p",
+        "text": "An exhaustive analysis cannot also be a tiny summary. Put essential requirements first, distinguish optional ones and split unrelated tasks. Research, fact-checking and drafting benefit from separate review points rather than one instruction to do everything."
       },
+      {
+        "type": "h2",
+        "text": "Asking for facts without evidence"
+      },
+      {
+        "type": "p",
+        "text": "An instruction to be accurate does not give the model access to current facts. Supply your source or use a tool that can retrieve it, then check the citation. If no source supports a figure, leave it out. Asking for a confident tone should never override uncertainty."
+      },
+      {
+        "type": "h2",
+        "text": "Treating a plausible answer as a finished result"
+      },
+      {
+        "type": "p",
+        "text": "Fluent prose and tidy code can still be wrong. Review claims, run tests and check that the output actually meets the brief. If your prompt fails repeatedly, save a concrete failing input and use it when comparing the revision."
+      },
+      {
+        "type": "h2",
+        "text": "A starting prompt to adapt"
+      },
+      {
+        "type": "p",
+        "text": "This is an illustrative template, not a recorded model result. Replace the bracketed fields with your own material, then check the answer before using it."
+      },
+      {
+        "type": "code",
+        "label": "Example prompt — fill in the brackets",
+        "text": "Review this draft against the brief.\nBrief: [AUDIENCE, PURPOSE, CONFIRMED FACTS].\nDraft: [TEXT].\nReturn a table: issue, evidence in the draft, suggested change.\nSeparate factual gaps from stylistic suggestions. Do not invent facts to fill gaps."
+      },
+      {
+        "type": "h2",
+        "text": "Check the result before using it"
+      },
+      {
+        "type": "list",
+        "items": [
+          "Name one concrete deliverable.",
+          "Resolve contradictory length and detail requirements.",
+          "Supply sources for factual tasks.",
+          "Review the output instead of trusting confident wording."
+        ]
+      },
+      {
+        "type": "h2",
+        "text": "Common questions"
+      },
+      {
+        "type": "h3",
+        "text": "Should I ban every unwanted phrase?"
+      },
+      {
+        "type": "p",
+        "text": "A short list can help, but also say what you want instead: plain language, concrete facts or a direct opening."
+      },
+      {
+        "type": "h3",
+        "text": "Is a bad answer always a bad prompt?"
+      },
+      {
+        "type": "p",
+        "text": "No. The model, available tools and source quality also matter. Some tasks need specialist review rather than another prompt."
+      },
+      {
+        "type": "related_prompts",
+        "prompts": [
+          {
+            "title": "Product Description That Sells",
+            "href": "/prompt/product-description-that-sells-pp13",
+            "description": "Turn supplied product facts into a structured description; review the draft for unsupported claims."
+          },
+          {
+            "title": "Debug This Error Systematically",
+            "href": "/prompt/debug-this-error-systematically-pp2",
+            "description": "Separate a debugging hypothesis from evidence and choose a way to confirm it."
+          }
+        ]
+      }
     ],
-    takeaways: [
-      "Eliminate conversational filler to save tokens and avoid JSON parsing failures.",
-      "Pair every negative restriction with an explicit positive stylistic replacement.",
-      "Decompose complex multi-step workflows into sequential prompt pipelines.",
-      "Anchor factual tasks in explicit source documents rather than relying on parametric recall.",
+    "takeaways": [
+      "Name one concrete deliverable.",
+      "Resolve contradictory length and detail requirements.",
+      "Supply sources for factual tasks.",
+      "Review the output instead of trusting confident wording."
     ],
+    "updated": "2026-11-03",
+    "category": "Fundamentals",
+    "emoji": "⚠️",
+    "readMinutes": 3
   },
   {
-    slug: "how-to-remove-a-prompt-from-chatgpt",
-    title: "How to Remove or Delete a Prompt in ChatGPT (2026 Guide)",
-    description:
-      "Remove a ChatGPT prompt by deleting the chat, clearing your full history or deleting a custom GPT, step by step. Plus how to stop your chats being used for training.",
-    category: "Fundamentals",
-    readMinutes: 10,
-    updated: "2026-06-19",
-    emoji: "🔒",
-    intro:
-      "When using AI tools in business and professional environments, confidential proprietary information, customer data, and custom prompt logic often end up inside active conversation threads. Knowing how to properly purge history, opt out of training datasets, and maintain data sovereignty is essential for GDPR, UK DPA, and enterprise security compliance.",
-    blocks: [
+    "slug": "how-to-remove-a-prompt-from-chatgpt",
+    "title": "How to Delete a ChatGPT Prompt or Conversation",
+    "description": "Delete or archive ChatGPT chats, manage saved memories and change training settings. Understand what each control does before removing sensitive information.",
+    "intro": "To remove a saved conversation from ChatGPT, delete the chat. Archiving only hides it from the main list, and changing training settings does not delete your history or saved memories.",
+    "blocks": [
       {
-        type: "stats_grid",
-        stats: [
-          { label: "Data Retention Window", value: "30 Days", desc: "Standard OpenAI retention for abuse monitoring after deletion" },
-          { label: "Zero Data Retention", value: "Supported", desc: "Available on Enterprise & API accounts with BAA" },
-          { label: "GDPR Right to Erasure", value: "100%", desc: "Full statutory compliance via account data controls" },
-        ],
-      },
-      { type: "h2", text: "1. Step-by-Step Individual Thread Deletion" },
-      {
-        type: "steps",
-        items: [
-          "Navigate to ChatGPT (chatgpt.com) and locate the target conversation in the left-hand sidebar history.",
-          "Hover over the conversation title and click the three horizontal dots (`...`) icon.",
-          "Select 'Delete' from the popup menu, then confirm the prompt warning.",
-          "Note: Deleted chats are permanently purged from user-accessible history immediately and wiped from server backup clusters within 30 days.",
-        ],
-      },
-      { type: "h2", text: "2. Disabling Model Training on Your Prompts" },
-      {
-        type: "p",
-        text: "By default, consumer accounts may have chat history opted in to train future OpenAI foundation models. To disable this completely and protect proprietary prompt IP:",
+        "type": "callout",
+        "title": "Short answer",
+        "text": "To remove a saved conversation from ChatGPT, delete the chat. Archiving only hides it from the main list, and changing training settings does not delete your history or saved memories.",
+        "variant": "info"
       },
       {
-        type: "steps",
-        items: [
-          "Click on your profile avatar in the bottom-left corner and open 'Settings'.",
-          "Select 'Data Controls' from the settings modal menu.",
-          "Toggle off 'Improve the model for everyone'. This prevents your input prompts and completions from being ingested into training runs.",
-        ],
+        "type": "h2",
+        "text": "Delete a conversation or archive it"
       },
       {
-        type: "callout",
-        variant: "info",
-        title: "API & Enterprise Accounts Exemption",
-        text: "If you interact with OpenAI models via the official developer API or an Enterprise workspace, your prompt data is NEVER used for model training by default under standard commercial terms.",
+        "type": "p",
+        "text": "Find the conversation in ChatGPT, open its menu and select Delete, then confirm. On a phone the menu location may differ. Archive is useful for tidying your sidebar, but archived chats remain in the account. Open Settings, then Data controls, to manage archived chats. Deletion removes the conversation rather than just one selected prompt."
       },
-      { type: "h2", text: "3. Removing Custom GPTs & Proprietary Instructions" },
       {
-        type: "p",
-        text: "If you have published a Custom GPT containing sensitive system prompts or proprietary API knowledge files, navigate to 'My GPTs' -> 'Edit' -> 'Delete GPT' to immediately revoke public access and de-index the configuration.",
+        "type": "h2",
+        "text": "Understand what deletion means"
       },
+      {
+        "type": "p",
+        "text": "OpenAI says deleted chats are scheduled for permanent deletion within 30 days, with exceptions where content was already de-identified or must be kept for legal or security reasons. You cannot restore a deleted chat through the normal interface. Do not describe deletion as immediate removal from every system or as proof of legal compliance."
+      },
+      {
+        "type": "h2",
+        "text": "Change training settings separately"
+      },
+      {
+        "type": "p",
+        "text": "For a personal workspace, open Settings and Data controls and review Improve the model for everyone. Turning it off is separate from deleting chats: saved conversations remain in your history. Account type and available settings can differ, so follow the controls shown in your own workspace."
+      },
+      {
+        "type": "h2",
+        "text": "Check memories, files and reusable instructions"
+      },
+      {
+        "type": "p",
+        "text": "A conversation, saved memory, uploaded file and custom instruction are different things. If sensitive information was saved as a memory or reused in instructions, review those controls separately. Removing a chat does not by itself prove every copy or reference has been removed. Follow current official help for your account."
+      },
+      {
+        "type": "h2",
+        "text": "Use the official help for changing controls"
+      },
+      {
+        "type": "p",
+        "text": "The interface and retention policies can change. The source links below point to OpenAI’s deletion, data-control and retention guidance. If the material involves client data or regulated information, follow your organisation’s policy rather than relying on this general guide."
+      },
+      {
+        "type": "h2",
+        "text": "Check the result before using it"
+      },
+      {
+        "type": "list",
+        "items": [
+          "Confirm you chose Delete rather than Archive.",
+          "Review saved memories and reusable instructions separately.",
+          "Treat training preferences and history deletion as different controls.",
+          "Avoid uploading confidential data without permission."
+        ]
+      },
+      {
+        "type": "h2",
+        "text": "Common questions"
+      },
+      {
+        "type": "h3",
+        "text": "Can I delete just one message?"
+      },
+      {
+        "type": "p",
+        "text": "Deleting a conversation removes the saved thread. The current interface may let you edit messages, but editing is not the same as erasing all stored versions."
+      },
+      {
+        "type": "h3",
+        "text": "Does turning off training remove old chats?"
+      },
+      {
+        "type": "p",
+        "text": "No. It changes a data-sharing setting; use the separate deletion controls to remove chats."
+      },
+      {
+        "type": "related_prompts",
+        "prompts": [
+          {
+            "title": "Document Summarisation Engine",
+            "href": "/prompt/document-summarisation-engine-ai14",
+            "description": "Summarise supplied documents and check the summary against the original."
+          }
+        ]
+      }
     ],
-    takeaways: [
-      "Regularly audit and prune conversation history containing confidential prompt parameters.",
-      "Toggle off 'Improve the model for everyone' under Data Controls to protect corporate IP from training pipelines.",
-      "API data is exempted from training under standard commercial terms.",
-      "For enterprise regulatory requirements, consider deploying zero-data-retention (ZDR) agreements.",
+    "takeaways": [
+      "Confirm you chose Delete rather than Archive.",
+      "Review saved memories and reusable instructions separately.",
+      "Treat training preferences and history deletion as different controls.",
+      "Avoid uploading confidential data without permission."
     ],
-  },
+    "updated": "2026-11-03",
+    "category": "Fundamentals",
+    "emoji": "🔒",
+    "readMinutes": 3
+  }
 ];

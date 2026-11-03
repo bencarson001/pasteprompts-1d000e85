@@ -2,133 +2,242 @@ import type { Guide } from "./types";
 
 export const IMAGE_GENERATION_GUIDES: Guide[] = [
   {
-    slug: "midjourney-v6-prompt-formula-guide",
-    title: "Midjourney v6.1 & Photorealism Prompt Formula: The Complete Parametric Guide",
-    description:
-      "The definitive technical guide to Midjourney v6.1 image generation. Master camera rigs, focal lengths, natural language descriptors, text rendering, and parameter tuning (--raw, --ar, --stylize, --chaos).",
-    category: "Image Generation",
-    readMinutes: 16,
-    updated: "2026-06-25",
-    emoji: "🎨",
-    intro:
-      "Midjourney v6.1 represents a massive leap in diffusion model architecture: it completely deprecates the old 'comma-separated keyword salad' of earlier versions in favor of precise natural language comprehension, photorealistic skin textures, and flawless in-image typography rendering. In this deep-dive guide, we break down our studio's exact 6-part parametric prompt formula used to produce award-winning commercial imagery and ultra-realistic portraits.",
-    blocks: [
+    "slug": "midjourney-v6-prompt-formula-guide",
+    "title": "Midjourney Prompts: Subject, Lighting and Composition",
+    "description": "Write clearer Midjourney image prompts with subject, setting, lighting and composition. Check version-specific parameters and review generated images for errors.",
+    "intro": "Describe the visible scene and the result you need. This guide keeps its v6-era URL, but parameters depend on your selected Midjourney version and should be checked before use.",
+    "blocks": [
       {
-        type: "stats_grid",
-        stats: [
-          { label: "Photorealism Adherence", value: "98.4%", desc: "When combining 35mm focal descriptors with `--style raw`" },
-          { label: "Text Rendering Accuracy", value: "92.1%", desc: "In v6.1 when wrapping target phrases in double quotes" },
-          { label: "Skin Texture Fidelity", value: "SOTA", desc: "Eliminates unnatural plastic smoothing without extra LoRAs" },
-        ],
-      },
-      { type: "h2", text: "1. The Shift from Keyword Stacking to Natural Syntax" },
-      {
-        type: "p",
-        text: "In Midjourney v4 and v5, creators relied on stacking disconnected adjectives: 'photorealistic, 8k, octane render, trending on artstation, hyperdetailed'. In v6 and v6.1, these legacy tags degrade image quality because the model's text encoder was trained to understand semantic sentence structure. Describing the physical scene, camera optics, lighting environment, and materials in coherent prose yields vastly superior results.",
+        "type": "callout",
+        "title": "Short answer",
+        "text": "Describe the visible scene and the result you need. This guide keeps its v6-era URL, but parameters depend on your selected Midjourney version and should be checked before use.",
+        "variant": "info"
       },
       {
-        type: "table",
-        headers: ["Legacy Prompting (v4/v5 - Avoid)", "Modern v6.1 Natural Syntax (Recommended)"],
-        rows: [
-          ["'portrait of woman, photorealistic, 8k, unreal engine 5, studio lighting, hyperdetailed'", "'A high-contrast medium shot of a 32-year-old Scandinavian architect sitting by a rain-slicked window. Natural soft morning daylight casting subtle reflections on her linen collar, shot on Hasselblad H6D-100c with an 80mm f/2.8 lens --style raw --ar 16:9'"],
-          ["'cyberpunk city, neon, ultra detailed, volumetric light, wallpaper'", "'A low-angle street perspective of a dense Neo-Tokyo alleyway at dusk. Wet asphalt reflecting magenta neon signage, volumetric steam rising from a ramen cart vent, shot on 35mm film with subtle grain --v 6.1 --ar 21:9'"],
-        ],
-      },
-      { type: "h2", text: "2. The 6-Part Parametric Prompt Formula" },
-      {
-        type: "p",
-        text: "Every commercial prompt in our library follows this deterministic structure:",
+        "type": "h2",
+        "text": "Describe what must be visible"
       },
       {
-        type: "steps",
-        items: [
-          "1. Subject & Action: The central focus (e.g., 'An editorial close-up portrait of an elderly watchmaker assembling a tourbillon movement').",
-          "2. Environment & Background: Specific architectural or natural context with spatial depth ('Inside a sunlit Swiss alpine workshop with mahogany workbenches and brass gears blurred in the soft background').",
-          "3. Lighting & Atmosphere: Directional source, color temperature, and mood ('Golden hour side lighting streaming through dusty bay windows, creating high-contrast rim light').",
-          "4. Camera, Lens & Color Science: Optical equipment, focal length, aperture, and film stock ('Shot on Canon EOS R5 with 85mm f/1.4 lens, shallow depth of field, warm kodachrome color palette').",
-          "5. Typography (Optional): Text inside quotes ('with the word \"CHRONOS\" engraved on the dial').",
-          "6. CLI Parameters: Technical flags at the very end (`--v 6.1 --style raw --ar 16:9 --stylize 150`).",
-        ],
-      },
-      { type: "h2", text: "3. Parameter Tuning Reference Guide" },
-      {
-        type: "table",
-        headers: ["Parameter", "Range", "Default", "Studio Recommendation"],
-        rows: [
-          ["`--style raw`", "Flag", "Off", "Always enable for photorealism, editorial portraits, and authentic documentary photos."],
-          ["`--stylize` (`--s`)", "0 - 1000", "100", "Use 50-150 for strict prompt adherence; 250-750 for painterly artistic expression."],
-          ["`--chaos` (`--c`)", "0 - 100", "0", "Use 5-15 to generate diverse concept art variations across the 4-grid."],
-          ["`--ar`", "Any ratio", "1:1", "`16:9` for cinematic banners, `9:16` for mobile stories/reels, `4:5` for Instagram posts."],
-        ],
+        "type": "p",
+        "text": "Start with the subject and action, then add the setting and relationship between objects. “A ceramic mug beside a folded linen napkin on a kitchen table” is easier to assess than a string of praise such as “masterpiece, stunning, perfect”. State whether the image is an illustration, concept or photograph-style scene."
       },
       {
-        type: "callout",
-        variant: "tip",
-        title: "Pro Tip: Eliminating the 'Midjourney AI Glow'",
-        text: "To avoid the telltale glossy 'AI look', always append `--style raw` and specify real physical imperfections: 'subtle skin pores, natural stray hairs, faint film grain, imperfect overcast ambient lighting'.",
+        "type": "h2",
+        "text": "Direct composition and light"
       },
+      {
+        "type": "p",
+        "text": "Specify viewpoint, framing, background and light direction. Lens language can suggest a visual effect but does not simulate a real camera reliably. Leave room for a headline if the image will be part of a layout. Avoid asking for several incompatible lighting conditions."
+      },
+      {
+        "type": "h2",
+        "text": "Check parameters for the chosen version"
+      },
+      {
+        "type": "p",
+        "text": "Aspect ratio, stylisation, reference images and raw-mode controls may be available, but syntax and supported combinations change. Use current Midjourney documentation and the controls in your interface. Do not assume flags from v6 work unchanged on another version."
+      },
+      {
+        "type": "h2",
+        "text": "Inspect details and usage rights"
+      },
+      {
+        "type": "p",
+        "text": "Generated text, hands, reflections, product geometry and repeated objects can be wrong. Add critical typography in a design tool if accuracy matters. Check the service’s current terms and rights for any reference images. A generated product scene is not evidence of a real product shoot."
+      },
+      {
+        "type": "h2",
+        "text": "A starting prompt to adapt"
+      },
+      {
+        "type": "p",
+        "text": "This is an illustrative template, not a recorded model result. Replace the bracketed fields with your own material, then check the answer before using it."
+      },
+      {
+        "type": "code",
+        "label": "Example prompt — fill in the brackets",
+        "text": "A photograph-style image of [SUBJECT] in [SETTING].\nComposition: [VIEWPOINT AND FRAMING].\nLighting: [DIRECTION AND SOFTNESS].\nMaterials and colours: [CONFIRMED DETAILS].\nBackground: [WHAT TO INCLUDE]. Leave [AREA] uncluttered for later text.\nUse only parameters supported by my selected model version."
+      },
+      {
+        "type": "h2",
+        "text": "Check the result before using it"
+      },
+      {
+        "type": "list",
+        "items": [
+          "Check supported settings in the current interface.",
+          "Inspect text, anatomy and product geometry.",
+          "Use reference images only with permission.",
+          "Label concepts so they cannot be mistaken for documentary photographs."
+        ]
+      },
+      {
+        "type": "h2",
+        "text": "Common questions"
+      },
+      {
+        "type": "h3",
+        "text": "Does naming a camera guarantee realism?"
+      },
+      {
+        "type": "p",
+        "text": "No. Camera and lens terms suggest a look; inspect whether the resulting perspective and depth of field fit your scene."
+      },
+      {
+        "type": "h3",
+        "text": "Can I rely on generated lettering?"
+      },
+      {
+        "type": "p",
+        "text": "Not for critical spelling, labels or legal wording. Review it closely or add text separately."
+      },
+      {
+        "type": "related_prompts",
+        "prompts": [
+          {
+            "title": "Midjourney Image Prompt Refiner",
+            "href": "/prompt/midjourney-image-prompt-refiner-ai4",
+            "description": "Refine a scene brief for Midjourney; verify suggested settings against your model version."
+          },
+          {
+            "title": "Midjourney Style Reference Pack",
+            "href": "/prompt/midjourney-style-reference-pack-ai5",
+            "description": "Build a reusable visual brief and review consistency across actual generations."
+          }
+        ]
+      }
     ],
-    takeaways: [
-      "Abandon legacy keyword stacking in favor of descriptive natural language prose.",
-      "Follow our 6-part parametric formula: Subject, Environment, Lighting, Camera/Lens, Text, Parameters.",
-      "Use `--style raw` to achieve authentic documentary-grade photorealism.",
-      "Render in-image text by placing exact wording inside double quotation marks.",
+    "takeaways": [
+      "Check supported settings in the current interface.",
+      "Inspect text, anatomy and product geometry.",
+      "Use reference images only with permission.",
+      "Label concepts so they cannot be mistaken for documentary photographs."
     ],
+    "updated": "2026-11-03",
+    "category": "Image Generation",
+    "emoji": "🎨",
+    "readMinutes": 3
   },
   {
-    slug: "flux-ai-image-prompting-mastery",
-    title: "FLUX.1 Schnell & Dev Prompting Guide: Typography, Camera Rigs & Hyper-Realistic Composition",
-    description:
-      "Master Black Forest Labs' open-weight FLUX.1 models. Learn prompt engineering for text generation, complex multi-character anatomy, photographic realism, and guidance scale tuning.",
-    category: "Image Generation",
-    readMinutes: 15,
-    updated: "2026-06-25",
-    emoji: "⚡",
-    intro:
-      "Created by the original team behind Stable Diffusion, FLUX.1 (Schnell, Dev, and Pro) has set a new global standard for open-weight image generation. FLUX excels where other diffusion models fail: flawless multi-line typography, anatomically perfect hands, complex spatial relationship comprehension, and adherence to intricate descriptive prompts. In this guide, we break down how to craft prompts specifically tuned for FLUX's transformer-based flow matching architecture.",
-    blocks: [
+    "slug": "flux-ai-image-prompting-mastery",
+    "title": "Flux Image Prompts: Products, Portraits and Text",
+    "description": "Write practical Flux prompts for product images, portraits and visual concepts. Learn how to describe composition and check anatomy, lettering and model licences.",
+    "intro": "Give Flux a specific scene, visible materials and clear composition. Different Flux models and hosting services expose different controls; no prompt can guarantee accurate text, anatomy or product detail.",
+    "blocks": [
       {
-        type: "stats_grid",
-        stats: [
-          { label: "Anatomy Pass Rate", value: "97.3%", desc: "Accurate hand, finger, and limb rendering without negative prompts" },
-          { label: "Typography Success", value: "96.5%", desc: "Complex multi-word signage and typographic logos" },
-          { label: "Open-Source Weights", value: "12B Params", desc: "Available for local RTX 3090/4090 inference & cloud APIs" },
-        ],
-      },
-      { type: "h2", text: "1. The FLUX Prompting Philosophy: Descriptive Specificity" },
-      {
-        type: "p",
-        text: "FLUX uses a 24-layer diffusion transformer (DiT) architecture paired with a T5-XXL text encoder. Because the T5 text encoder reads full paragraph context with deep semantic understanding, FLUX responds exceptionally well to long, descriptive paragraphs explaining relationships between objects in physical 3D space.",
+        "type": "callout",
+        "title": "Short answer",
+        "text": "Give Flux a specific scene, visible materials and clear composition. Different Flux models and hosting services expose different controls; no prompt can guarantee accurate text, anatomy or product detail.",
+        "variant": "info"
       },
       {
-        type: "code",
-        label: "FLUX.1 Typography & Product Prompt",
-        text: `A high-end editorial product photograph of a matte black aluminium cold brew bottle standing upright on a slab of wet volcanic stone.
-The label on the bottle is textured off-white paper with crisp embossed black typography that clearly reads "COLD ORIGIN" in an elegant serif typeface.
-In the background, lush green monstera leaves are softly blurred under diffused morning mist.
-Fine condensation droplets bead along the glass surface.
-Shot on 50mm f/1.8 macro lens, studio lighting with a softbox from the top left, commercial product magazine quality.`,
-      },
-      { type: "h2", text: "2. Calibrating Guidance Scale & Inference Steps" },
-      {
-        type: "table",
-        headers: ["Model Tier", "Steps", "Guidance Scale", "Hardware / Use Case"],
-        rows: [
-          ["FLUX.1 Schnell", "4 - 8 steps", "1.0 - 2.5", "Ultra-fast consumer local generation & real-time apps."],
-          ["FLUX.1 Dev", "20 - 30 steps", "3.0 - 4.5", "Non-commercial research, highest photorealism and texture detail."],
-          ["FLUX.1 Pro", "30 - 50 steps", "3.5 - 5.0", "Enterprise API generation, commercial licensing, peak fidelity."],
-        ],
+        "type": "h2",
+        "text": "Write a scene rather than a list of compliments"
       },
       {
-        type: "quote",
-        text: "Unlike older Stable Diffusion models, FLUX does NOT require negative prompts like 'ugly, deformed hands, blurry'. The flow-matching transformer naturally avoids anatomical deformities when given positive descriptive details.",
+        "type": "p",
+        "text": "Name the subject, location, action and visual treatment. Describe which objects sit in front of or behind others. Keep the brief focused: extra adjectives do not compensate for conflicting instructions or missing product details."
       },
+      {
+        "type": "h2",
+        "text": "Protect the details that matter"
+      },
+      {
+        "type": "p",
+        "text": "For a product image, supply shape, material, colour and reference material you are authorised to use. For a portrait, specify pose, framing and lighting rather than promising anatomically correct results. Check fingers, jewellery, edges, shadows and reflections after generation."
+      },
+      {
+        "type": "h2",
+        "text": "Handle text and settings carefully"
+      },
+      {
+        "type": "p",
+        "text": "Put desired wording in quotes if the tool supports it, then inspect every character. Critical labels and logos are often better added afterwards. Guidance, steps and negative-prompt support vary across Flux variants and providers; use their documentation rather than a universal settings table."
+      },
+      {
+        "type": "h2",
+        "text": "Check licensing before commercial use"
+      },
+      {
+        "type": "p",
+        "text": "Flux is a family of models, not one licence. Weight licences, hosted-service terms and output-use conditions can differ. Confirm the terms for the exact model and service. Do not describe all variants as unrestricted open-source commercial tools."
+      },
+      {
+        "type": "h2",
+        "text": "A starting prompt to adapt"
+      },
+      {
+        "type": "p",
+        "text": "This is an illustrative template, not a recorded model result. Replace the bracketed fields with your own material, then check the answer before using it."
+      },
+      {
+        "type": "code",
+        "label": "Example prompt — fill in the brackets",
+        "text": "A product photograph-style image of [PRODUCT] on [SURFACE].\nPreserve these supplied details: [SHAPE, MATERIALS, COLOUR].\nCamera view: [ANGLE]. Lighting: [DIRECTION AND QUALITY].\nBackground: [SETTING], with no unrelated objects.\nIf text is needed, it reads “[WORDING]”; I will verify or replace it before publication.\nReference material: [AUTHORISED REFERENCE]."
+      },
+      {
+        "type": "h2",
+        "text": "Check the result before using it"
+      },
+      {
+        "type": "list",
+        "items": [
+          "Inspect anatomy, text, edges and reflections.",
+          "Check exact model and provider settings.",
+          "Confirm licence and reference-image rights.",
+          "Do not present generated scenes as proof of product performance."
+        ]
+      },
+      {
+        "type": "h2",
+        "text": "Common questions"
+      },
+      {
+        "type": "h3",
+        "text": "Are negative prompts supported?"
+      },
+      {
+        "type": "p",
+        "text": "That depends on the model and interface. Check the service rather than assuming all Flux variants handle them the same way."
+      },
+      {
+        "type": "h3",
+        "text": "Will Flux spell every label correctly?"
+      },
+      {
+        "type": "p",
+        "text": "No. Verify lettering and add critical text separately when accuracy matters."
+      },
+      {
+        "type": "related_prompts",
+        "prompts": [
+          {
+            "title": "Photorealistic Product Hero",
+            "href": "/prompt/photorealistic-product-hero-flux-pp41",
+            "description": "Plan a product hero shot from the product details you supply."
+          },
+          {
+            "title": "Premium Editorial Portrait",
+            "href": "/prompt/premium-editorial-portrait-flux-pp42",
+            "description": "Set a portrait brief with pose, lighting and texture requirements."
+          },
+          {
+            "title": "Clean E-Commerce Product Set",
+            "href": "/prompt/clean-e-commerce-product-set-flux-pp47",
+            "description": "Prepare a consistent set of product-view instructions and inspect the generated geometry."
+          }
+        ]
+      }
     ],
-    takeaways: [
-      "FLUX uses a T5-XXL text encoder that thrives on full descriptive paragraphs rather than short tags.",
-      "Negative prompts are completely unnecessary for FLUX.1 models.",
-      "Place text inside quotation marks for flawless, sharp in-image typographic generation.",
-      "Keep guidance scale low (3.0–4.0) to prevent burned contrast and oversaturated highlights.",
+    "takeaways": [
+      "Inspect anatomy, text, edges and reflections.",
+      "Check exact model and provider settings.",
+      "Confirm licence and reference-image rights.",
+      "Do not present generated scenes as proof of product performance."
     ],
-  },
+    "updated": "2026-11-03",
+    "category": "Image Generation",
+    "emoji": "⚡",
+    "readMinutes": 3
+  }
 ];
