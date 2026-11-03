@@ -16,3 +16,9 @@
 
 ## New features
 - (awaiting user's upcoming requests)
+
+## Guide refresh — 3 November 2026
+- [ ] Rewrite all existing guides with practical, honest content and verified catalogue links.
+- [ ] Check guide pages, metadata, links and tests; publish the refresh.
+- [ ] Submit the live sitemap to Google and report its acknowledgement, not guaranteed indexing.
+- [ ] Recommend evidence-based AdSense and traffic next steps.
