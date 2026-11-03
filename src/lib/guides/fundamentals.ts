@@ -446,6 +446,23 @@ export const FUNDAMENTAL_GUIDES: Guide[] = [
             "description": "Summarise supplied documents and check the summary against the original."
           }
         ]
+      },
+      {
+        "type": "references",
+        "links": [
+          {
+            "title": "OpenAI: deleting and archiving chats",
+            "href": "https://help.openai.com/en/articles/8809935-deleting-and-archiving-chats-in-chatgpt"
+          },
+          {
+            "title": "OpenAI: data controls in ChatGPT",
+            "href": "https://help.openai.com/en/articles/7730893-data-controls-in-chatgpt"
+          },
+          {
+            "title": "OpenAI: chat and file retention",
+            "href": "https://help.openai.com/en/articles/8983778-chat-and-file-retention-in-chatgpt"
+          }
+        ]
       }
     ],
     "takeaways": [
