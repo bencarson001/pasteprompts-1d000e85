@@ -1,3 +1,4 @@
+import { openConsentSettings } from "@/lib/consent";
 import logoAsset from "@/assets/pasteprompts-logo.png.asset.json";
 import logoLight from "@/assets/pasteprompts-logo-light.png";
 import { Link } from "@/lib/router-compat";
