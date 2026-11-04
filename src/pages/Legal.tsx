@@ -52,7 +52,6 @@ const DOCS: Record<string, Doc> = {
         "You can manage personalised advertising through Google My Ad Center: https://myadcenter.google.com",
         "You can review participating third-party advertising opt-outs at https://www.aboutads.info/choices",
         "Google's advertising cookie information is available at https://policies.google.com/technologies/ads",
-        "Our Cookie settings banner is not a Google-certified consent management platform. A separate Google-certified consent message must be configured for advertising to visitors in the EEA, UK and Switzerland. Where that message is displayed, review its advertising purposes and provider choices; this policy does not certify that setup or imply AdSense approval.",
       ] },
       { h: "7. Service providers", p: ["Services involved in operating the site include Lovable Cloud for hosting and account services, Stripe for payments, Google Analytics for visitor measurement and Google AdSense for advertising. Google and other providers may process information outside the UK or EEA; their policies explain their processing and transfer arrangements."] },
       { h: "8. Privacy requests", p: ["Contact us through our contact page about access, correction, deletion or other privacy requests. You can withdraw non-essential cookie consent in Cookie settings. Depending on the applicable law, you may also have rights to object to or restrict processing and request portability. You can raise concerns with the UK Information Commissioner's Office: https://ico.org.uk"] },
@@ -173,7 +172,7 @@ export default function Legal({ docType }: { docType?: string }) {
           ))}
         </nav>
 
-        <article className="prose-invert max-w-none">
+        <article className="prose-invert max-w-none break-words">
           <h1 className="font-display text-4xl font-bold">{doc.title}</h1>
           <p className="mt-2 text-sm text-muted-foreground">Last updated {doc.updated ?? EFFECTIVE}</p>
           <p className="mt-6 text-lg text-muted-foreground">{doc.intro}</p>
