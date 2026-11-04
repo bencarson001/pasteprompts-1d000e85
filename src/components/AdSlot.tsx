@@ -1,5 +1,6 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ADSENSE_CLIENT, adsEnabled, isRealAdSlot } from "@/lib/ads";
+import { hasMarketingConsent, onConsentChange } from "@/lib/consent";
 
 interface AdSlotProps {
   slot: string;
@@ -11,20 +12,26 @@ interface AdSlotProps {
 }
 
 /**
- * Renders a responsive Google AdSense unit. Renders nothing until a real
- * publisher ID and valid ad slot are configured in src/lib/ads.ts, so there is
- * zero impact or console errors on the live site.
+ * Renders a Google AdSense unit only when a real ad unit ID is configured
+ * (src/lib/ads.ts / VITE_ADSENSE_* env) AND the visitor clicked "Accept all".
+ * Otherwise renders nothing, so there is no empty space or request.
  */
 export function AdSlot({ slot, format = "auto", layout, className, label = true }: AdSlotProps) {
   const ref = useRef<HTMLModElement>(null);
-
-  const shouldRender = adsEnabled() && isRealAdSlot(slot);
+  const [consented, setConsented] = useState(false);
 
   useEffect(() => {
-    if (!shouldRender) return;
+    setConsented(hasMarketingConsent());
+    return onConsentChange(() => setConsented(hasMarketingConsent()));
+  }, []);
+
+  const shouldRender = consented && adsEnabled() && isRealAdSlot(slot);
+
+  useEffect(() => {
+    if (!shouldRender || !ref.current || ref.current.dataset["adsbygoogleStatus"]) return;
     try {
-      // @ts-expect-error adsbygoogle is injected by the AdSense script
-      (window.adsbygoogle = window.adsbygoogle || []).push({});
+      const w = window as unknown as { adsbygoogle?: unknown[] };
+      (w.adsbygoogle = w.adsbygoogle || []).push({});
     } catch {
       /* no-op: ad blocker or script not yet loaded */
     }
@@ -33,7 +40,7 @@ export function AdSlot({ slot, format = "auto", layout, className, label = true 
   if (!shouldRender) return null;
 
   return (
-    <div className={`min-h-[90px] w-full transition-all duration-300 ${className ?? ""}`} aria-hidden="true">
+    <div className={`min-h-[90px] w-full ${className ?? ""}`} aria-label="Advertisement">
       {label && (
         <p className="mb-1 text-center text-[10px] uppercase tracking-widest text-muted-foreground/60">
           Advertisement
