@@ -46,7 +46,7 @@ export function CookieConsent() {
           We use essential cookies to run the site. With your permission we also use Google
           Analytics to measure visits and Google AdSense to show ads on guide pages. You can
           change this any time from “Cookie settings” in the footer. See our{" "}
-          <Link to="/legal/privacy" className="underline hover:text-foreground">
+          <Link to="/privacy" className="underline hover:text-foreground">
             Privacy&nbsp;Policy
           </Link>
           .

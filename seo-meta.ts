@@ -112,7 +112,7 @@ const STATIC_META: Record<string, Omit<PageMeta, "canonicalPath">> = {
 
 const LEGAL_META: Record<string, Omit<PageMeta, "canonicalPath">> = {
   terms: { title: "Terms of Service", description: "Read the Paste Prompts terms covering accounts, prompt purchases, creator listings, acceptable use and marketplace responsibilities." },
-  privacy: { title: "Privacy Policy", description: "Read how Paste Prompts collects, uses, protects and retains account, purchase, support and website usage information." },
+  privacy: { title: "Privacy Policy", description: "How Paste Prompts uses account information, Google Analytics and Google AdSense, and how to manage cookies and privacy requests." },
   disclaimer: { title: "Disclaimer", description: "Read the Paste Prompts disclaimer covering AI-generated output, professional advice, third-party products, advertising and external links." },
   refunds: { title: "Refund Policy", description: "Read when a Paste Prompts digital purchase may qualify for a refund and how to contact support about a purchase problem." },
   creators: { title: "Creator Agreement", description: "Read the Paste Prompts creator terms covering original work, marketplace review, commission, payouts and creator conduct." },
@@ -159,7 +159,7 @@ export function resolveStaticMeta(pathname: string, search = ""): PageMeta | und
   if (legalMatch) {
     const key = legalMatch[1] ?? "";
     const legal = LEGAL_META[key];
-    if (legal) return { ...legal, canonicalPath: `/legal/${key}` };
+    if (legal) return { ...legal, canonicalPath: key === "privacy" ? "/privacy" : `/legal/${key}` };
   }
 
   const browseMatch = path.match(/^\/browse\/([^/]+)\/([^/]+)\/([^/]+)$/);
