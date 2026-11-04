@@ -22,3 +22,7 @@
 - [x] Check guide pages, metadata, links and tests; publish the refresh. Four tests passed; all 27 live guide pages and their metadata verified.
 - [x] Submit the live sitemap to Google and report its acknowledgement, not guaranteed indexing. Google accepted and downloaded 333 URLs with zero reported errors or warnings.
 - [x] Recommend evidence-based AdSense and traffic next steps: consent compliance first, original demonstrations next, then share existing guides and measure search results.
+
+## Privacy Policy — 4 November 2026
+- [x] Update the existing Privacy Policy with Google Analytics and AdSense disclosures and usable preference links.
+- [x] Link Cookie settings to the policy and verify the visitor flow; provide the URL for the AdSense message without publishing automatically. Preview link and settings reopening checked; Essential only loaded no Google scripts; routing test passed.

@@ -2,12 +2,15 @@ import { useParams, Link, Navigate } from "@/lib/router-compat";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
+import { Button } from "@/components/ui/button";
+import { openConsentSettings } from "@/lib/consent";
+import { resolveStaticMeta } from "../../seo-meta";
 
 const SITE = "Paste Prompts";
 const EFFECTIVE = "7 June 2026";
 
 interface Section { h: string; p: string[] }
-interface Doc { title: string; intro: string; sections: Section[] }
+interface Doc { title: string; intro: string; sections: Section[]; updated?: string }
 
 const DOCS: Record<string, Doc> = {
   terms: {
@@ -24,26 +27,37 @@ const DOCS: Record<string, Doc> = {
   },
   privacy: {
     title: "Privacy Policy",
-    intro: `This policy explains what data ${SITE} collects, how we use it, and the choices you have. We comply with UK GDPR and the EU GDPR. Effective ${EFFECTIVE}.`,
+    updated: "4 November 2026",
+    intro: `This policy explains how ${SITE} handles account and website information, including our use of Google Analytics and Google AdSense, and how you can manage your cookie choices.`,
     sections: [
       { h: "1. Who we are", p: [`${SITE} is the data controller for personal data processed through pasteprompts.co.uk. You can reach us at any time via our contact page or at hello@pasteprompts.co.uk.`] },
       { h: "2. What we collect", p: ["Account data (email, display name, handle), content you publish, purchase and payout history, support messages, and basic usage analytics (pages viewed, device type, approximate country). Payment details are processed securely by Stripe — we never see or store full card numbers."] },
-      { h: "3. How we use it", p: ["To operate the marketplace, process purchases, pay creators, prevent fraud, provide support, send service emails, and improve the product. Our lawful bases are contract (running your account and purchases), legitimate interests (security, analytics, product improvement) and consent (advertising and non-essential cookies)."] },
+      { h: "3. How we use it", p: ["To operate the marketplace, process purchases, pay creators, prevent fraud, provide support, send service emails, and improve the product. Account and purchase information supports the services you request; security information helps protect the service. We ask for consent before loading Google Analytics and Google AdSense."] },
       { h: "4. Cookies we use", p: [
         "Essential cookies keep you signed in, remember your cookie choice and secure checkout. These cannot be switched off.",
-        "Analytics cookies (Google Analytics 4) tell us anonymously which pages are useful. IP addresses are truncated and we do not use analytics data to identify individuals.",
-        "Advertising cookies are only loaded on our long-form guide articles. You can accept or decline non-essential cookies using the banner shown on your first visit, and change your mind at any time by clearing site data in your browser.",
+        "Before you choose, and when you choose Essential only, our Google Analytics and Google AdSense scripts do not load. Accept all allows Google Analytics and, on eligible guide pages, Google AdSense to load.",
+        "You can reopen Cookie settings in the footer or below to change your choice. Withdrawing consent stops future loading; if these scripts have already loaded, the page reloads. It does not erase information already sent to Google. You can remove existing cookies using your browser settings.",
+        "Your choice and the time it was made are stored in this browser. A different browser or cleared site data may require a new choice.",
       ] },
-      { h: "5. Third-party advertising (Google AdSense)", p: [
+      { h: "5. Google Analytics", p: [
+        "We use Google Analytics 4 to understand visits, traffic sources and page use. When you accept non-essential cookies, its tags can collect information such as pages visited, browser and device information, referral information and cookie or device identifiers, and send it to Google. Reports help us understand how the site is used; this does not mean all information collected is anonymous.",
+        "Read how Google uses information from sites that use its services: https://policies.google.com/technologies/partner-sites",
+        "Google's Privacy Policy explains its processing: https://policies.google.com/privacy",
+        "Google also provides an Analytics opt-out browser add-on: https://tools.google.com/dlpage/gaoptout",
+      ] },
+      { h: "6. Google AdSense advertising", p: [
         "We may display third-party adverts supplied by Google. Third-party vendors, including Google, use cookies to serve ads based on a user's prior visits to this and other websites.",
         "Google's use of advertising cookies enables it and its partners to serve ads to our users based on their visit to our site and/or other sites on the internet.",
-        "Users may opt out of personalised advertising by visiting Google Ads Settings (https://adssettings.google.com), or opt out of third-party vendor cookies for personalised advertising at https://aboutads.info/choices. You can review how Google uses data at https://policies.google.com/technologies/partner-sites.",
+        "When advertising tags load, Google and its advertising partners may receive information including IP address, browser and device information, page activity and cookie identifiers to deliver and measure advertising. Non-personalised ads may also use cookies; they are not the same as cookie-free advertising.",
+        "You can manage personalised advertising through Google My Ad Center: https://myadcenter.google.com",
+        "You can review participating third-party advertising opt-outs at https://www.aboutads.info/choices",
+        "Google's advertising cookie information is available at https://policies.google.com/technologies/ads",
       ] },
-      { h: "6. Sharing", p: ["We share data only with processors that help us run the service — hosting and database (Lovable Cloud/Supabase), payments (Stripe), analytics (Google Analytics) and advertising (Google AdSense) — under appropriate data-processing agreements. We never sell your personal data. Some providers are outside the UK/EEA; transfers rely on Standard Contractual Clauses or an adequacy decision."] },
-      { h: "7. Your rights", p: ["You can access, correct, export, restrict or delete your data, withdraw consent, and object to certain processing. Contact us to exercise these rights; we respond within one month. You also have the right to complain to the UK Information Commissioner's Office (https://ico.org.uk)."] },
-      { h: "8. Retention", p: ["We keep account data while your account is active, and transaction records for six years to meet legal and accounting obligations. Analytics data is retained for 14 months."] },
-      { h: "9. Children", p: ["The service is not intended for anyone under 16 and we do not knowingly collect data from children."] },
-      { h: "10. Changes", p: ["We update this policy when our processing changes. Material changes are notified in-app; the effective date above always reflects the current version."] },
+      { h: "7. Service providers", p: ["Services involved in operating the site include Lovable Cloud for hosting and account services, Stripe for payments, Google Analytics for visitor measurement and Google AdSense for advertising. Google and other providers may process information outside the UK or EEA; their policies explain their processing and transfer arrangements."] },
+      { h: "8. Privacy requests", p: ["Contact us through our contact page about access, correction, deletion or other privacy requests. You can withdraw non-essential cookie consent in Cookie settings. Depending on the applicable law, you may also have rights to object to or restrict processing and request portability. You can raise concerns with the UK Information Commissioner's Office: https://ico.org.uk"] },
+      { h: "9. Retention", p: ["Contact us for the retention periods applicable to account, purchase and support records. Google Analytics retention depends on the account settings; we do not state a fixed period here without verification. Google explains its retention approach at https://policies.google.com/technologies/retention"] },
+      { h: "10. Children", p: ["The service is intended for people aged 16 or over."] },
+      { h: "11. Changes", p: ["We may update this policy as the service and its providers change. The date above identifies this version."] },
     ],
   },
   disclaimer: {
@@ -124,13 +138,14 @@ export default function Legal({ docType }: { docType?: string }) {
   const normalizedKey = SLUG_ALIASES[targetKey.toLowerCase()] || targetKey;
   const doc = DOCS[normalizedKey];
   if (!doc) return <Navigate to="/legal/terms" replace />;
+  const metadata = resolveStaticMeta(`/legal/${normalizedKey}`);
 
   return (
     <Layout>
       <SEO
         title={doc.title}
-        description={`${doc.title} for ${SITE} — ${doc.intro}`.slice(0, 155)}
-        canonical={docType ? `/${docType}` : `/legal/${normalizedKey}`}
+        description={metadata?.description ?? `${doc.title} for ${SITE} — ${doc.intro}`.slice(0, 155)}
+        canonical={normalizedKey === "privacy" ? "/privacy" : docType ? `/${docType}` : `/legal/${normalizedKey}`}
       />
       <div className="container-tight py-12">
         <Breadcrumbs
@@ -157,10 +172,16 @@ export default function Legal({ docType }: { docType?: string }) {
           ))}
         </nav>
 
-        <article className="prose-invert max-w-none">
+        <article className="prose-invert max-w-none break-words">
           <h1 className="font-display text-4xl font-bold">{doc.title}</h1>
-          <p className="mt-2 text-sm text-muted-foreground">Last updated {EFFECTIVE}</p>
+          <p className="mt-2 text-sm text-muted-foreground">Last updated {doc.updated ?? EFFECTIVE}</p>
           <p className="mt-6 text-lg text-muted-foreground">{doc.intro}</p>
+          {normalizedKey === "privacy" && (
+            <div className="mt-5 flex flex-wrap items-center gap-4">
+              <Button variant="outline" onClick={openConsentSettings}>Cookie settings</Button>
+              <Link to="/cookies" className="text-sm text-primary-glow underline">Cookie Policy</Link>
+            </div>
+          )}
 
           <div className="mt-8 space-y-8">
             {doc.sections.map((s) => (
