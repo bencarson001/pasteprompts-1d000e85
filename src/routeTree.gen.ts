@@ -20,6 +20,7 @@ import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as DisclaimerRouteImport } from './routes/disclaimer'
 import { Route as DmcaRouteImport } from './routes/dmca'
 import { Route as EditorialStandardsRouteImport } from './routes/editorial-standards'
+import { Route as ExploreRouteImport } from './routes/explore'
 import { Route as GlossaryRouteImport } from './routes/glossary'
 import { Route as LibraryRouteImport } from './routes/library'
 import { Route as LoginRouteImport } from './routes/login'
@@ -109,6 +110,11 @@ const DmcaRoute = DmcaRouteImport.update({
 const EditorialStandardsRoute = EditorialStandardsRouteImport.update({
   id: '/editorial-standards',
   path: '/editorial-standards',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExploreRoute = ExploreRouteImport.update({
+  id: '/explore',
+  path: '/explore',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GlossaryRoute = GlossaryRouteImport.update({
@@ -300,6 +306,7 @@ export interface FileRoutesByFullPath {
   '/disclaimer': typeof DisclaimerRoute
   '/dmca': typeof DmcaRoute
   '/editorial-standards': typeof EditorialStandardsRoute
+  '/explore': typeof ExploreRoute
   '/glossary': typeof GlossaryRoute
   '/library': typeof LibraryRoute
   '/login': typeof LoginRoute
@@ -348,6 +355,7 @@ export interface FileRoutesByTo {
   '/disclaimer': typeof DisclaimerRoute
   '/dmca': typeof DmcaRoute
   '/editorial-standards': typeof EditorialStandardsRoute
+  '/explore': typeof ExploreRoute
   '/glossary': typeof GlossaryRoute
   '/library': typeof LibraryRoute
   '/login': typeof LoginRoute
@@ -397,6 +405,7 @@ export interface FileRoutesById {
   '/disclaimer': typeof DisclaimerRoute
   '/dmca': typeof DmcaRoute
   '/editorial-standards': typeof EditorialStandardsRoute
+  '/explore': typeof ExploreRoute
   '/glossary': typeof GlossaryRoute
   '/library': typeof LibraryRoute
   '/login': typeof LoginRoute
@@ -447,6 +456,7 @@ export interface FileRouteTypes {
     | '/disclaimer'
     | '/dmca'
     | '/editorial-standards'
+    | '/explore'
     | '/glossary'
     | '/library'
     | '/login'
@@ -495,6 +505,7 @@ export interface FileRouteTypes {
     | '/disclaimer'
     | '/dmca'
     | '/editorial-standards'
+    | '/explore'
     | '/glossary'
     | '/library'
     | '/login'
@@ -543,6 +554,7 @@ export interface FileRouteTypes {
     | '/disclaimer'
     | '/dmca'
     | '/editorial-standards'
+    | '/explore'
     | '/glossary'
     | '/library'
     | '/login'
@@ -592,6 +604,7 @@ export interface RootRouteChildren {
   DisclaimerRoute: typeof DisclaimerRoute
   DmcaRoute: typeof DmcaRoute
   EditorialStandardsRoute: typeof EditorialStandardsRoute
+  ExploreRoute: typeof ExploreRoute
   GlossaryRoute: typeof GlossaryRoute
   LibraryRoute: typeof LibraryRoute
   LoginRoute: typeof LoginRoute
@@ -706,6 +719,13 @@ declare module '@tanstack/react-router' {
       path: '/editorial-standards'
       fullPath: '/editorial-standards'
       preLoaderRoute: typeof EditorialStandardsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/explore': {
+      id: '/explore'
+      path: '/explore'
+      fullPath: '/explore'
+      preLoaderRoute: typeof ExploreRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/glossary': {
@@ -968,6 +988,7 @@ const rootRouteChildren: RootRouteChildren = {
   DisclaimerRoute: DisclaimerRoute,
   DmcaRoute: DmcaRoute,
   EditorialStandardsRoute: EditorialStandardsRoute,
+  ExploreRoute: ExploreRoute,
   GlossaryRoute: GlossaryRoute,
   LibraryRoute: LibraryRoute,
   LoginRoute: LoginRoute,
