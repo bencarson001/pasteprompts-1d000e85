@@ -173,7 +173,7 @@ export default function GuideDetail() {
   const related = relatedGuides(slug);
   const url = `${SITE_URL}/guides/${guide.slug}`;
   // Conservative placement heuristic, not a claim of AdSense policy approval.
-  const adEligible = guide.blocks.length >= 8 && guide.readMinutes >= 5;
+  const adEligible = guide.blocks.length >= 8 && guide.readMinutes >= 3;
   // Insert one in-article ad roughly a third of the way down the body.
   const adIndex = adEligible
     ? Math.min(Math.max(Math.floor(guide.blocks.length / 3), 3), guide.blocks.length - 1)
