@@ -433,25 +433,18 @@ INPUTS (fill these in):
               </TabsContent>
             </Tabs>
 
-            {/* SEO Content Injection for Thin Pages */}
-            <section className="mt-12 space-y-6 border-t border-white/5 pt-8">
-              <div>
-                <h2 className="font-display text-2xl font-bold">Why this {category?.name?.toLowerCase() ?? ""} prompt works</h2>
-                <p className="mt-2 text-muted-foreground leading-relaxed">
-                  {prompt.description || `This prompt provides structured constraints and context, forcing the AI to bypass generic responses. By establishing a clear role and expected output format, it reliably generates high-quality results tailored for ${category?.name?.toLowerCase() ?? "professional"} use cases.`}
+            {/* Page-specific example from the creator (replaces repeated boilerplate) */}
+            {prompt.example_output?.trim() && (
+              <section className="mt-12 border-t border-white/5 pt-8">
+                <h2 className="font-display text-2xl font-bold">Example of what this prompt produces</h2>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  Illustrative sample supplied with the prompt. Any names or figures are placeholders, and your own result will depend on the details you give the AI.
                 </p>
-              </div>
-              
-              <div>
-                <h3 className="text-xl font-bold">Ideal Use Cases</h3>
-                <ul className="mt-2 space-y-2 text-muted-foreground list-disc pl-5">
-                  <li>Automating repetitive {category?.name?.toLowerCase() ?? ""} tasks</li>
-                  <li>Generating baseline copy or templates quickly</li>
-                  <li>Standardising output formats across your team</li>
-                  <li>Overcoming creative block with high-quality AI starting points</li>
-                </ul>
-              </div>
-            </section>
+                <pre className="mt-4 max-h-[480px] overflow-auto whitespace-pre-wrap break-words rounded-lg border border-white/10 bg-secondary/30 p-4 font-sans text-sm leading-relaxed text-foreground">
+                  {prompt.example_output.trim()}
+                </pre>
+              </section>
+            )}
 
             {/* How to use — unique, useful context for every prompt */}
             <section className="mt-12">
