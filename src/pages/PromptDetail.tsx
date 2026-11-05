@@ -335,7 +335,7 @@ export default function PromptDetail() {
               <TabsList className="bg-card/60">
                 <TabsTrigger value="prompt">Prompt</TabsTrigger>
                 {tryEnabled && <TabsTrigger value="try">Try it live</TabsTrigger>}
-                <TabsTrigger value="example">Verified Output & Proof</TabsTrigger>
+                <TabsTrigger value="example">Example output</TabsTrigger>
                 <TabsTrigger value="reviews">Reviews ({reviews?.length ?? 0})</TabsTrigger>
               </TabsList>
 
@@ -414,7 +414,7 @@ INPUTS (fill these in):
               <TabsContent value="example" className="mt-4">
                 <PromptProofCard
                   model={prompt.model}
-                  exampleOutput={prompt.example_output || "No verified sample output available for this prompt yet."}
+                  exampleOutput={prompt.example_output || "No sample output available for this prompt yet."}
                   categoryName={category?.name}
                   promptTitle={prompt.title}
                   hasAccess={hasAccess}

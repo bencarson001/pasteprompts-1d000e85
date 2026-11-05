@@ -359,7 +359,7 @@ export default function Index() {
                 ChatGPT &amp; Claude Prompts
               </h3>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                Explore thousands of parameterised <Link to="/prompts/chatgpt-prompts" className="text-primary-glow hover:underline">ChatGPT prompts</Link> and <Link to="/prompts/claude-prompts" className="text-primary-glow hover:underline">Claude AI prompts</Link> built with explicit variable brackets. Eliminate conversational fluff and unlock deterministic output across GPT-4o, Claude 3.7 Sonnet, and Gemini 2.5.
+                Explore <Link to="/prompts/chatgpt-prompts" className="text-primary-glow hover:underline">ChatGPT prompts</Link> and <Link to="/prompts/claude-prompts" className="text-primary-glow hover:underline">Claude AI prompts</Link> with clear [BRACKETED] fields you fill in, so the AI gets the details it needs instead of guessing.
               </p>
             </div>
             <div className="rounded-2xl border border-white/10 bg-card/40 p-5">
@@ -367,7 +367,7 @@ export default function Index() {
                 Free &amp; 49p Marketplace
               </h3>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                Access hundreds of <Link to="/prompts/free-ai-prompts" className="text-primary-glow hover:underline">free AI prompts</Link> or premium 49p prompt packs created by verified prompt engineers. Save your favourite prompts into your personal library or <Link to="/sell" className="text-primary-glow hover:underline">sell your own prompts</Link> on our open creator platform.
+                Try our <Link to="/prompts/free-ai-prompts" className="text-primary-glow hover:underline">free AI prompts</Link> or low-cost premium prompts written by our creators and reviewed before they go live. Save your favourite prompts into your personal library or <Link to="/sell" className="text-primary-glow hover:underline">sell your own prompts</Link> on our open creator platform.
               </p>
             </div>
           </div>
