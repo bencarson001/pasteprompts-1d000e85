@@ -14,7 +14,7 @@ export const ADSENSE_CLIENT = "ca-pub-3809061959162534";
 
 export const AD_SLOTS = {
   inFeed: (typeof import.meta !== "undefined" && import.meta.env?.["VITE_ADSENSE_IN_FEED_SLOT"]) || "0000000000",
-  inArticle: (typeof import.meta !== "undefined" && import.meta.env?.["VITE_ADSENSE_IN_ARTICLE_SLOT"]) || "1111111111",
+  inArticle: (typeof import.meta !== "undefined" && import.meta.env?.["VITE_ADSENSE_IN_ARTICLE_SLOT"]) || "6875179230",
   sidebar: (typeof import.meta !== "undefined" && import.meta.env?.["VITE_ADSENSE_SIDEBAR_SLOT"]) || "2222222222",
 } as const;
 

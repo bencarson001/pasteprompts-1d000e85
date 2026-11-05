@@ -26,3 +26,4 @@
 ## Privacy Policy — 4 November 2026
 - [x] Update the existing Privacy Policy with Google Analytics and AdSense disclosures and usable preference links.
 - [x] Link Cookie settings to the policy and verify the visitor flow; provide the URL for the AdSense message without publishing automatically. Preview link and settings reopening checked; Essential only loaded no Google scripts; routing test passed.
+- [x] Wire real In-article ad unit (slot 6875179230) into guide pages; lowered guide ad-eligibility readMinutes threshold 5→3 so all 22 substantial guides qualify. Verified slot renders only after "Accept all" on 3 guides; build OK. Awaiting publish.
