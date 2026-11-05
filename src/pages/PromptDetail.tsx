@@ -335,7 +335,7 @@ export default function PromptDetail() {
               <TabsList className="bg-card/60">
                 <TabsTrigger value="prompt">Prompt</TabsTrigger>
                 {tryEnabled && <TabsTrigger value="try">Try it live</TabsTrigger>}
-                <TabsTrigger value="example">Verified Output & Proof</TabsTrigger>
+                <TabsTrigger value="example">Example output</TabsTrigger>
                 <TabsTrigger value="reviews">Reviews ({reviews?.length ?? 0})</TabsTrigger>
               </TabsList>
 

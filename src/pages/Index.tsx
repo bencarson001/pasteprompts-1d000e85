@@ -359,7 +359,7 @@ export default function Index() {
                 ChatGPT &amp; Claude Prompts
               </h3>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                Explore thousands of parameterised <Link to="/prompts/chatgpt-prompts" className="text-primary-glow hover:underline">ChatGPT prompts</Link> and <Link to="/prompts/claude-prompts" className="text-primary-glow hover:underline">Claude AI prompts</Link> built with explicit variable brackets. Eliminate conversational fluff and unlock deterministic output across GPT-4o, Claude 3.7 Sonnet, and Gemini 2.5.
+                Explore <Link to="/prompts/chatgpt-prompts" className="text-primary-glow hover:underline">ChatGPT prompts</Link> and <Link to="/prompts/claude-prompts" className="text-primary-glow hover:underline">Claude AI prompts</Link> with clear [BRACKETED] fields you fill in, so the AI gets the details it needs instead of guessing.
               </p>
             </div>
             <div className="rounded-2xl border border-white/10 bg-card/40 p-5">
