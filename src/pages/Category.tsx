@@ -11,27 +11,47 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { fetchPromptsPage, fetchCategoryBySlug, fetchCategories } from "@/lib/queries";
+import {
+  fetchPromptsPage,
+  fetchCategoryBySlug,
+  fetchCategories,
+} from "@/lib/queries";
 import { getCategoryContent } from "@/lib/categoryContent";
 
 const SITE_URL = "https://pasteprompts.co.uk";
 
 const DEFAULT_FAQ = [
-  { q: "Are these prompts ready to use?", a: "Yes. Every prompt is parameterised and copy-paste ready. Buy once, fill in your details, and run it in your AI tool of choice." },
-  { q: "Which AI models do these work with?", a: "Prompts are tagged by their recommended model — ChatGPT, Claude, Gemini, Midjourney and more — but most work across modern LLMs." },
-  { q: "Do I get free updates?", a: "When a creator improves a prompt you own, the updated version appears in your library automatically." },
+  {
+    q: "Are these prompts ready to use?",
+    a: "Yes. Every prompt is parameterised and copy-paste ready. Buy once, fill in your details, and run it in your AI tool of choice.",
+  },
+  {
+    q: "Which AI models do these work with?",
+    a: "Prompts are tagged by their recommended model — ChatGPT, Claude, Gemini, Midjourney and more — but most work across modern LLMs.",
+  },
+  {
+    q: "Do I get free updates?",
+    a: "When a creator improves a prompt you own, the updated version appears in your library automatically.",
+  },
 ];
 
 export default function Category() {
   const { slug = "" } = useParams();
-  const { data: category } = useQuery({ queryKey: ["category", slug], queryFn: () => fetchCategoryBySlug(slug) });
+  const { data: category } = useQuery({
+    queryKey: ["category", slug],
+    queryFn: () => fetchCategoryBySlug(slug),
+  });
   const { data: page, isLoading } = useQuery({
     queryKey: ["category-prompts", slug],
-    queryFn: () => fetchPromptsPage({ categorySlug: slug, sort: "trending", limit: 48 }),
+    queryFn: () =>
+      fetchPromptsPage({ categorySlug: slug, sort: "trending", limit: 48 }),
   });
   const prompts = page?.rows;
   const total = page?.total ?? 0;
-  const { data: allCategories } = useQuery({ queryKey: ["categories"], queryFn: fetchCategories });
+  const { data: allCategories } = useQuery({
+    queryKey: ["categories"],
+    queryFn: fetchCategories,
+  });
   const relatedCategories = (allCategories ?? [])
     .filter((c) => c.slug !== slug)
     .slice(0, 6);
@@ -60,8 +80,18 @@ export default function Category() {
       "@type": "BreadcrumbList",
       itemListElement: [
         { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
-        { "@type": "ListItem", position: 2, name: "Browse", item: `${SITE_URL}/browse` },
-        { "@type": "ListItem", position: 3, name, item: `${SITE_URL}/category/${slug}` },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: "Browse",
+          item: `${SITE_URL}/browse`,
+        },
+        {
+          "@type": "ListItem",
+          position: 3,
+          name,
+          item: `${SITE_URL}/category/${slug}`,
+        },
       ],
     },
     {
@@ -107,28 +137,104 @@ export default function Category() {
         />
 
         <header className="mb-8 max-w-2xl">
-          <h1 className="font-display text-3xl font-bold sm:text-4xl">{heading}</h1>
+          <h1 className="font-display text-3xl font-bold sm:text-4xl">
+            {heading}
+          </h1>
           <p className="mt-3 text-muted-foreground">{lead}</p>
           {!isLoading && (
             <p className="mt-3 text-sm text-muted-foreground">
               {total} {total === 1 ? "prompt" : "prompts"} in {name}
-              {total > promptList.length ? ` · showing the top ${promptList.length}` : ""} ·{" "}
-              <Link to={`/browse/all/all/${slug}`} className="text-primary-glow hover:underline">Filter & sort</Link>{" · "}
-              <Link to="/browse" className="text-primary-glow hover:underline">All categories</Link>
+              {total > promptList.length
+                ? ` · showing the top ${promptList.length}`
+                : ""}{" "}
+              ·{" "}
+              <Link
+                to={`/browse/all/all/${slug}`}
+                className="text-primary-glow hover:underline"
+              >
+                Filter & sort
+              </Link>
+              {" · "}
+              <Link to="/browse" className="text-primary-glow hover:underline">
+                All categories
+              </Link>
             </p>
           )}
           <div className="mt-4 flex flex-wrap items-center gap-2 text-xs">
             <span className="text-muted-foreground font-medium">Model:</span>
-            <Link to="/prompts/chatgpt-prompts" className="rounded-lg border border-white/10 bg-card/60 px-2.5 py-1 text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground">ChatGPT</Link>
-            <Link to="/prompts/claude-prompts" className="rounded-lg border border-white/10 bg-card/60 px-2.5 py-1 text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground">Claude</Link>
-            <Link to="/prompts/gemini-prompts" className="rounded-lg border border-white/10 bg-card/60 px-2.5 py-1 text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground">Gemini</Link>
-            <Link to="/prompts/midjourney-prompts" className="rounded-lg border border-white/10 bg-card/60 px-2.5 py-1 text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground">Midjourney</Link>
+            <Link
+              to="/prompts/chatgpt-prompts"
+              className="rounded-lg border border-white/10 bg-card/60 px-2.5 py-1 text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground"
+            >
+              ChatGPT
+            </Link>
+            <Link
+              to="/prompts/claude-prompts"
+              className="rounded-lg border border-white/10 bg-card/60 px-2.5 py-1 text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground"
+            >
+              Claude
+            </Link>
+            <Link
+              to="/prompts/gemini-prompts"
+              className="rounded-lg border border-white/10 bg-card/60 px-2.5 py-1 text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground"
+            >
+              Gemini
+            </Link>
+            <Link
+              to="/prompts/midjourney-prompts"
+              className="rounded-lg border border-white/10 bg-card/60 px-2.5 py-1 text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground"
+            >
+              Midjourney
+            </Link>
             <span className="mx-1 text-border">|</span>
             <span className="text-muted-foreground font-medium">Focus:</span>
-            <Link to={`/browse/free/all/${slug}`} className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-emerald-400 font-semibold transition-colors hover:bg-emerald-500/20">⚡ Free {name} Prompts</Link>
-            <Link to="/browse/all/all/copywriting" className="rounded-lg border border-white/10 bg-card/60 px-2.5 py-1 text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground">Product & Email Copy</Link>
-            <Link to="/browse/all/all/business" className="rounded-lg border border-white/10 bg-card/60 px-2.5 py-1 text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground">Small Business Ops</Link>
+            <Link
+              to={`/browse/free/all/${slug}`}
+              className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-emerald-400 font-semibold transition-colors hover:bg-emerald-500/20"
+            >
+              ⚡ Free {name} Prompts
+            </Link>
+            <Link
+              to="/browse/all/all/copywriting"
+              className="rounded-lg border border-white/10 bg-card/60 px-2.5 py-1 text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground"
+            >
+              Product & Email Copy
+            </Link>
+            <Link
+              to="/browse/all/all/business"
+              className="rounded-lg border border-white/10 bg-card/60 px-2.5 py-1 text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground"
+            >
+              Small Business Ops
+            </Link>
           </div>
+
+          {/* Social Media Category Featured Callout */}
+          {slug === "social-media" && (
+            <div className="mt-6 rounded-2xl border border-primary/25 bg-gradient-to-r from-primary/15 via-card to-emerald-500/10 p-5 backdrop-blur-md">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2 text-xs font-bold text-primary">
+                    <span className="flex h-2 w-2 rounded-full bg-emerald-400" />
+                    <span>10x Free Social Media Growth Prompts Active</span>
+                  </div>
+                  <h2 className="text-base font-bold text-foreground">
+                    Engineered for TikTok, YouTube & Instagram Reels
+                  </h2>
+                  <p className="text-xs text-muted-foreground">
+                    Tested across ChatGPT, Claude 3.7 & Google Gemini. Copy hook
+                    matrices, retention scripts, carousel blueprints, and
+                    repurposing engines with zero paywall.
+                  </p>
+                </div>
+                <Link
+                  to="/browse/free/all/social-media"
+                  className="inline-flex items-center justify-center rounded-xl bg-gradient-primary px-4 py-2 text-xs font-semibold text-primary-foreground btn-glow shrink-0 hover:scale-105 transition-transform"
+                >
+                  View all 10 free prompts →
+                </Link>
+              </div>
+            </div>
+          )}
 
           {/* Why buy vs DIY objection killer */}
           <div className="mt-6 rounded-2xl border border-primary/20 bg-gradient-to-r from-primary/10 via-card/70 to-accent/5 p-4 sm:p-5 backdrop-blur-md">
@@ -141,7 +247,13 @@ export default function Category() {
                   Why use engineered prompts instead of writing your own?
                 </h2>
                 <p className="mt-1 text-xs text-muted-foreground leading-relaxed">
-                  Zero-shot prompts produce generic, robotic filler. Every prompt on Paste Prompts comes pre-configured with role constraints, tone controls, and bracketed <code className="rounded bg-muted px-1 py-0.5 font-mono text-[11px] text-foreground">[INPUTS]</code> — tested to deliver measurable results in seconds.
+                  Zero-shot prompts produce generic, robotic filler. Every
+                  prompt on Paste Prompts comes pre-configured with role
+                  constraints, tone controls, and bracketed{" "}
+                  <code className="rounded bg-muted px-1 py-0.5 font-mono text-[11px] text-foreground">
+                    [INPUTS]
+                  </code>{" "}
+                  — tested to deliver measurable results in seconds.
                 </p>
                 <div className="mt-3 flex flex-wrap items-center gap-3 text-xs">
                   <span className="inline-flex items-center gap-1 text-emerald-400 font-medium">
@@ -150,7 +262,10 @@ export default function Category() {
                   <span className="inline-flex items-center gap-1 text-muted-foreground">
                     ✓ One-click copy & paste
                   </span>
-                  <Link to={`/browse/free/all/${slug}`} className="font-semibold text-primary hover:underline">
+                  <Link
+                    to={`/browse/free/all/${slug}`}
+                    className="font-semibold text-primary hover:underline"
+                  >
                     Try a free prompt right now →
                   </Link>
                 </div>
@@ -159,7 +274,11 @@ export default function Category() {
           </div>
         </header>
 
-        <PromptGrid prompts={promptList as never} loading={isLoading} emptyMessage="No prompts in this category yet." />
+        <PromptGrid
+          prompts={promptList as never}
+          loading={isLoading}
+          emptyMessage="No prompts in this category yet."
+        />
 
         {content && (
           <section className="mt-16 max-w-3xl space-y-10">
@@ -195,9 +314,12 @@ export default function Category() {
           <section className="mt-16">
             <div className="mb-6 flex items-end justify-between gap-4">
               <div>
-                <h2 className="font-display text-2xl font-bold">Explore related categories</h2>
+                <h2 className="font-display text-2xl font-bold">
+                  Explore related categories
+                </h2>
                 <p className="mt-1 text-sm text-muted-foreground">
-                  Keep browsing — every category is packed with copy-ready AI prompts.
+                  Keep browsing — every category is packed with copy-ready AI
+                  prompts.
                 </p>
               </div>
               <Link
@@ -226,12 +348,24 @@ export default function Category() {
         )}
 
         <section className="mt-16 max-w-3xl">
-          <h2 className="mb-4 font-display text-2xl font-bold">Frequently asked questions</h2>
-          <Accordion type="single" collapsible className="rounded-2xl glass px-5">
+          <h2 className="mb-4 font-display text-2xl font-bold">
+            Frequently asked questions
+          </h2>
+          <Accordion
+            type="single"
+            collapsible
+            className="rounded-2xl glass px-5"
+          >
             {faqs.map((f, i) => (
-              <AccordionItem key={i} value={`item-${i}`} className="border-white/5">
+              <AccordionItem
+                key={i}
+                value={`item-${i}`}
+                className="border-white/5"
+              >
                 <AccordionTrigger className="text-left">{f.q}</AccordionTrigger>
-                <AccordionContent className="text-muted-foreground">{f.a}</AccordionContent>
+                <AccordionContent className="text-muted-foreground">
+                  {f.a}
+                </AccordionContent>
               </AccordionItem>
             ))}
           </Accordion>
