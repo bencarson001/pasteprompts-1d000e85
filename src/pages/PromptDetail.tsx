@@ -414,7 +414,7 @@ INPUTS (fill these in):
               <TabsContent value="example" className="mt-4">
                 <PromptProofCard
                   model={prompt.model}
-                  exampleOutput={prompt.example_output || "No verified sample output available for this prompt yet."}
+                  exampleOutput={prompt.example_output || "No sample output available for this prompt yet."}
                   categoryName={category?.name}
                   promptTitle={prompt.title}
                   hasAccess={hasAccess}

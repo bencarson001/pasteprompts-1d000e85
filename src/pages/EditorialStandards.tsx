@@ -113,7 +113,7 @@ export default function EditorialStandards() {
                 Our tutorials, comparative model benchmarks, and prompt engineering guides are written by experienced AI practitioners and prompt engineers. Every guide undergoes technical review to verify:
               </p>
               <ul className="space-y-2 text-sm text-muted-foreground list-disc pl-5">
-                <li><strong className="text-foreground">Accuracy:</strong> Model capabilities, token limits, and reasoning benchmarks are verified against official API documentation from OpenAI, Anthropic, Google, and Midjourney.</li>
+                <li><strong className="text-foreground">Accuracy:</strong> When we describe what an AI tool can do, we check it against the provider's own published documentation, and we avoid quoting benchmark scores we can't source.</li>
                 <li><strong className="text-foreground">Tested Code &amp; Prompts:</strong> All example prompt chains and system prompt snippets featured in guides are tested live before publication.</li>
                 <li><strong className="text-foreground">Continuous Maintenance:</strong> When frontier AI models receive major version updates (such as new reasoning capabilities), our editorial staff updates relevant guides with latest benchmarks and revised recommendations.</li>
               </ul>

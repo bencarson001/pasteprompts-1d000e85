@@ -367,7 +367,7 @@ export default function Index() {
                 Free &amp; 49p Marketplace
               </h3>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                Access hundreds of <Link to="/prompts/free-ai-prompts" className="text-primary-glow hover:underline">free AI prompts</Link> or premium 49p prompt packs created by verified prompt engineers. Save your favourite prompts into your personal library or <Link to="/sell" className="text-primary-glow hover:underline">sell your own prompts</Link> on our open creator platform.
+                Try our <Link to="/prompts/free-ai-prompts" className="text-primary-glow hover:underline">free AI prompts</Link> or low-cost premium prompts written by our creators and reviewed before they go live. Save your favourite prompts into your personal library or <Link to="/sell" className="text-primary-glow hover:underline">sell your own prompts</Link> on our open creator platform.
               </p>
             </div>
           </div>
